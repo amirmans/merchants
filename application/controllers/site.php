@@ -49,7 +49,6 @@ class Site extends CI_Controller {
 
     function payment() {
         
-        
         //Check business Customer is login
         is_login() ? '' : redirect('index.php/login');
         $param = $_REQUEST;
@@ -196,7 +195,7 @@ class Site extends CI_Controller {
         $config['smtp_port'] = '465';
         $config['smtp_timeout'] = '7';
         $config['smtp_user'] = $email;
-        $config['smtp_pass'] = 'de$tiny4me';
+        $config['smtp_pass'] = 'de$tiny4me5';
         $config['charset'] = 'utf-8';
         $config['newline'] = "\r\n";
         $config['mailtype'] = 'html'; // or html

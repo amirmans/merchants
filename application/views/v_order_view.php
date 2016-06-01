@@ -184,6 +184,10 @@
                                     swal("Completed order", "", "success");
                                     $("#order_view_h4").html('<span><img src="<?php echo base_url('assets/img/ic_check_active@3x.png'); ?>" alt="img" class="img order_view_icon"></span> Completed');
                                     $("#order_id_<?php echo $orderlist[0]['order_id']; ?> img").attr('src', "<?php echo base_url('assets/img/ic_check_active@3x.png'); ?>");
+                                    
+                                    setInterval(function() {
+                                        $("#order_id_<?php echo $orderlist[0]['order_id']; ?>").remove();
+                                    }, 2000)
 
                                 } else {
                                     $("#button_complete").html();
@@ -191,7 +195,7 @@
                                 }
                             });
                 };
-               
+
             </script>
 
 
