@@ -1,4 +1,4 @@
-<div class="invoice invoice-row" >
+<div class="invoice invoice-row" tabindex="1">
 
     <div class="invoicename"><a href="#" onclick="PrintDiv()" class=" btn btn-primary"><i class="fa fa-print"></i>Print</a></div>
     <div id="printDiv">
@@ -214,10 +214,10 @@
 
     </div>
 </div>
-<script src="https://apis.google.com/js/platform.js?onload=onLoadCallback" async defer></script
+<script src="https://apis.google.com/js/platform.js?onload=onLoadCallback" async defer></script>
 <script type="text/javascript">
     function PrintDiv() {
-        print()
+        
         var divToPrint = document.getElementById('printDiv');
 //            var popupWin = window.open('', '_blank', 'width=2000,height=1000');
 //            popupWin.document.open();

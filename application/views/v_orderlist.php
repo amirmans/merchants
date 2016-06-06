@@ -163,7 +163,7 @@
             <a href="#" class="closed">×</a>
             <h4>You have a new <span id="count_new_order"></span> Order!</h4>
         </div>
-        
+
         <div id="alertPendingOrder" class="kode-alert kode-alert-icon  kode-alert-top-right alert6-light" style="z-index: 99;" >
 
             <i class="fa fa-info"></i>
@@ -244,14 +244,21 @@
                             data = jQuery.parseJSON(data);
                             if (data)
                             {
-                                
+
                                 $("#count_pending_order").html(data);
                                 $("#alertPendingOrder").show();
-                                
+
                             }
                         });
 
             }
+
+            $(document).ready(function() {
+                $('.order-list li a').click(function() {
+                    $('.invoice').focus();
+                    console.log("set focused")
+                });
+            });
         </script>
 
 
