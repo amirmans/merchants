@@ -93,9 +93,9 @@ function time_elapsed_string($ptime) {
 
 function push_notification_ios($device_token, $message_body) {
     $deviceToken = "" . $device_token . "";
-    $passphrase = 'Tapin';
+    $passphrase = 'password';
     $ctx = stream_context_create();
-    stream_context_set_option($ctx, 'ssl', 'local_cert', 'ck.pem');
+    stream_context_set_option($ctx, 'ssl', 'local_cert', 'TapInPushCert.pem');
     stream_context_set_option($ctx, 'ssl', 'passphrase', $passphrase);
 // Open a connection to the APNS server
     $fp = stream_socket_client(

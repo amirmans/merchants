@@ -117,5 +117,17 @@ class Product extends CI_Controller {
         $data['product_id'] = $product_id;
         $this->load->view('v_product_options', $data);
     }
+    
+    function set_availailblity_status() {
+        is_login() ? '' : redirect('index.php/login');
+        $param = $_REQUEST;
+        
+        $param['businessID'] = is_login();
+        $this->validation->is_parameter_blank('businessID', $param['businessID']);
+        $this->m_site->set_product_availailblity_status($param);
+        $response = success_res("Successfully Set Availailblity Status");
+        echo json_encode($response);
+    }
+    
 
 }

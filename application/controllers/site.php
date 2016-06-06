@@ -154,7 +154,7 @@ class Site extends CI_Controller {
         $device_token = 'a80f300f10a38125ec6d1375276084495a6434306c7aa136c67f02d2340b8775';
         $message_body = array(
             'type' => 1,
-            'alert' => "#115 is rejected ",
+            'alert' => "Distribution Notification Testing",
             'badge' => 0,
             'sound' => 'newMessage.wav'
         );
@@ -223,7 +223,7 @@ class Site extends CI_Controller {
         $data['exp_month'] =12;
         $data['exp_year'] =2024;
         
-        $this->mail_receipt($data, 'nikunj.appvolution@gmail.com');
+        $this->mail_receipt($data, 'amar.appvolution@gmail.com');
     }
     function phpinfo()
     {

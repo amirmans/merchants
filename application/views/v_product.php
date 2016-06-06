@@ -46,6 +46,7 @@
                                                 <td>Name</td>
                                                 <td>Price</td>
                                                 <td>Short information</td>
+                                                <td>Availability Status</td>
                                                 <td>Add</td>
 
                                             </tr>
@@ -58,6 +59,19 @@
                                                     <td><?php echo $products[$i]['name']; ?></td>
                                                     <td>$ <?php echo $products[$i]['price']; ?></td>
                                                     <td><?php echo $products[$i]['short_description']; ?></td>
+                                                    <td>
+                                                        <?php
+                                                            $checked='';
+                                                            if($products[$i]['availability_status']==1)
+                                                            {
+                                                                $checked='checked';
+                                                            }
+                                                        ?>
+                                                        <div class="col-sm-8">
+                                                            <input type="checkbox"  data-toggle="toggle" data-onstyle="success" id="availability_status_<?php echo $products[$i]['product_id']; ?>" onchange="set_availailblity_status(<?php echo $products[$i]['product_id']; ?>)" <?php echo $checked;?> >
+                                                        </div>
+
+                                                    </td>
                                                     <td><a href="<?php echo base_url('index.php/product/options/' . $products[$i]['product_id']); ?>" class="btn btn-info add_product_btn"><i class="fa fa-eye"></i>View</a></td>
 
                                                 </tr>
@@ -88,6 +102,20 @@
         <script>
             window.history.forward(-1);
             $("#product_tab").addClass('active_tab');
+
+            function set_availailblity_status(product_id) {
+                var availability_status = $('#availability_status_' + product_id).prop('checked');
+                var param = {availability_status: availability_status,product_id:product_id};
+                $.post("<?php echo base_url('index.php/product/set_availailblity_status') ?>", param)
+                        .done(function(data) {
+                            data = jQuery.parseJSON(data);
+
+                            if (data['status'] == '1')
+                            {
+                                swal("", data['msg'], "success");
+                            }
+                        });
+            }
         </script>
 
 

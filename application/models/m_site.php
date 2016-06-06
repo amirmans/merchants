@@ -214,6 +214,14 @@ class M_site extends CI_Model {
                 'sound' => 'newMessage.wav'
             );
             push_notification_ios($device_token, $message_body);
+
+            $notification['consumer_id'] = $consumer_id;
+            $notification['business_id'] = is_login();
+            $notification['message'] = "Your order #" . $order_id . " is approved ";
+            $notification['image'] = "";
+            $notification['time_sent'] = date('Y-m-d');
+            $notification['notification_type_id'] = "5";
+            $this->db->insert('notification', $notification);
         }
     }
 
@@ -245,6 +253,14 @@ class M_site extends CI_Model {
                 'sound' => 'newMessage.wav'
             );
             push_notification_ios($device_token, $message_body);
+
+            $notification['consumer_id'] = $order_detail['consumer_id'];
+            $notification['business_id'] = is_login();
+            $notification['message'] = "Your order #" . $order_id . " is completed ";
+            $notification['image'] = "";
+            $notification['time_sent'] = date('Y-m-d');
+            $notification['notification_type_id'] = "6";
+            $this->db->insert('notification', $notification);
         }
     }
 
@@ -275,6 +291,13 @@ class M_site extends CI_Model {
                 'sound' => 'newMessage.wav'
             );
             push_notification_ios($device_token, $message_body);
+            $notification['consumer_id'] = $order_detail['consumer_id'];
+            $notification['business_id'] = is_login();
+            $notification['message'] = "Your order #" . $order_id . " is rejected ";
+            $notification['image'] = "";
+            $notification['time_sent'] = date('Y-m-d');
+            $notification['notification_type_id'] = "4";
+            $this->db->insert('notification', $notification);
         }
     }
 
@@ -594,6 +617,17 @@ class M_site extends CI_Model {
         $this->db->where('status', 1);
         $this->db->from('order');
         return $this->db->count_all_results();
+    }
+
+    function set_product_availailblity_status($param) {
+        if ($param['availability_status'] == "true") {
+            $param['availability_status'] = 1;
+        } else {
+            $param['availability_status'] = 0;
+        }
+        $data['availability_status'] = $param['availability_status'];
+        $this->db->where('product_id', $param['product_id']);
+        $this->db->update('product', $data);
     }
 
 }
