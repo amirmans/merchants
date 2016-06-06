@@ -182,7 +182,7 @@
             {
                 var param = {order_id: order_id};
                 $.post("<?php echo base_url('index.php/site/order_view') ?>", param)
-                        .done(function(data) {
+                        .done(function (data) {
                             data = jQuery.parseJSON(data);
                             $("#order_view").html(data['order_view']);
 
@@ -213,7 +213,7 @@
             {
                 $("#new_order_form").submit();
             }
-            $(document).ready(function() {
+            $(document).ready(function () {
                 // bind 'myForm' and provide a simple callback function 
                 $('#new_order_form').ajaxForm({
                     success: displayneworder
@@ -240,7 +240,7 @@
             {
                 var parm
                 $.get("<?php echo base_url('index.php/site/count_order_for_remaining_approve') ?>")
-                        .done(function(data) {
+                        .done(function (data) {
                             data = jQuery.parseJSON(data);
                             if (data)
                             {
@@ -253,10 +253,12 @@
 
             }
 
-            $(document).ready(function() {
-                $('.order-list li a').click(function() {
-                    $('.invoice').focus();
-                    console.log("set focused")
+            $(document).ready(function () {
+                $('.order-list li ').dblclick(function () {
+                    setTimeout(function () {
+                        $('.invoice').focus();
+                    }, 1000);
+
                 });
             });
         </script>
