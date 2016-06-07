@@ -214,16 +214,11 @@
 
     </div>
 </div>
-<script src="https://apis.google.com/js/platform.js?onload=onLoadCallback" async defer></script>
+
 <script type="text/javascript">
     function PrintDiv() {
         
         var divToPrint = document.getElementById('printDiv');
-//            var popupWin = window.open('', '_blank', 'width=2000,height=1000');
-//            popupWin.document.open();
-//            popupWin.document.write('<html><link media="print" href="<?php echo base_url('assets/css/root.css'); ?>" rel="stylesheet"></link><style>@media print { body {margin-left:150px;margin-right:150px;} @media print { .invoice .logo{ font-size:10px}} @media print { .invoice{ font-size:10px}} @media print {.invoice .line h2 { font-size:10px} } @media print {.invoice .line h4 { font-size:10px} } @media print { .invoice .table {font-size:10px}} @media print { .invoice .table .title{ font-size:12px}} @media print {#order_view_h4 img{ display:none}} @media{.invoice .table p{font-size:10px}}</style><body onload="window.print()"><div class="invoice invoice-row"><div class="logo"><h1><?php echo $this->session->userdata('name'); ?></h1> </div>' + divToPrint.innerHTML + '</div></html>');
-//            popupWin.document.close();
-
         var frame1 = document.createElement('iframe');
         frame1.name = "frame1";
         frame1.style.position = "absolute";
@@ -238,44 +233,6 @@
 
     }
     
-    function auth() {
-        gapi.auth.authorize({
-            'client_id': '862369405994-kbmj8nu6sob47o62qcjntchor5qofv3r.apps.googleusercontent.com',
-            'scope': 'https://www.googleapis.com/auth/cloudprint',
-            'immediate': true
-        });
-
-    }
-
-    function print() {
-        var xhr = new XMLHttpRequest();
-        var q = new FormData()
-        q.append('xsrf', gapi.auth.getToken().access_token);
-        q.append('printerid', 'c03229ea-3f30-9c2f-0b3e-713a78bccec8');
-        q.append('jobid', '1');
-        q.append('title', 'silentPrintTest');
-        q.append('contentType', 'url');
-        q.append('content', "http://www.pdf995.com/samples/pdf.pdf&output=embed");
-        q.append('ticket', '{ "version": "1.0", "print": {}}');
-
-
-        xhr.open('POST', 'https://www.google.com/cloudprint/submit');
-        xhr.setRequestHeader('Authorization', 'Bearer ' + gapi.auth.getToken().access_token);
-        xhr.onload = function() {
-            try {
-                var r = JSON.parse(xhr.responseText);
-                console.log(r.message)
-            } catch (e) {
-                console.log(xhr.responseText)
-            }
-        }
-
-        xhr.send(q)
-
-    }
-
-    window.addEventListener('load', auth);
-    
 </script>
-<script src="https://apis.google.com/js/client.js"></script>
+
 

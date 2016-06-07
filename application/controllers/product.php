@@ -62,6 +62,7 @@ class Product extends CI_Controller {
         is_login() ? '' : redirect('index.php/login');
         $param = $_REQUEST;
 
+       
         $param['businessID'] = is_login();
         $this->validation->is_parameter_blank('businessID', $param['businessID']);
         $this->validation->is_parameter_blank('name', $param['name']);
@@ -78,6 +79,8 @@ class Product extends CI_Controller {
         $param['has_option'] = $this->validation->set_blank_parameter($param['has_option']);
         $param['bought_with_rewards'] = $this->validation->set_blank_parameter($param['bought_with_rewards']);
         $param['more_information'] = $this->validation->set_blank_parameter($param['more_information']);
+        $param['pictures'] = $this->validation->file_upload("pictures", '../tapin-server-staging/customer_files');
+        
         $data = $this->m_site->insert_product($param);
         echo json_encode($data);
     }
@@ -103,7 +106,7 @@ class Product extends CI_Controller {
         $param['businessID'] = is_login();
         $this->validation->is_parameter_blank('businessID', $param['businessID']);
         $this->validation->is_parameter_blank('product_id', $param['product_id']);
-        
+
         $data = $this->m_site->insert_options($param);
         echo json_encode($data);
     }
@@ -117,17 +120,16 @@ class Product extends CI_Controller {
         $data['product_id'] = $product_id;
         $this->load->view('v_product_options', $data);
     }
-    
+
     function set_availailblity_status() {
         is_login() ? '' : redirect('index.php/login');
         $param = $_REQUEST;
-        
+
         $param['businessID'] = is_login();
         $this->validation->is_parameter_blank('businessID', $param['businessID']);
         $this->m_site->set_product_availailblity_status($param);
         $response = success_res("Successfully Set Availailblity Status");
         echo json_encode($response);
     }
-    
 
 }

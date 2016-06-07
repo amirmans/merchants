@@ -39,7 +39,7 @@
                                 <div class="panel-body">
                                     <form id="product_option_form" class="form-horizontal"  method="post" action="<?php echo base_url('index.php/product/insert_option'); ?>" >
                                         <div class="form-group">
-                                            <label for="input002" class="col-sm-2 control-label form-label">Prodcut Option Category</label>
+                                            <label for="input002" class="col-sm-2 control-label form-label">Product Option Category</label>
                                             <div class="col-sm-10">
                                                 <select class="selectpicker" id="product_option_category" style="margin: 10px 24px;" onchange="change_order_status()" name="product_option_category_id"  >
                                                     <?php for ($i = 0; $i < count($product_option_category); $i++) {

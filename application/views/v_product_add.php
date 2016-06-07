@@ -32,9 +32,9 @@
                                 </div>
 
                                 <div class="panel-body">
-                                    <form id="product_form" class="form-horizontal"  method="post" action="<?php echo base_url('index.php/product/insert'); ?>" >
+                                    <form id="product_form" class="form-horizontal"  method="post" action="<?php echo base_url('index.php/product/insert'); ?>"  enctype="multipart/form-data">
                                         <div class="form-group">
-                                            <label for="input002" class="col-sm-2 control-label form-label">Prodcut Category</label>
+                                            <label for="input002" class="col-sm-2 control-label form-label">Product Category</label>
                                             <div class="col-sm-10">
                                                 <select class="selectpicker" id="order_status" style="margin: 10px 24px;" onchange="change_order_status()" name="product_category_id" >
                                                     <?php for ($i = 0; $i < count($product_category); $i++) {
@@ -133,14 +133,18 @@
                                                 <input type="text" class="form-control" id="more_information" name="more_information" >
                                             </div>
                                         </div>
+                                        <div class="form-group">
+                                            <label for="input002" class="col-sm-2 control-label form-label">Product Image</label>
+                                            <div class="col-sm-10">
+                                                <input type="file" class="form-control" id="pictures" name="pictures">
+                                            </div>
+                                        </div>
 
                                         <div class="form-group">
                                             <div class="col-sm-offset-2 col-sm-10">
                                                 <button type="submit" class="btn btn-default">Submit</button>
                                             </div>
                                         </div>
-
-
 
                                     </form> 
 
