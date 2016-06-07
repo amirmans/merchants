@@ -183,15 +183,15 @@
             {
                 var param = {order_id: order_id};
                 $.post("<?php echo base_url('index.php/site/order_view') ?>", param)
-                        .done(function(data) {
+                        .done(function (data) {
                             data = jQuery.parseJSON(data);
                             $("#order_view").html(data['order_view']);
 
                             $(".active_detail_order").removeClass("active_detail_order");
                             $("#order_id_" + order_id).addClass("active_detail_order")
-
+                            scroll_to_orderview();
                         });
-                scroll_to_orderview()
+
             }
 
             function change_order_status()
@@ -215,7 +215,7 @@
             {
                 $("#new_order_form").submit();
             }
-            $(document).ready(function() {
+            $(document).ready(function () {
                 // bind 'myForm' and provide a simple callback function 
                 $('#new_order_form').ajaxForm({
                     success: displayneworder
@@ -242,7 +242,7 @@
             {
                 var parm
                 $.get("<?php echo base_url('index.php/site/count_order_for_remaining_approve') ?>")
-                        .done(function(data) {
+                        .done(function (data) {
                             data = jQuery.parseJSON(data);
                             if (data)
                             {
@@ -259,7 +259,7 @@
             function scroll_to_orderview()
             {
                 console.log('true')
-                setTimeout(function() {
+                setTimeout(function () {
                     console.log('true')
 //                        $('.invoice').focus();
                     var target = ".invoice";

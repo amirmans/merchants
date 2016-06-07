@@ -79,9 +79,10 @@ class Product extends CI_Controller {
         $param['has_option'] = $this->validation->set_blank_parameter($param['has_option']);
         $param['bought_with_rewards'] = $this->validation->set_blank_parameter($param['bought_with_rewards']);
         $param['more_information'] = $this->validation->set_blank_parameter($param['more_information']);
-        $param['pictures'] = $this->validation->file_upload("pictures", '../tapin-server-staging/customer_files');
+        $param['pictures'] = $this->validation->file_upload("pictures", '../tapin-server-staging/customer_files/'.$param['businessID'].'/products');
         
         $data = $this->m_site->insert_product($param);
+        $data['filepathe']='../tapin-server-staging/customer_files/'.$param['businessID'].'/products';
         echo json_encode($data);
     }
 
