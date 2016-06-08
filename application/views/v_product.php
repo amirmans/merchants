@@ -32,7 +32,7 @@
                             <div class="panel panel-default">
 
                                 <div class="panel-title">
-                                    Prodcuts
+                                    Products
                                     <a href="<?php echo base_url('index.php/product/add'); ?>" class="btn btn-primary add_product_btn"><i class="fa fa-plus"></i>Add</a>
                                 </div>
 
@@ -42,12 +42,12 @@
                                     <table class="table table-striped table-bordered ">
                                         <thead>
                                             <tr>
-                                                <td>product ID</td>
+                                            
                                                 <td>Name</td>
                                                 <td>Price</td>
-                                                <td>Short information</td>
+                                                <td>Product Description </td>
                                                 <td>Availability Status</td>
-                                                <td>Add</td>
+                                                <!--<td>Add</td>-->
 
                                             </tr>
                                         </thead>
@@ -55,7 +55,7 @@
                                             <?php for ($i = 0; $i < count($products); $i++) {
                                                 ?>
                                                 <tr>
-                                                    <td># <b><?php echo $products[$i]['product_id']; ?></b></td>
+                                                  
                                                     <td><?php echo $products[$i]['name']; ?></td>
                                                     <td>$ <?php echo $products[$i]['price']; ?></td>
                                                     <td><?php echo $products[$i]['short_description']; ?></td>
@@ -72,7 +72,7 @@
                                                         </div>
 
                                                     </td>
-                                                    <td><a href="<?php echo base_url('index.php/product/options/' . $products[$i]['product_id']); ?>" class="btn btn-info add_product_btn"><i class="fa fa-eye"></i>View</a></td>
+                                                    <!--<td><a href="<?php echo base_url('index.php/product/options/' . $products[$i]['product_id']); ?>" class="btn btn-info add_product_btn"><i class="fa fa-eye"></i>View</a></td>-->
 
                                                 </tr>
                                             <?php } ?>
@@ -85,7 +85,7 @@
                         </div>
 
                     </div>
-
+                    
                 </div>
 
             </div>

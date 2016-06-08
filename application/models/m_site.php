@@ -35,7 +35,7 @@ class M_site extends CI_Model {
     }
 
     function get_business($businessID) {
-        $this->db->select('businessID,name,username,email,website,businessTypes,phone,address,city,state,zipcode,stripe_secret_key,icon');
+        $this->db->select('businessID,name,username,email,website,businessTypes,phone,address,city,state,zipcode,stripe_secret_key,icon,marketing_statement,process_time,short_name,sms_no');
         $this->db->from('business_customers');
         $this->db->where('businessID', $businessID);
         $this->db->limit(1);
@@ -78,13 +78,31 @@ class M_site extends CI_Model {
         }
     }
 
-    function update_business_stripe_secret_key($param) {
+    function update_business_profile($param) {
 
         $data['stripe_secret_key'] = $param['stripe_secret_key'];
+        $data['businessID'] = $param['businessID'];
+        $data['address'] = $param['address'];
+        $data['email'] = $param['email'];
+        $data['website'] = $param['website'];
+        $data['phone'] = $param['phone'];
+        $data['businessTypes'] = $param['businessTypes'];
+        $data['marketing_statement'] = $param['marketing_statement'];
+        $data['short_name'] = $param['short_name'];
+        if ($param['process_time'] != '') {
+            $data['process_time'] = $param['process_time'];
+        }
         $this->db->where('businessID', $param['businessID']);
         $this->db->update('business_customers', $data);
         $return = success_res("Stripe Token Updated Successfully");
         $return['stripe_secret_key'] = $param['stripe_secret_key'];
+        $return['address'] = $param['address'];
+        $return['email'] = $param['email'];
+        $return['website'] = $param['website'];
+        $return['phone'] = $param['phone'];
+        $return['businessTypes'] = $param['businessTypes'];
+        $return['marketing_statement'] = $param['marketing_statement'];
+        $return['short_name'] = $param['short_name'];
 
         return $return;
     }

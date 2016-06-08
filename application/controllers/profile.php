@@ -21,14 +21,21 @@ class Profile extends CI_Controller {
         $data = $this->m_site->get_business($businessID);
         $this->load->view('v_profile', $data);
     }
-    
-    function edit_stripe_secret_key()
-    {
+
+    function edit_profile() {
         is_login() ? '' : redirect('index.php/login');
-        $param=$_REQUEST;
-        
+        $param = $_REQUEST;
         $param['businessID'] = is_login();
-        $data = $this->m_site->update_business_stripe_secret_key($param);
+        $this->validation->is_parameter_blank('businessID', $param['businessID']);
+        $this->validation->is_parameter_blank('address', $param['address']);
+        $this->validation->is_parameter_blank('email', $param['email']);
+        $this->validation->is_parameter_blank('website', $param['website']);
+        $this->validation->is_parameter_blank('phone', $param['phone']);
+        $this->validation->is_parameter_blank('businessTypes', $param['businessTypes']);
+        $this->validation->is_parameter_blank('marketing_statement', $param['marketing_statement']);
+        $this->validation->is_parameter_blank('short_name', $param['short_name']);
+        $this->validation->is_parameter_blank('sms_no', $param['sms_no']);  
+        $data = $this->m_site->update_business_profile($param);
         echo json_encode($data);
     }
 
