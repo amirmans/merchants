@@ -7,22 +7,22 @@ class Site extends CI_Controller {
 
     public function __construct() {
         parent::__construct();
-        ////////////DEFAULT LOAD BELOW FUNCTIONLITY WHEN CALL V1 CONTROLLER
-        /////// LOAD LIBRARY VALIDATION CLASS
+////////////DEFAULT LOAD BELOW FUNCTIONLITY WHEN CALL V1 CONTROLLER
+/////// LOAD LIBRARY VALIDATION CLASS
         $this->load->library('validation');
-        ///// LOAD MODEL CLASS
+///// LOAD MODEL CLASS
         $this->load->model('m_site');
-        ////// RESONSE HEADER CONTEN TYPRE SET FROM DEFAULT(TEXT/HTML) TO APPLICATION/JSON
+////// RESONSE HEADER CONTEN TYPRE SET FROM DEFAULT(TEXT/HTML) TO APPLICATION/JSON
     }
 
     function index() {
-        ///// DEFULT SITE CONTROLLER MEHOD CALL 
+///// DEFULT SITE CONTROLLER MEHOD CALL 
         $data['business_list'] = $this->m_site->get_business_list();
         $this->load->view('v_home', $data);
     }
 
     function orderlist($order_status = "neworder") {
-        //Check business Customer is login
+//Check business Customer is login
         is_login() ? '' : redirect('index.php/login');
         $param['businessID'] = is_login();
         $param['order_status'] = $order_status;
@@ -37,7 +37,7 @@ class Site extends CI_Controller {
     }
 
     function order_view() {
-        //Check business Customer is login
+//Check business Customer is login
         is_login() ? '' : redirect('index.php/login');
         $param = $_REQUEST;
         $order_id = $param['order_id'];
@@ -48,8 +48,8 @@ class Site extends CI_Controller {
     }
 
     function payment() {
-        
-        //Check business Customer is login
+
+//Check business Customer is login
         is_login() ? '' : redirect('index.php/login');
         $param = $_REQUEST;
         $business_id = is_login();
@@ -58,32 +58,39 @@ class Site extends CI_Controller {
         $order_payment_detail = $this->m_site->get_order_payment_detail($order_id);
 
         if ($order_payment_detail['cc_info']) {
-            if ($order_payment_detail['total'] > 0) {
+            if ($order_payment_detail['total'] > 0 || $order_payment_detail['total'] == 0) {
                 $amount = $order_payment_detail['total'] * 100;
                 $secret_key = $this->get_stripe_secret_key($business_id);
                 if ($secret_key == "") {
                     $response = error_res("Something went wrong");
                 } else {
 
-                    require_once('lib/stripe-php-master/init.php');
-                    \Stripe\Stripe::setApiKey($secret_key);
-                    $myCard = array('number' => $order_payment_detail['cc_info']['cc_no'], 'exp_month' => $order_payment_detail['cc_info']['month'], 'exp_year' => $order_payment_detail['cc_info']['year']);
-                    $charge = \Stripe\Charge::create(array('card' => $myCard, 'amount' => $amount, 'currency' => 'usd'));
-                    $response = success_res("your payment has been successfully processed");
-                    $response['amount'] = $amount / 100;
-                    
-                    $this->m_site->update_order_status($order_id, $charge->id, $response['amount'], $order_payment_detail['consumer_id']);
+                    if ($amount != 0) {
 
-//                    $email['order_detail'] = $this->m_site->get_order_detail($order_id);
-//                    $email['order_id'] = $order_id;
-//                    $email['total'] = $order_payment_detail['total'];
-//                    $email['cc_no'] = $order_payment_detail['cc_info']['cc_no'];
-//                    $email['exp_month'] = $order_payment_detail['cc_info']['month'];
-//                    $email['exp_year'] = $order_payment_detail['cc_info']['year'];
-//
-//                    if ($order_payment_detail['cc_info']['email1'] != '' && $order_payment_detail['cc_info']['email1'] != NULL) {
-//                        $this->mail_receipt($email, $order_payment_detail['cc_info']['email1']);
-//                    }
+                        require_once('lib/stripe-php-master/init.php');
+                        \Stripe\Stripe::setApiKey($secret_key);
+                        $myCard = array('number' => $order_payment_detail['cc_info']['cc_no'], 'exp_month' => $order_payment_detail['cc_info']['month'], 'exp_year' => $order_payment_detail['cc_info']['year']);
+                        $charge = \Stripe\Charge::create(array('card' => $myCard, 'amount' => $amount, 'currency' => 'usd'));
+                        $response = success_res("your payment has been successfully processed");
+                        $charge_id = $charge->id;
+                    } else {
+                        $response = success_res("your payment has been successfully processed");
+                        $charge_id = 0;
+                    }
+                    $response['amount'] = $amount / 100;
+
+                    $this->m_site->update_order_status($order_id, $charge_id, $response['amount'], $order_payment_detail['consumer_id']);
+
+                    $email['order_detail'] = $this->m_site->get_order_detail($order_id);
+                    $email['order_id'] = $order_id;
+                    $email['total'] = $order_payment_detail['total'];
+                    $email['cc_no'] = $order_payment_detail['cc_info']['cc_no'];
+                    $email['exp_month'] = $order_payment_detail['cc_info']['month'];
+                    $email['exp_year'] = $order_payment_detail['cc_info']['year'];
+
+                    if ($order_payment_detail['cc_info']['email1'] != '' && $order_payment_detail['cc_info']['email1'] != NULL) {
+                        $this->mail_receipt($email, $order_payment_detail['cc_info']['email1']);
+                    }
                 }
             } else {
                 $response = error_res("Something went wrong");
@@ -205,29 +212,72 @@ class Site extends CI_Controller {
     }
 
     function mail_receipt($data, $email) {
-        $this->email_configration();
+        //    $this->email_configration();
         $body = $this->load->view('v_email_receipt', $data, TRUE);
         $subject = "Your Order Receipt";
-        $this->email->to($email);
-        $this->email->subject($subject);
-        $this->email->message($body);
-        $this->email->send();
-
+//        $this->email->to($email);
+//        $this->email->subject($subject);
+//        $this->email->message($body);
+//        $this->email->send();
 //         echo $this->email->print_debugger();
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+        curl_setopt($ch, CURLOPT_USERPWD, 'api:key-f00e20caad2538b5d5f7f40892cdfb28');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+        //     curl_setopt($ch, CURLOPT_URL, 'https://api.mailgun.net/v2/sandboxb5d83d4289364f3bb3100e1a1f20a1d3.mailgun.org/messages');
+        curl_setopt($ch, CURLOPT_URL, 'https://api.mailgun.net/v3/sandboxb5d83d4289364f3bb3100e1a1f20a1d3.mailgun.org/messages');
+        curl_setopt($ch, CURLOPT_POSTFIELDS, array('from' => 'Ankit S<postmaster@sandboxb5d83d4289364f3bb3100e1a1f20a1d3.mailgun.org>',
+            'to' => ' <Ankit ' . $email . '>',
+            'subject' => $subject,
+            'html' => $body));
+        $result = curl_exec($ch);
+        //  $info = curl_getinfo($ch);
+        curl_close($ch);
     }
-    function send_mail_demo(){
-        $data['order_detail'] =[array('quantity'=>3,'name'=>'test','short_description'=>'This is short description','price'=>6)];
-        $data['total'] =10;
-        $data['order_id'] =194;
-        $data['cc_no'] =4242424242424242;
-        $data['exp_month'] =12;
-        $data['exp_year'] =2024;
-        
+
+    function send_mail_demo() {
+        $data['order_detail'] = [array('quantity' => 3, 'name' => 'test', 'short_description' => 'This is short description', 'price' => 6)];
+        $data['total'] = 10;
+        $data['order_id'] = 194;
+        $data['cc_no'] = 4242424242424242;
+        $data['exp_month'] = 12;
+        $data['exp_year'] = 2024;
+
         $this->mail_receipt($data, 'amar.appvolution@gmail.com');
     }
-    function phpinfo()
-    {
+
+    function phpinfo() {
         echo phpinfo();
+    }
+
+    function send_simple_message() {
+
+
+
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+        curl_setopt($ch, CURLOPT_USERPWD, 'api:key-f00e20caad2538b5d5f7f40892cdfb28');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+        //     curl_setopt($ch, CURLOPT_URL, 'https://api.mailgun.net/v2/sandboxb5d83d4289364f3bb3100e1a1f20a1d3.mailgun.org/messages');
+        curl_setopt($ch, CURLOPT_URL, 'https://api.mailgun.net/v3/sandboxb5d83d4289364f3bb3100e1a1f20a1d3.mailgun.org/messages');
+        curl_setopt($ch, CURLOPT_POSTFIELDS, array('from' => 'Ankit S<postmaster@sandboxb5d83d4289364f3bb3100e1a1f20a1d3.mailgun.org>',
+            'to' => 'Ankit <amar.appvolution@gmail.com>',
+            'subject' => 'The Printer Caught Fire',
+            'text' => 'Testing mail gun.'));
+        $result = curl_exec($ch);
+        $info = curl_getinfo($ch);
+        curl_close($ch);
+        echo '<pre>';
+        print_r($result);
+        echo 'ok';
     }
 
 }

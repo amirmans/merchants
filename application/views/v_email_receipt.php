@@ -37,7 +37,7 @@
                                             </tr>
                                             <tr style="">
                                                 <td >
-                                                    <img src="<?php echo base_url('assets/email_templete/ic_heart_unlike @3x.png'); ?>" width="30" height="30"></img>
+                                                    <img src="<?php echo base_url('assets/email_templete/ic_heart_unlike@3x.png'); ?>" width="30" height="30"></img>
                                                 </td>
                                             </tr>
                                         </table>

@@ -16,9 +16,10 @@ class Login extends CI_Controller {
     }
 
     function index() {
-
+        $this->session->unset_userdata('businessID');
         is_login() ? redirect('index.php/site/orderlist') : '';
         $param = $_REQUEST;
+
         $data['business'] = $this->m_site->get_business(decrypt_string($param['businessID']));
 //   
         $this->load->view('v_login', $data);
@@ -27,7 +28,7 @@ class Login extends CI_Controller {
     function do_login() {
 
         $param = $_POST;
-        
+
         $this->validation->is_parameter_blank('username', $param['username']);
         $this->validation->is_parameter_blank('password', $param['password']);
         $reponse = $this->m_site->do_login($param);
@@ -44,7 +45,5 @@ class Login extends CI_Controller {
         $this->session->unset_userdata('businessID');
         redirect("index.php/login");
     }
-    
-    
 
 }
