@@ -649,4 +649,47 @@ class M_site extends CI_Model {
         $this->db->update('product', $data);
     }
 
+    function get_product_info($product_id) {
+        $this->db->select('*');
+        $this->db->from('product');
+        $this->db->where('product_id', $product_id);
+        $this->db->limit(1);
+        $result = $this->db->get();
+        $row = $result->row_array();
+        return $row;
+    }
+
+    function update_product($param) {
+
+
+
+
+        $data['businessID'] = $param['businessID'];
+        $data['name'] = $param['name'];
+        $data['price'] = $param['price'];
+        $data['product_category_id'] = $param['product_category_id'];
+        $data['SKU'] = $param['SKU'];
+        $data['short_description'] = $param['short_description'];
+        $data['long_description'] = $param['long_description'];
+        $data['price'] = $param['price'];
+        $data['detail_information'] = $param['detail_information'];
+        $data['runtime_fields'] = $param['runtime_fields'];
+        $data['runtime_fields_detail'] = $param['runtime_fields_detail'];
+        $data['sales_price'] = $param['sales_price'];
+        $data['has_option'] = $param['has_option'];
+        $data['bought_with_rewards'] = $param['bought_with_rewards'];
+        $data['more_information'] = $param['more_information'];
+
+        if ($param['pictures'] != '') {
+            $data['pictures'] = $param['pictures'];
+        }
+        $this->db->where('product_id', $param['product_id']);
+        $this->db->update('product', $data);
+        
+        $return['status'] = 1;
+        $return['msg'] = 'Product updated successfully';
+
+        return $return;
+    }
+
 }

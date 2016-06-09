@@ -14,6 +14,12 @@
                 float: right;
                 color: white !important;
             } 
+            #product_table tr td:nth-child(1){
+                width:18%;
+            }
+            #product_table tr td:nth-child(2){
+                width:10%;
+            }
         </style>
 
     </head>
@@ -39,15 +45,16 @@
 
                                 <div class="panel-body table-responsive">
 
-                                    <table class="table table-striped table-bordered ">
+                                    <table class="table table-striped table-bordered" id="product_table">
                                         <thead>
                                             <tr>
-                                            
+
                                                 <td>Name</td>
                                                 <td>Price</td>
                                                 <td>Product Description </td>
                                                 <td>Availability Status</td>
                                                 <!--<td>Add</td>-->
+                                                <td>Edit</td>
 
                                             </tr>
                                         </thead>
@@ -55,24 +62,24 @@
                                             <?php for ($i = 0; $i < count($products); $i++) {
                                                 ?>
                                                 <tr>
-                                                  
+
                                                     <td><?php echo $products[$i]['name']; ?></td>
                                                     <td>$ <?php echo $products[$i]['price']; ?></td>
                                                     <td><?php echo $products[$i]['short_description']; ?></td>
                                                     <td>
                                                         <?php
-                                                            $checked='';
-                                                            if($products[$i]['availability_status']==1)
-                                                            {
-                                                                $checked='checked';
-                                                            }
+                                                        $checked = '';
+                                                        if ($products[$i]['availability_status'] == 1) {
+                                                            $checked = 'checked';
+                                                        }
                                                         ?>
                                                         <div class="col-sm-8">
-                                                            <input type="checkbox"  data-toggle="toggle" data-onstyle="success" id="availability_status_<?php echo $products[$i]['product_id']; ?>" onchange="set_availailblity_status(<?php echo $products[$i]['product_id']; ?>)" <?php echo $checked;?> >
+                                                            <input type="checkbox"  data-toggle="toggle" data-onstyle="success" id="availability_status_<?php echo $products[$i]['product_id']; ?>" onchange="set_availailblity_status(<?php echo $products[$i]['product_id']; ?>)" <?php echo $checked; ?> >
                                                         </div>
 
                                                     </td>
                                                     <!--<td><a href="<?php echo base_url('index.php/product/options/' . $products[$i]['product_id']); ?>" class="btn btn-info add_product_btn"><i class="fa fa-eye"></i>View</a></td>-->
+                                                    <td><a href="<?php echo base_url('index.php/product/edit/' . $products[$i]['product_id']); ?>" class="btn btn-info add_product_btn"><i class="fa fa-edit"></i>Edit</a></td>
 
                                                 </tr>
                                             <?php } ?>
@@ -85,7 +92,7 @@
                         </div>
 
                     </div>
-                    
+
                 </div>
 
             </div>
@@ -105,7 +112,7 @@
 
             function set_availailblity_status(product_id) {
                 var availability_status = $('#availability_status_' + product_id).prop('checked');
-                var param = {availability_status: availability_status,product_id:product_id};
+                var param = {availability_status: availability_status, product_id: product_id};
                 $.post("<?php echo base_url('index.php/product/set_availailblity_status') ?>", param)
                         .done(function(data) {
                             data = jQuery.parseJSON(data);
