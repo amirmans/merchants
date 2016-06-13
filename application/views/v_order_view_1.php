@@ -3,13 +3,13 @@
     <div class="invoicename"><a href="#" onclick="PrintDiv()" class=" btn btn-primary"><i class="fa fa-print"></i>Print</a></div>
     <div id="printDiv">
         <div class="line row">
-            <div class="col-md-6 padding-0 text-left">
+            <div class="col-md-6 col-xs-6 padding-0 text-left">
                 <h4 id="order_view_h4" >
 
                     <?php if ($orderlist[0]['status'] == "1") {
                         ?>     <span class="">
                             <img   src="<?php echo base_url('assets/img/ic_error@3x.png'); ?>" alt="img" class="img order_view_icon">
-                        </span> NEW ORDER
+                        </span> NEW ORDER                 
                     <?php } elseif ($orderlist[0]['status'] == "2") {
                         ?>
                         <span class="">
@@ -22,17 +22,16 @@
                         </span> Completed
                         <?php
                     }
-                    ?>
+                    ?> 
 
 
                 </h4>
                 <h2>#<?php echo $orderlist[0]['order_id']; ?> <span class="lowlighter">For</span> <?php echo $orderlist[0]['nickname']; ?></h2>
-                <span class="time">Ordered <?php echo time_elapsed_string($orderlist[0]['seconds']); ?></span>
-                
+                <span class="time">Ordered <?php echo time_elapsed_string($orderlist[0]['date']); ?></span>
                 <br>
                 <span class="note">Note: <?php echo $orderlist[0]['note']; ?></span>
             </div>
-            <div class="col-md-6  padding-0 text-right">
+            <div class="col-md-6 col-xs-6 padding-0 text-right">
 
 
             </div>
@@ -58,9 +57,9 @@
                             echo $order_detail[$i]['name'];
                             foreach ($order_detail[$i]['option_ids'] as $option) {
                                 ?>
-                                <p class="product_description"><?php echo $option['name'] ?> </p>
+                                <p class="product_description"><?php echo $option['name'] ?> </p>   
                             <?php }
-                            ?>
+                            ?>  
                         </td>
                         <td class="th_price" >$ <?php echo $order_detail[$i]['price']; ?></td>
                         <td class="th_quantity"><?php echo $order_detail[$i]['quantity']; ?></td>
@@ -68,29 +67,13 @@
                     </tr>
 
 
-                <?php }
-                ?>
+                <?php } ?>
 
                 <tr>
-                    <td>Tip</td>
+                    <td></td>
                     <td></td>
                     <td class="text-right"></td>
-                    <td class="text-right total_price"><h6 class="total">$ <?php echo $orderlist[0]['tip_amount']; ?></h6></td>
-                </tr>
-                <tr>
-                    <td>Points</td>
-                    <td></td>
-                    <td class="text-right"></td>
-                    <td class="text-right total_price"><h6 class="total">$ <?php echo $orderlist[0]['points_dollar_amount']; ?></h6></td>
-                </tr>
-                <tr>
-                    <td>Subtotal</td>
-                    <td colspan="3" class="text-right "><h6 class="total">$ <?php echo $orderlist[0]['subtotal']; ?></h6></td>
-                </tr>
-
-                <tr>
-                    <td></td>                    
-                    <td colspan="3" class="text-right total_price">TOTAL<h4 class="total"><input type="hidden" name="order_amount" id="order_amount" value="<?php echo $orderlist[0]['total']; ?>"  /> $ <?php echo $orderlist[0]['total']; ?></h4></td>
+                    <td class="text-right total_price">TOTAL<h4 class="total"><input type="hidden" name="order_amount" id="order_amount" value="<?php echo $orderlist[0]['total']; ?>"  /> $ <?php echo $orderlist[0]['total']; ?></h4></td>
                 </tr>
             </tbody>
         </table>
@@ -99,7 +82,7 @@
 
         <div class="bottomtext" style="text-align: center ">
             <?php if ($orderlist[0]['status'] == "1") {
-                ?>
+                ?>    
                 <a id="button_approve" href="#" class=" btn btn-primary " data-toggle="modal" data-target="#approveModal" style=" font-size: 20px;">
                     APPROVE
                 </a>
@@ -161,7 +144,7 @@
                 </a>
                 <script>
                     document.querySelector('#button_complete').onclick = function() {
-                        $("#button_complete").html('COMPLETE..');
+                        $("#button_complete").html('COMPlETE..');
                         var order_id = $("#order_id").val();
                         var param = {order_id: order_id};
                         $.post("<?php echo base_url('index.php/site/completedorder') ?>", param)
@@ -231,11 +214,16 @@
 
     </div>
 </div>
-
+<!--<script src="https://apis.google.com/js/platform.js?onload=onLoadCallback" async defer></script>-->
 <script type="text/javascript">
     function PrintDiv() {
-
+        
         var divToPrint = document.getElementById('printDiv');
+//            var popupWin = window.open('', '_blank', 'width=2000,height=1000');
+//            popupWin.document.open();
+//            popupWin.document.write('<html><link media="print" href="<?php echo base_url('assets/css/root.css'); ?>" rel="stylesheet"></link><style>@media print { body {margin-left:150px;margin-right:150px;} @media print { .invoice .logo{ font-size:10px}} @media print { .invoice{ font-size:10px}} @media print {.invoice .line h2 { font-size:10px} } @media print {.invoice .line h4 { font-size:10px} } @media print { .invoice .table {font-size:10px}} @media print { .invoice .table .title{ font-size:12px}} @media print {#order_view_h4 img{ display:none}} @media{.invoice .table p{font-size:10px}}</style><body onload="window.print()"><div class="invoice invoice-row"><div class="logo"><h1><?php echo $this->session->userdata('name'); ?></h1> </div>' + divToPrint.innerHTML + '</div></html>');
+//            popupWin.document.close();
+
         var frame1 = document.createElement('iframe');
         frame1.name = "frame1";
         frame1.style.position = "absolute";
@@ -249,7 +237,45 @@
         return false;
 
     }
-
+    
+//    function auth() {
+//        gapi.auth.authorize({
+//            'client_id': '862369405994-kbmj8nu6sob47o62qcjntchor5qofv3r.apps.googleusercontent.com',
+//            'scope': 'https://www.googleapis.com/auth/cloudprint',
+//            'immediate': true
+//        });
+//
+//    }
+//
+//    function print() {
+//        var xhr = new XMLHttpRequest();
+//        var q = new FormData()
+//        q.append('xsrf', gapi.auth.getToken().access_token);
+//        q.append('printerid', 'c03229ea-3f30-9c2f-0b3e-713a78bccec8');
+//        q.append('jobid', '1');
+//        q.append('title', 'silentPrintTest');
+//        q.append('contentType', 'url');
+//        q.append('content', "http://www.pdf995.com/samples/pdf.pdf&output=embed");
+//        q.append('ticket', '{ "version": "1.0", "print": {}}');
+//
+//
+//        xhr.open('POST', 'https://www.google.com/cloudprint/submit');
+//        xhr.setRequestHeader('Authorization', 'Bearer ' + gapi.auth.getToken().access_token);
+//        xhr.onload = function() {
+//            try {
+//                var r = JSON.parse(xhr.responseText);
+//                console.log(r.message)
+//            } catch (e) {
+//                console.log(xhr.responseText)
+//            }
+//        }
+//
+//        xhr.send(q)
+//
+//    }
+//
+//    window.addEventListener('load', auth);
+    
 </script>
-
+<!--<script src="https://apis.google.com/js/client.js"></script>-->
 

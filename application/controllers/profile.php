@@ -35,6 +35,8 @@ class Profile extends CI_Controller {
         $this->validation->is_parameter_blank('marketing_statement', $param['marketing_statement']);
         $this->validation->is_parameter_blank('short_name', $param['short_name']);
         $this->validation->is_parameter_blank('sms_no', $param['sms_no']);  
+        $this->validation->is_parameter_blank('stripe_secret_key', $param['stripe_secret_key']);  
+        $this->validation->is_parameter_blank('process_time', $param['process_time']);  
         $data = $this->m_site->update_business_profile($param);
         echo json_encode($data);
     }

@@ -31,7 +31,7 @@
             }
             .th_total
             {
-                width: 100px;
+                width: 220px;
             }
             .product_description{
                 width: 92%;
@@ -94,7 +94,7 @@
                         <div class="col-lg-3 col-md-4 padding-0">
                             <div class="row order-menu">
 
-                                <div class="col-md-2"><span class="order_text"><h5>&nbsp;&nbsp;&nbsp;ORDERS</h5></span></div> 
+                                <div class="col-md-2 float-l"><span class="order_text"><h5>&nbsp;&nbsp;&nbsp;ORDERS</h5></span></div> 
                                 <div class="col-md-10 text-right">
 
                                     <select class="selectpicker" id="order_status" style="margin: 10px 24px;" onchange="change_order_status()" >
@@ -136,7 +136,7 @@
                                             <span class="from">#<?php echo $orderlist[$i]['order_id']; ?></span>
                                             <span class="from" ><?php echo $orderlist[$i]['nickname']; ?></span>
                                             <span class="date"><?php echo $orderlist[$i]['no_items']; ?> items</span>
-                                            <span class="time"><?php echo time_elapsed_string($orderlist[$i]['date']); ?></span>
+                                            <span class="time"><?php echo time_elapsed_string($orderlist[$i]['seconds']); ?></span>
                                         </a>
                                     </li>
                                 <?php } ?>

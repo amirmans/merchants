@@ -39,7 +39,7 @@ smaller than 760
 /* =================================================================================
 smaller than 428 
 ================================================================================= */
-@media screen and (max-width: 428px) {
+/*@media screen and (max-width: 428px) {
     .top-right{display: none;}
     .applogo{
         padding-left: 0;
@@ -50,8 +50,4 @@ smaller than 428
         z-index: -4;
     }
     .topstats li{width: 100%;}
-}
-
-
-
-
+}*/

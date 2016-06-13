@@ -4,7 +4,8 @@ class M_site extends CI_Model {
 
     public function __construct() {
         parent::__construct();
-        date_default_timezone_set("GMT");
+        //date_default_timezone_set("GMT");
+        date_default_timezone_set('America/Los_Angeles');
     }
 
     function do_login($param) {
@@ -89,9 +90,11 @@ class M_site extends CI_Model {
         $data['businessTypes'] = $param['businessTypes'];
         $data['marketing_statement'] = $param['marketing_statement'];
         $data['short_name'] = $param['short_name'];
+        $data['sms_no'] = $param['sms_no'];
         if ($param['process_time'] != '') {
             $data['process_time'] = $param['process_time'];
         }
+        
         $this->db->where('businessID', $param['businessID']);
         $this->db->update('business_customers', $data);
         $return = success_res("Stripe Token Updated Successfully");
@@ -103,12 +106,14 @@ class M_site extends CI_Model {
         $return['businessTypes'] = $param['businessTypes'];
         $return['marketing_statement'] = $param['marketing_statement'];
         $return['short_name'] = $param['short_name'];
+        $return['process_time'] = $param['process_time'];
+        $return['sms_no'] = $param['sms_no'];
 
         return $return;
     }
 
     function get_business_order_list($param) {
-        $this->db->select('o.order_id,o.payment_id,o.total,o.date,o.no_items,o.status,cp.nickname');
+        $this->db->select('o.order_id,o.payment_id,o.total,o.date,o.no_items,o.status,cp.nickname,TIMESTAMPDIFF(SECOND,o.date,now()) as seconds');
         $this->db->from('order as o');
         $this->db->join('consumer_profile as cp', 'o.consumer_id = cp.uid', 'left');
         $this->db->where('o.status !=', 0);
@@ -126,7 +131,7 @@ class M_site extends CI_Model {
     }
 
     function get_ordelist_order($order_id) {
-        $this->db->select('o.order_id,o.payment_id,o.total,o.date,cp.nickname,o.status,o.note');
+        $this->db->select('o.order_id,o.payment_id,o.total,o.date,cp.nickname,o.status,o.note,o.subtotal,o.tip_amount,o.points_dollar_amount,TIMESTAMPDIFF(SECOND,o.date,now()) as seconds');
         $this->db->from('order as o');
         $this->db->join('consumer_profile as cp', 'o.consumer_id = cp.uid', 'left');
         $this->db->where('o.order_id', $order_id);
@@ -685,7 +690,7 @@ class M_site extends CI_Model {
         }
         $this->db->where('product_id', $param['product_id']);
         $this->db->update('product', $data);
-        
+
         $return['status'] = 1;
         $return['msg'] = 'Product updated successfully';
 

@@ -59,9 +59,11 @@ function decrypt_string($string) {
 
 function time_elapsed_string($ptime) {
 
-    $ptime = strtotime($ptime);
-    date_default_timezone_set('America/Los_Angeles');
-    $etime = time() - $ptime;
+//    $ptime = strtotime($ptime);
+//    date_default_timezone_set('America/Los_Angeles');
+//    $etime = time() - $ptime;
+        
+        $etime = $ptime;
 
     if ($etime < 1) {
         return '0 seconds';

@@ -2,14 +2,6 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
-            <file>file:/C:/xampp/htdocs/projects/tapin/adminpanel/application/controllers/profile.php</file>
-            <file>file:/C:/xampp/htdocs/projects/tapin/adminpanel/application/models/m_site.php</file>
-            <file>file:/C:/xampp/htdocs/projects/tapin/adminpanel/application/views/v_profile.php</file>
-            <file>file:/C:/xampp/htdocs/projects/tapin/adminpanel/application/controllers/option.php</file>
-            <file>file:/C:/xampp/htdocs/projects/tapin/adminpanel/application/views/v_product_add.php</file>
-            <file>file:/C:/xampp/htdocs/projects/tapin/adminpanel/application/views/v_product.php</file>
-            <file>file:/C:/xampp/htdocs/projects/tapin/adminpanel/assets/js/bootstrap-toggle/bootstrap-toggle.min.js</file>
-        </group>
+        <group/>
     </open-files>
 </project-private>
