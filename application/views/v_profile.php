@@ -25,8 +25,9 @@
                 <!-- Start Invoice -->
                 <div class="invoice row" style="min-height: 870px">
                     <div class="invoicename">Business Profile</div>
+                    <div class="edit_icon"> <a class="btn btn-primary pointer " onclick="edit_profile()">Edit</a></div>
                     <div class="logo">
-                        <img src="../../tapin-server-staging/customer_files/icons/<?php echo $business_detail['icon'] ?>" alt="logo" width="150" ><br>
+                        <img id="icon_url" src="../../tapin-server-staging/customer_files/icons/<?php echo $business_detail['icon'] ?>" alt="logo" width="150" ><br>
 
                         <h1><?php echo $business_detail['name']; ?></h1 >
 
@@ -49,8 +50,8 @@
                             <h2 id="phone_text"><?php echo $business_detail['phone']; ?></h2>
                         </div>
                         <div class="col-md-6 col-xs-6 padding-0 text-right">
-                            <h4>Business Type</h4>
-                            <h2 id="business_type_text"><?php echo $business_detail['businessTypes']; ?></h2>
+                            <!--                            <h4>Business Type</h4>
+                                                        <h2 id="business_type_text"><?php echo $business_detail['businessTypes']; ?></h2>-->
                         </div>
                     </div>
                     <div class="line row">
@@ -82,7 +83,7 @@
                             <h4>Stripe Secret Key</h4>
                             <h2 id="stripe_secret_key_text"><?php echo $business_detail['stripe_secret_key']; ?></h2>
                             <!--                            <a href="#" class=" btn btn-primary" data-toggle="modal" data-target="#stripeTokenModal">Edit</a>-->
-                            <a href="javascript:void(0)" class="btn btn-primary" onclick="edit_profile()">Edit</a>
+
                         </div>
                         <div class="col-md-3 col-xs-3 padding-0 text-right">
 
@@ -133,12 +134,12 @@
                                             <input type="text" class="form-control" id="phone" name="phone" required>
                                         </div>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="businessTypes" class="col-sm-4 control-label form-label">Business Type</label>
-                                        <div class="col-sm-8">
-                                            <input type="text" class="form-control" id="businessTypes" name="businessTypes" required>
-                                        </div>
-                                    </div>
+                                    <!--                                    <div class="form-group">
+                                                                            <label for="businessTypes" class="col-sm-4 control-label form-label">Business Type</label>
+                                                                            <div class="col-sm-8">
+                                                                                <input type="text" class="form-control" id="businessTypes" name="businessTypes" required>
+                                                                            </div>
+                                                                        </div>-->
                                     <div class="form-group">
                                         <label for="marketing_statement" class="col-sm-4 control-label form-label">Tagline</label>
                                         <div class="col-sm-8">
@@ -169,6 +170,16 @@
                                             <input type="text" class="form-control" id="stripe_secret_key" name="stripe_secret_key" required>
                                         </div>
                                     </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-4 control-label form-label">Icon:</label>
+                                        <div class="col-sm-8" id="imgArea">
+                                            <img height="150" width="100" id="image" src="">
+                                            <div id="imgChange"><span>Change Photo</span>
+                                                <input type="file" accept="image/*" name="image_upload_file" id="image_upload_file">
+                                            </div>
+                                            <br>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <br>
@@ -193,7 +204,7 @@
             }
             window.history.forward(-1);
 
-            $(document).ready(function() {
+            $(document).ready(function () {
                 // bind 'myForm' and provide a simple callback function 
                 $('#form_stripe_secret_key').ajaxForm(options);
 
@@ -210,13 +221,14 @@
                     $('#email_text').text(data.email);
                     $('#website_text').text(data.website);
                     $('#phone_text').text(data.phone);
-                    $('#business_type_text').text(data.businessTypes);
+                    // $('#business_type_text').text(data.businessTypes);
                     $('#marketing_statement_text').text(data.marketing_statement);
                     $('#process_time_text').text(data.process_time);
                     $('#short_name_text').text(data.short_name);
                     $('#sms_no_text').text(data.sms_no);
                     $('#stripeTokenModal').modal('toggle');
                     swal('', "Stripe token updated successfully", 'success')
+                    location.reload();
 
                 } else {
                     $('#stripeTokenModal').modal('toggle');
@@ -236,8 +248,8 @@
                 $('#website').val(website);
                 var phone = $('#phone_text').text();
                 $('#phone').val(phone);
-                var business_type_text = $('#business_type_text').text();
-                $('#businessTypes').val(business_type_text);
+//                var business_type_text = $('#business_type_text').text();
+//                $('#businessTypes').val(business_type_text);
                 var marketing_statement_text = $('#marketing_statement_text').text();
                 $('#marketing_statement').val(marketing_statement_text);
                 var process_time_text = $('#process_time_text').text();
@@ -247,9 +259,28 @@
                 var sms_no_text = $('#sms_no_text').text();
                 $('#sms_no').val(sms_no_text);
                 var stripe_secret_key_text = $('#stripe_secret_key_text').text();
+                
+                var icon_url = document.getElementById("icon_url").src;
+                
+                document.getElementById("image").src = icon_url;
+                
                 $('#stripe_secret_key').val(stripe_secret_key_text);
                 $('#stripeTokenModal').modal('show');
             }
+            document.getElementById("image_upload_file").onchange = function () {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    // get loaded data and render thumbnail.
+                    document.getElementById("image").src = e.target.result;
+                };
+
+                // read the image file as a data URL.
+
+                reader.readAsDataURL(this.files[0]);
+
+            };
         </script>
+        
     </body>
 </html>

@@ -113,7 +113,7 @@
                                         echo 'pending_order_color';
                                     }
                                     ?>" id="li_order_id_<?php echo $orderlist[$i]['order_id']; ?>">
-                                        <a href="javascript:void(0)"  id="order_id_<?php echo $orderlist[$i]['order_id']; ?>"  class="item clearfix <?php
+                                        <a  id="order_id_<?php echo $orderlist[$i]['order_id']; ?>"  class="item clearfix pointer <?php
                                         if ($i == 0) {
                                             echo 'active_detail_order';
                                         }

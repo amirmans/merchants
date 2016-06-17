@@ -53,7 +53,7 @@
                                                 <td>Price</td>
                                                 <td>Product Description </td>
                                                 <td>Availability Status</td>
-                                                <!--<td>Add</td>-->
+                                               <td>Option</td>
                                                 <td>Edit</td>
 
                                             </tr>
@@ -78,7 +78,7 @@
                                                         </div>
 
                                                     </td>
-                                                    <!--<td><a href="<?php echo base_url('index.php/product/options/' . $products[$i]['product_id']); ?>" class="btn btn-info add_product_btn"><i class="fa fa-eye"></i>View</a></td>-->
+                                                 <td><a href="<?php echo base_url('index.php/product/options/' . $products[$i]['product_id']); ?>" class="btn btn-info add_product_btn"><i class="fa fa-eye"></i>Option</a></td>
                                                     <td><a href="<?php echo base_url('index.php/product/edit/' . $products[$i]['product_id']); ?>" class="btn btn-info add_product_btn"><i class="fa fa-edit"></i>Edit</a></td>
 
                                                 </tr>

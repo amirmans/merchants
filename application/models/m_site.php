@@ -94,7 +94,10 @@ class M_site extends CI_Model {
         if ($param['process_time'] != '') {
             $data['process_time'] = $param['process_time'];
         }
-        
+        if($param['icon'] != ""){
+            $data['icon'] = $param['icon'];
+        }
+
         $this->db->where('businessID', $param['businessID']);
         $this->db->update('business_customers', $data);
         $return = success_res("Stripe Token Updated Successfully");
@@ -131,7 +134,7 @@ class M_site extends CI_Model {
     }
 
     function get_ordelist_order($order_id) {
-        $this->db->select('o.order_id,o.payment_id,o.total,o.date,cp.nickname,o.status,o.note,o.subtotal,o.tip_amount,o.points_dollar_amount,TIMESTAMPDIFF(SECOND,o.date,now()) as seconds');
+        $this->db->select('o.order_id,o.payment_id,o.total,o.date,cp.nickname,o.status,o.note,o.subtotal,o.tip_amount,o.tax_amount,o.points_dollar_amount,TIMESTAMPDIFF(SECOND,o.date,now()) as seconds');
         $this->db->from('order as o');
         $this->db->join('consumer_profile as cp', 'o.consumer_id = cp.uid', 'left');
         $this->db->where('o.order_id', $order_id);
@@ -242,7 +245,7 @@ class M_site extends CI_Model {
             $notification['business_id'] = is_login();
             $notification['message'] = "Your order #" . $order_id . " is approved ";
             $notification['image'] = "";
-            $notification['time_sent'] = date('Y-m-d');
+            $notification['time_sent'] = date("Y-m-d H:i:s");
             $notification['notification_type_id'] = "5";
             $this->db->insert('notification', $notification);
         }
@@ -281,7 +284,7 @@ class M_site extends CI_Model {
             $notification['business_id'] = is_login();
             $notification['message'] = "Your order #" . $order_id . " is completed ";
             $notification['image'] = "";
-            $notification['time_sent'] = date('Y-m-d');
+            $notification['time_sent'] = date("Y-m-d H:i:s");
             $notification['notification_type_id'] = "6";
             $this->db->insert('notification', $notification);
         }
@@ -318,7 +321,7 @@ class M_site extends CI_Model {
             $notification['business_id'] = is_login();
             $notification['message'] = "Your order #" . $order_id . " is rejected ";
             $notification['image'] = "";
-            $notification['time_sent'] = date('Y-m-d');
+            $notification['time_sent'] = date("Y-m-d H:i:s");
             $notification['notification_type_id'] = "4";
             $this->db->insert('notification', $notification);
         }
@@ -695,6 +698,26 @@ class M_site extends CI_Model {
         $return['msg'] = 'Product updated successfully';
 
         return $return;
+    }
+
+    function file_upload($file_key, $folder_path) {
+
+        if ($_FILES[$file_key]["name"] !== "") {
+            $temp = explode(".", $_FILES[$file_key]["name"]);
+            $extension = end($temp);
+
+            $temp_name = date('YmdHis');
+            $file_name = $temp_name . "." . $extension;
+            $file_path = $folder_path . "/" . $file_name;
+            if (move_uploaded_file($_FILES[$file_key]['tmp_name'], $file_path)) {
+                return $file_name;
+            } else {
+                return "";
+            }
+        } else {
+
+            return "";
+        }
     }
 
 }

@@ -28,7 +28,7 @@
                 </h4>
                 <h2>#<?php echo $orderlist[0]['order_id']; ?> <span class="lowlighter">For</span> <?php echo $orderlist[0]['nickname']; ?></h2>
                 <span class="time">Ordered <?php echo time_elapsed_string($orderlist[0]['seconds']); ?></span>
-                
+
                 <br>
                 <span class="note">Note: <?php echo $orderlist[0]['note']; ?></span>
             </div>
@@ -64,7 +64,8 @@
                         </td>
                         <td class="th_price" >$ <?php echo $order_detail[$i]['price']; ?></td>
                         <td class="th_quantity"><?php echo $order_detail[$i]['quantity']; ?></td>
-                        <td class="th_total text-right">$ <?php echo ($per_item_total[$i] = $order_detail[$i]['price'] * $order_detail[$i]['quantity']); ?></td>
+                        <td class="th_total text-right">$ <?php $per_item_total[$i] = $order_detail[$i]['price'] * $order_detail[$i]['quantity'];
+                        echo number_format((float) $per_item_total[$i], 2, '.', '') ?></td>
                     </tr>
 
 
@@ -72,25 +73,26 @@
                 ?>
 
                 <tr>
-                    <td>Tip</td>
-                    <td></td>
-                    <td class="text-right"></td>
-                    <td class="text-right total_price"><h6 class="total">$ <?php echo $orderlist[0]['tip_amount']; ?></h6></td>
-                </tr>
-                <tr>
-                    <td>Points</td>
-                    <td></td>
-                    <td class="text-right"></td>
-                    <td class="text-right total_price"><h6 class="total">$ <?php echo $orderlist[0]['points_dollar_amount']; ?></h6></td>
-                </tr>
-                <tr>
                     <td>Subtotal</td>
                     <td colspan="3" class="text-right "><h6 class="total">$ <?php echo $orderlist[0]['subtotal']; ?></h6></td>
                 </tr>
+                <tr>
+                    <td>Tax</td>
+                    <td colspan="3" class="text-right"><h6 class="total">$ <?php echo $orderlist[0]['tax_amount']; ?></h6></td>
+                </tr>
+                <tr>
+                    <td>Tip</td>
+                    <td colspan="3" class="text-right"><h6 class="total">$ <?php echo $orderlist[0]['tip_amount']; ?></h6></td>
+                </tr>
+                <tr>
+                    <td>Points</td>
+                    <td colspan="3" class="text-right"><h6 class="total">$ <?php echo $orderlist[0]['points_dollar_amount']; ?></h6></td>
+                </tr>
+
 
                 <tr>
-                    <td></td>                    
-                    <td colspan="3" class="text-right total_price">TOTAL<h4 class="total"><input type="hidden" name="order_amount" id="order_amount" value="<?php echo $orderlist[0]['total']; ?>"  /> $ <?php echo $orderlist[0]['total']; ?></h4></td>
+                    <td>TOTAL</td>                    
+                    <td colspan="3" class="text-right "><h4 class="total"><input type="hidden" name="order_amount" id="order_amount" value="<?php echo $orderlist[0]['total']; ?>"  /> $ <?php echo $orderlist[0]['total']; ?></h4></td>
                 </tr>
             </tbody>
         </table>
@@ -104,13 +106,13 @@
                     APPROVE
                 </a>
                 <script>
-                    document.querySelector('#button_approve').onclick = function() {
+                    document.querySelector('#button_approve').onclick = function () {
                         $("#button_approve").html('APPROVE..');
                         var order_id = $("#order_id").val();
                         var amout = $("#order_amount").val();
                         var param = {order_id: order_id};
                         $.post("<?php echo base_url('index.php/site/payment') ?>", param)
-                                .done(function(data) {
+                                .done(function (data) {
                                     data = jQuery.parseJSON(data);
                                     if (data['status'] == '1')
                                     {
@@ -138,12 +140,12 @@
                     REJECT
                 </a>
                 <script>
-                    document.querySelector('#button_reject').onclick = function() {
+                    document.querySelector('#button_reject').onclick = function () {
                         $("#button_reject").html('REJECT..');
                         var order_id = $("#order_id").val();
                         var param = {order_id: order_id};
                         $.post("<?php echo base_url('index.php/site/rejectorder') ?>", param)
-                                .done(function(data) {
+                                .done(function (data) {
                                     data = jQuery.parseJSON(data);
 
                                     if (data['status'] == '1')
@@ -160,12 +162,12 @@
                     COMPLETE
                 </a>
                 <script>
-                    document.querySelector('#button_complete').onclick = function() {
+                    document.querySelector('#button_complete').onclick = function () {
                         $("#button_complete").html('COMPLETE..');
                         var order_id = $("#order_id").val();
                         var param = {order_id: order_id};
                         $.post("<?php echo base_url('index.php/site/completedorder') ?>", param)
-                                .done(function(data) {
+                                .done(function (data) {
                                     data = jQuery.parseJSON(data);
                                     if (data['status'] == '1')
                                     {
@@ -173,7 +175,7 @@
                                         swal("Completed order", "", "success");
                                         $("#order_view_h4").html('<span><img src="<?php echo base_url('assets/img/ic_check_active@3x.png'); ?>" alt="img" class="img order_view_icon"></span> Completed');
                                         $("#order_id_<?php echo $orderlist[0]['order_id']; ?> img").attr('src', "<?php echo base_url('assets/img/ic_check_active@3x.png'); ?>");
-                                        setInterval(function() {
+                                        setInterval(function () {
                                             $("#order_id_<?php echo $orderlist[0]['order_id']; ?>").remove();
                                         }, 2000)
 
@@ -194,12 +196,12 @@
                     COMPLETE
                 </a>
                 <script>
-                    document.querySelector('#button_complete').onclick = function() {
+                    document.querySelector('#button_complete').onclick = function () {
                         $("#button_complete").html('COMPlETE..');
                         var order_id = $("#order_id").val();
                         var param = {order_id: order_id};
                         $.post("<?php echo base_url('index.php/site/completedorder') ?>", param)
-                                .done(function(data) {
+                                .done(function (data) {
                                     data = jQuery.parseJSON(data);
                                     if (data['status'] == '1')
                                     {
@@ -208,7 +210,7 @@
                                         $("#order_view_h4").html('<span><img src="<?php echo base_url('assets/img/ic_check_active@3x.png'); ?>" alt="img" class="img order_view_icon"></span> Completed');
                                         $("#order_id_<?php echo $orderlist[0]['order_id']; ?> img").attr('src', "<?php echo base_url('assets/img/ic_check_active@3x.png'); ?>");
 
-                                        setInterval(function() {
+                                        setInterval(function () {
                                             $("#order_id_<?php echo $orderlist[0]['order_id']; ?>").remove();
                                         }, 2000)
 

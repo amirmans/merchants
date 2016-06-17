@@ -35,7 +35,7 @@ Plugin Css
 @import url('plugin/bootstrap-select/bootstrap-select.css');
 
 /* Bootstrap Select */
-@import url('plugin/bootstrap-toggle/bootstrap-toggle.min.css');
+//@import url('plugin/bootstrap-toggle/bootstrap-toggle.min.css');
 
 /* Bootstrap wysihtml5 */
 @import url('plugin/bootstrap-wysihtml5/bootstrap-wysihtml5.css');

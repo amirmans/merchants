@@ -6,3 +6,9 @@
 
 <script src="<?php echo base_url('assets/js/sweet-alert/sweet-alert.min.js'); ?>"></script>
 <script src="<?php echo base_url('assets/js/kode-alert/main.js'); ?>"></script>
+<script src="<?php echo base_url('assets/js/webshim/minified/polyfiller.js'); ?>"></script>
+<script>
+    webshim.activeLang('en');
+    webshims.polyfill('forms');
+    webshims.cfg.no$Switch = true;
+</script>
