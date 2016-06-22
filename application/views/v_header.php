@@ -9,6 +9,7 @@
               &nbsp;&nbsp; <li ><a id="orderlist_tab" href="<?php echo base_url('index.php/site/orderlist'); ?>">ORDER LIST</a></li>
               <li ><a id="product_tab" href="<?php echo base_url('index.php/product'); ?>">PRODUCTS</a></li>
               <li ><a id="option_tab" href="<?php echo base_url('index.php/option'); ?>">OPTIONS</a></li>
+              <li ><a id="reports_tab" href="<?php echo base_url('index.php/reports'); ?>">REPORTS</a></li>
 
 
             </ul>

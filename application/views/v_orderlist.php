@@ -175,7 +175,7 @@
 
 
         <?php $this->load->view('v_script'); ?>
-
+        <audio id="audiotag1" src="audio/audio1.mp3" preload="auto"></audio>
 
         <script>
             window.history.forward(-1);
@@ -249,6 +249,7 @@
 
                                 $("#count_pending_order").html(data);
                                 $("#alertPendingOrder").show();
+                                document.getElementById('audiotag1').play();
 
                             }
                         });
@@ -269,13 +270,7 @@
                 }, 1000);
             }
         </script>
-
-
-
-
-
-
-
+        
 
     </body>
 </html>

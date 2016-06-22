@@ -36,7 +36,7 @@
                                         <div class="form-group">
                                             <label for="input002" class="col-sm-2 control-label form-label">Product Category</label>
                                             <div class="col-sm-10">
-                                                <select class="selectpicker" id="order_status" style="margin: 10px 24px;" onchange="change_order_status()" name="product_category_id" >
+                                                <select class="selectpicker" id="product_category_id" style="margin: 10px 24px;" name="product_category_id" >
                                                     <?php for ($i = 0; $i < count($product_category); $i++) {
                                                         ?>
 
@@ -105,7 +105,7 @@
                                         <div class="form-group">
                                             <label for="input002" class="col-sm-2 control-label form-label">Runtime Filed Detail</label>
                                             <div class="col-sm-10">
-                                                <input type="text" class="form-control" id="input002"  id="runtime_fields_detail" name="runtime_fields_detail" >
+                                                <input type="text" class="form-control"   id="runtime_fields_detail" name="runtime_fields_detail" >
                                             </div>
                                         </div>
 
@@ -253,7 +253,8 @@
                 if (data.status)
                 {
                     swal('', data.msg)
-                    $('#product_form').trigger("reset");
+//                    $('#product_form').trigger("reset");
+$('#name,#SKU,#short_description,#long_description,#price,#detail_information,#runtime_fields,#runtime_fields_detail,#sales_price,#has_option,#bought_with_rewards,#more_information,#pictures').val('');
                 } else {
                     console.log(data.msg)
                     swal('', data.msg)

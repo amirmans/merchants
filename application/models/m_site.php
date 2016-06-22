@@ -371,6 +371,11 @@ class M_site extends CI_Model {
             $this->db->insert('product_category', $data);
             $categoryId = $this->db->insert_id();
 
+            $updatedata = array();
+            $updatedata['product_category_id'] = $categoryId;
+            $this->db->where('table_id', $categoryId);
+            $this->db->update('product_category', $updatedata);
+            
             $this->db->select('*');
             $this->db->from('product_category');
             $this->db->where('table_id', $categoryId);

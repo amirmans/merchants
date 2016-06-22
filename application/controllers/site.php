@@ -87,6 +87,9 @@ class Site extends CI_Controller {
                     $email['cc_no'] = $order_payment_detail['cc_info']['cc_no'];
                     $email['exp_month'] = $order_payment_detail['cc_info']['month'];
                     $email['exp_year'] = $order_payment_detail['cc_info']['year'];
+                    $email['business_id'] = $business_id;
+                    $email['business_name'] = $this->session->userdata('name');
+                    ;
 
                     if ($order_payment_detail['cc_info']['email1'] != '' && $order_payment_detail['cc_info']['email1'] != NULL) {
                         $this->mail_receipt($email, $order_payment_detail['cc_info']['email1']);
@@ -195,14 +198,14 @@ class Site extends CI_Controller {
     function email_configration() {
 
 
-        $email = "amar.appvolution@gmail.com";
+        $email = "info@artdoost.com";
         $this->load->library('email');
         $config['protocol'] = 'smtp';
-        $config['smtp_host'] = 'ssl://smtp.gmail.com';
-        $config['smtp_port'] = '465';
+        $config['smtp_host'] = 'mail.artdoost.com';
+        $config['smtp_port'] = '26';
         $config['smtp_timeout'] = '7';
         $config['smtp_user'] = $email;
-        $config['smtp_pass'] = 'de$tiny4me5';
+        $config['smtp_pass'] = 'Ankit123!!';
         $config['charset'] = 'utf-8';
         $config['newline'] = "\r\n";
         $config['mailtype'] = 'html'; // or html
@@ -212,32 +215,17 @@ class Site extends CI_Controller {
     }
 
     function mail_receipt($data, $email) {
-        //    $this->email_configration();
+        $this->email_configration();
         $body = $this->load->view('v_email_receipt', $data, TRUE);
         $subject = "Your Order Receipt";
-//        $this->email->to($email);
-//        $this->email->subject($subject);
-//        $this->email->message($body);
-//        $this->email->send();
-//         echo $this->email->print_debugger();
-
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-        curl_setopt($ch, CURLOPT_USERPWD, 'api:key-f00e20caad2538b5d5f7f40892cdfb28');
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-        //     curl_setopt($ch, CURLOPT_URL, 'https://api.mailgun.net/v2/sandboxb5d83d4289364f3bb3100e1a1f20a1d3.mailgun.org/messages');
-        curl_setopt($ch, CURLOPT_URL, 'https://api.mailgun.net/v3/sandboxb5d83d4289364f3bb3100e1a1f20a1d3.mailgun.org/messages');
-        curl_setopt($ch, CURLOPT_POSTFIELDS, array('from' => 'Ankit S<postmaster@sandboxb5d83d4289364f3bb3100e1a1f20a1d3.mailgun.org>',
-            'to' => ' <Ankit ' . $email . '>',
-            'subject' => $subject,
-            'html' => $body));
-        $result = curl_exec($ch);
-        //  $info = curl_getinfo($ch);
-        curl_close($ch);
+        $this->email->to($email);
+        $this->email->subject($subject);
+        $this->email->message($body);
+        $this->email->send();
+//        echo $this->email->print_debugger();
     }
+
+    
 
     function send_mail_demo() {
         $data['order_detail'] = [array('quantity' => 3, 'name' => 'test', 'short_description' => 'This is short description', 'price' => 6)];
@@ -246,8 +234,10 @@ class Site extends CI_Controller {
         $data['cc_no'] = 4242424242424242;
         $data['exp_month'] = 12;
         $data['exp_year'] = 2024;
+        $data['business_id'] = is_login();
+        $data['business_name'] = $this->session->userdata('name');
 
-        $this->mail_receipt($data, 'amar.appvolution@gmail.com');
+        $this->load->view('v_email_receipt',$data);
     }
 
     function phpinfo() {
@@ -255,9 +245,6 @@ class Site extends CI_Controller {
     }
 
     function send_simple_message() {
-
-
-
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
@@ -269,14 +256,14 @@ class Site extends CI_Controller {
         //     curl_setopt($ch, CURLOPT_URL, 'https://api.mailgun.net/v2/sandboxb5d83d4289364f3bb3100e1a1f20a1d3.mailgun.org/messages');
         curl_setopt($ch, CURLOPT_URL, 'https://api.mailgun.net/v3/sandboxb5d83d4289364f3bb3100e1a1f20a1d3.mailgun.org/messages');
         curl_setopt($ch, CURLOPT_POSTFIELDS, array('from' => 'Ankit S<postmaster@sandboxb5d83d4289364f3bb3100e1a1f20a1d3.mailgun.org>',
-            'to' => 'Ankit <amar.appvolution@gmail.com>',
+            'to' => 'Lalit <lalit.appvolution@gmail.com>',
             'subject' => 'The Printer Caught Fire',
-            'text' => 'Testing mail gun.'));
+            'html' => 'Testing mail gun.'));
         $result = curl_exec($ch);
         $info = curl_getinfo($ch);
         curl_close($ch);
         echo '<pre>';
-        print_r($result);
+        echo json_encode($result);
         echo 'ok';
     }
 

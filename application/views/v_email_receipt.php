@@ -3,15 +3,47 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <title>Tap In</title>
+      
+        
     </head>
-    <body style="font-family: sans-serif">
+
+    <body style="font-family: sans-serif;background-color: #E5E5E5" >
         <center>
-            <table border="0" width="500"  >
+            <table border="0" width="500"  bgcolor="white" style="display: table;border-collapse: separate;border-spacing: 2px;border-top:5px solid #E5E5E5;border-bottom:5px solid #E5E5E5">
+
                 <tr>
                     <td>
-                        <table border="0" width="500" style="background-color: #4DBEC7">
+
+                        <table border="0" width="510" >
                             <tr>
-                                <td colspan="3">
+                                <td height="10">
+                                    <h1 style="color: black;text-align: center"> TAP-IN</h1>
+
+                                </td>
+
+                            </tr>
+
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <table border="0" width="510"  style="background-color: #4DBEC7">
+                            <tr>
+                                <td height="10">
+                                    <h2 style="color: #fff;text-align: center"><?php echo $business_name ?></h2>
+                                </td>
+
+                            </tr>
+
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <table border="0" width="510" style="background-color: #4DBEC7">
+                            <tr>
+                                <td>
                                     <h3 style="margin-left: 60px;color: #fff"> THANKS FOR YOUR ORDER!</h3>
                                     <p style="margin-left: 60px;color: #fff">We'll send you alert when your order is ready.</p>
                                 </td>
@@ -73,7 +105,7 @@
                                     <p style="padding-left: 15px;color: #4DBEC7">ORDER IN PROCESS</p>
                                     <p style="padding-left: 15px"><span style="color:#ABABAB">AVERAGE WAITING TIME 20 MINS</span></p>
                                 </td> 
-                                <td><span style="color: #ABABAB;font-weight: bold">$<?php echo $total; ?></span></td>
+                                <td><span style="color: #ABABAB;font-weight: bold;font-size: 30px">$<?php echo $total; ?></span></td>
                             </tr>
 
                             <tr bgcolor="#fff" >
@@ -109,6 +141,27 @@
                                 <td style="padding: 5px"><span style="color:#4DBEC7"><img src="<?php echo base_url('assets/email_templete/ic_heart_like@3x.png'); ?>" width="30" height="30"></img></span></td>
                                 <td style="padding: 5px"><span style="color:#4DBEC7">Save Your Fevorite Items For Next Time!</span></td>
                             </tr>
+                        </table>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td>
+                        <table  border="0" width="510" bgcolor="4DBEC7">
+
+                            <tr>
+
+                                <td style="padding: 5px;text-align: right">
+                                    <span  style="color:#fff;font-weight: bold;font-size: 20px;">Provide Your feedback</span>
+                                </td>
+                                <td style="padding: 5px;text-align: left" >
+                                    <span style="color:#4DBEC7;"><a style="padding: 10px 10px 10px 10px;border-radius: 999px;display: inline-block;white-space: nowrap;vertical-align: middle; -ms-touch-action: manipulation;touch-action: manipulation;cursor: pointer;-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;border: 2px solid transparent;;border-color: #fff" href="<?php echo base_url('index.php/rating/positive/?businessId=' . encrypt_string($business_id)); ?>"><img src="<?php echo base_url('assets/email_templete/ic_thumb_like.png'); ?>" width="30" height="30"></img></a></span>&nbsp;&nbsp;
+                                    <span style="color:#4DBEC7"><a  style="padding: 10px 10px 10px 10px;border-radius: 999px;display: inline-block;white-space: nowrap;vertical-align: middle; -ms-touch-action: manipulation;touch-action: manipulation;cursor: pointer;-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;border: 2px solid transparent;;border-color: #fff" href="<?php echo base_url('index.php/rating/positive/?businessId=' . encrypt_string($business_id)); ?>"><img src="<?php echo base_url('assets/email_templete/ic_thumb_unlike.png'); ?>" width="30" height="30"></img></a></span>
+                                </td>
+
+                                
+                            </tr>
+
                         </table>
                     </td>
 

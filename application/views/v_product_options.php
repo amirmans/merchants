@@ -33,7 +33,7 @@
 
                                 <div class="panel-title">
                                     Prodcuts Options
-                                    <a href="javacript:void(0)" class="btn btn-success add_product_btn" onclick="save(<?php echo $product_id; ?>)"><i class="fa fa-save"></i>Save</a>
+                                    <a  class="btn btn-success add_product_btn" onclick="save(<?php echo $product_id; ?>)"><i class="fa fa-save"></i>Save</a>
                                 </div>
 
 

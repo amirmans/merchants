@@ -52,8 +52,8 @@ $active_group = 'default';
 $active_record = TRUE;
 
 $db['default']['hostname'] = 'localhost';
-$db['default']['username'] = 'artdoost_dbadmin';
-$db['default']['password'] = 'id0ntknow';
+$db['default']['username'] = 'root';
+$db['default']['password'] = '';
 $db['default']['database'] = 'artdoost_taptalk';
 $db['default']['dbdriver'] = 'mysql';
 $db['default']['dbprefix'] = '';
