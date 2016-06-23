@@ -236,7 +236,7 @@
                 if (data.product_category.status)
                 {
                     var newOption = $('<option value="' + data.product_category.category.table_id + '">' + data.product_category.category.category_name + '</option>');
-                    $('#order_status').append(newOption);
+                    $('#product_category_id').append(newOption);
                     $('#form_product_category').trigger("reset");
                     $('#category_error_text').html('');
                     $('#addcategoryModal').modal('toggle');

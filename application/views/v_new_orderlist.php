@@ -24,7 +24,7 @@
             <span class="from">#<?php echo $orderlist[$i]['order_id']; ?></span>
             <span class="from" ><?php echo $orderlist[$i]['nickname']; ?></span>
             <span class="date"><?php echo $orderlist[$i]['no_items']; ?> items</span>
-            <span class="time"><?php echo time_elapsed_string($orderlist[$i]['date']); ?></span>
+            <span class="time"><?php echo time_elapsed_string($orderlist[$i]['seconds']); ?></span>
         </a>
     </li>
 <?php } ?>

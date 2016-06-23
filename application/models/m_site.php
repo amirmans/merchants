@@ -142,6 +142,7 @@ class M_site extends CI_Model {
         $this->db->limit(1);
         $result = $this->db->get();
         $row = $result->result_array();
+        
         return $row;
     }
 
@@ -628,7 +629,7 @@ class M_site extends CI_Model {
     }
 
     function get_new_orders($param) {
-        $this->db->select('o.order_id,o.payment_id,o.total,o.date,o.no_items,o.status,cp.nickname');
+        $this->db->select('o.order_id,o.payment_id,o.total,o.date,o.no_items,o.status,TIMESTAMPDIFF(SECOND,o.date,now()) as seconds,cp.nickname');
         $this->db->from('order as o');
         $this->db->join('consumer_profile as cp', 'o.consumer_id = cp.uid', 'left');
         $this->db->where('o.status !=', 0);

@@ -79,6 +79,12 @@ class Product extends CI_Controller {
         $param['has_option'] = $this->validation->set_blank_parameter($param['has_option']);
         $param['bought_with_rewards'] = $this->validation->set_blank_parameter($param['bought_with_rewards']);
         $param['more_information'] = $this->validation->set_blank_parameter($param['more_information']);
+        if (!file_exists('../tapin-server-staging/customer_files/' . $param['businessID'])) {
+            mkdir('../tapin-server-staging/customer_files/' . $param['businessID'], 0777, true);
+        }
+        if (!file_exists('../tapin-server-staging/customer_files/' . $param['businessID'].'/products')) {
+            mkdir('../tapin-server-staging/customer_files/' . $param['businessID'].'/products', 0777, true);
+        }
         $param['pictures'] = $this->validation->file_upload("pictures", '../tapin-server-staging/customer_files/' . $param['businessID'] . '/products');
 
         $data = $this->m_site->insert_product($param);
@@ -146,7 +152,7 @@ class Product extends CI_Controller {
         is_login() ? '' : redirect('index.php/login');
         $param = $_REQUEST;
 
-       
+
         $param['businessID'] = is_login();
         $this->validation->is_parameter_blank('businessID', $param['businessID']);
         $this->validation->is_parameter_blank('name', $param['name']);
@@ -171,8 +177,7 @@ class Product extends CI_Controller {
             }
         }
         $data = $this->m_site->update_product($param);
-         redirect('index.php/product');
-       
+        redirect('index.php/product');
     }
 
 }

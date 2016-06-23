@@ -3,8 +3,8 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <title>Tap In</title>
-      
-        
+
+
     </head>
 
     <body style="font-family: sans-serif;background-color: #E5E5E5" >
@@ -14,10 +14,10 @@
                 <tr>
                     <td>
 
-                        <table border="0" width="510" >
+                        <table border="0" width="510" bgcolor="black" >
                             <tr>
-                                <td height="10">
-                                    <h1 style="color: black;text-align: center"> TAP-IN</h1>
+                                <td height="10" style="text-align: center">
+                                    <img src="<?php echo base_url('assets/email_templete/tap-in-logo-with-name~iphone@2x.png'); ?>" ></img>
 
                                 </td>
 
@@ -57,18 +57,18 @@
                     ?>
                     <tr>
                         <td>
-                            <table>
+                            <table >
                                 <tr style="vertical-align: top">
                                     <td>
                                         <table border="0" width="70" style="text-align: center" >
                                             <tr style="">
-                                                <td style="margin-top: 0">
+                                                <td style="padding: 0;line-height: 0;">
                                                     <h2> <?php echo $order_detail[$i]['quantity']; ?></h2>
-                                                    <hr style="    border-width: 1.98px;border-color: #AAAAAA;"/>
+                                                    <hr style="border-width: 1.98px;border-color: #AAAAAA;"/>
                                                 </td>
                                             </tr>
                                             <tr style="">
-                                                <td >
+                                                <td>
                                                     <img src="<?php echo base_url('assets/email_templete/ic_heart_unlike@3x.png'); ?>" width="30" height="30"></img>
                                                 </td>
                                             </tr>
@@ -78,7 +78,7 @@
                                         <table border="0" width="430">
                                             <tr style="">
 
-                                                <td rowspan="2" style="padding: 7px"> 
+                                                <td rowspan="2"> 
                                                     <p style="font-weight: bold"><?php echo $order_detail[$i]['name']; ?></p>
                                                     <p style="color: #808080"><?php echo $order_detail[$i]['short_description']; ?></p>
                                                 </td>
@@ -95,8 +95,57 @@
                         </td>   
                     </tr>
                 <?php } ?>
+                <tr>
+                    <td>
+                        <table   width="510"  style="" >
+                            <tr style="line-height: 0">
+                                <td>
+                                    <p style="font-weight: bold;font-size: 20px;margin-left: 10px">Subtotal</p>
+                                </td>
+                                <td >
+                                    <h2 style="text-align: right;margin-right: 10px">$<?php if($subtotal==null || $subtotal==''){
+                                        echo '0.00';
+                                    }else{
+                                        echo $subtotal;
+                                    }
+                                         ?></h2>
+                                </td>
+                            </tr>
+                            <tr style="line-height: 0">
+                                <td>
+                                    <p style="font-weight: bold;font-size: 20px;margin-left: 10px">Tax</p>
+                                </td>
+                                <td>
+                                    <h2 style="text-align: right;margin-right: 10px">$<?php echo $tip_amount; ?></h2>
+                                </td>
+                            </tr>
+                            <tr style="line-height: 0">
+                                <td>
+                                    <p style="font-weight: bold;font-size: 20px;margin-left: 10px">Tip</p>
+                                </td>
+                                <td>
+                                    <h2 style="text-align: right;margin-right: 10px">$<?php echo $tax_amount; ?></h2>
+                                </td>
+                            </tr>
+                            <tr style="line-height: 0">
+                                <td >
+                                    <p style="font-weight: bold;font-size: 20px;margin-left: 10px">Points</p>
+                                </td>
+                                <td >
+                                    <h2 style="text-align: right;margin-right: 10px">$<?php echo $points_dollar_amount; ?>
+                                    <?php if($points_dollar_amount==null || $points_dollar_amount==''){
+                                        echo '0.00';
+                                    }else{
+                                        echo $points_dollar_amount;
+                                    }
+                                         ?></h2>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
 
-                <tr >
+                </tr>
+                <tr>
                     <td style="">
                         <table cellpadding='0' cellspacing='0'  border="0" width="500" style="padding: 20px;border-collapse: initial;">
                             <tr  bgcolor="#EBEBEB" style="">
@@ -159,7 +208,7 @@
                                     <span style="color:#4DBEC7"><a  style="padding: 10px 10px 10px 10px;border-radius: 999px;display: inline-block;white-space: nowrap;vertical-align: middle; -ms-touch-action: manipulation;touch-action: manipulation;cursor: pointer;-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;border: 2px solid transparent;;border-color: #fff" href="<?php echo base_url('index.php/rating/positive/?businessId=' . encrypt_string($business_id)); ?>"><img src="<?php echo base_url('assets/email_templete/ic_thumb_unlike.png'); ?>" width="30" height="30"></img></a></span>
                                 </td>
 
-                                
+
                             </tr>
 
                         </table>

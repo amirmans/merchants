@@ -145,6 +145,12 @@
                                         <div class="form-group">
                                             <label for="input002" class="col-sm-2 control-label form-label">Product Image</label>
                                             <div class="col-sm-10">
+                                                <?php if ($product['pictures'] != '') {
+                                                    ?>
+                                                    <label for="" class="control-label form-label"><?php echo $product['pictures']; ?></label>
+                                                <?php }
+                                                ?>
+
                                                 <input type="file" class="form-control" id="pictures" name="pictures">
                                                 <input type="hidden" class="form-control" id="old_pictures" name="old_pictures" value="<?php echo $product['pictures']; ?>">
                                                 <input type="hidden" class="form-control" id="product_id" name="product_id" value="<?php echo $product['product_id']; ?>">
@@ -169,7 +175,7 @@
                 </div>
 
             </div>
-<?php $this->load->view('v_footer'); ?>
+            <?php $this->load->view('v_footer'); ?>
 
         </div>
 
@@ -220,7 +226,7 @@
 
 
 
-<?php $this->load->view('v_script'); ?>
+        <?php $this->load->view('v_script'); ?>
 
 
         <script>
@@ -235,7 +241,7 @@
                 // bind 'myForm' and provide a simple callback function 
                 $('#form_product_category').ajaxForm(options);
 
-             
+
             });
 
             function processAddCategoryResponse(data) {
@@ -255,7 +261,7 @@
                     $('#category_error_text').html(data.product_category.message);
                 }
             }
-            
+
         </script>
 
 

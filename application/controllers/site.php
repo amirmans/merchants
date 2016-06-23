@@ -81,6 +81,7 @@ class Site extends CI_Controller {
 
                     $this->m_site->update_order_status($order_id, $charge_id, $response['amount'], $order_payment_detail['consumer_id']);
 
+                    $order_info = $this->m_site->get_ordelist_order($order_id);
                     $email['order_detail'] = $this->m_site->get_order_detail($order_id);
                     $email['order_id'] = $order_id;
                     $email['total'] = $order_payment_detail['total'];
@@ -89,7 +90,10 @@ class Site extends CI_Controller {
                     $email['exp_year'] = $order_payment_detail['cc_info']['year'];
                     $email['business_id'] = $business_id;
                     $email['business_name'] = $this->session->userdata('name');
-                    ;
+                    $email['subtotal'] = $order_info[0]['subtotal'];
+                    $email['tip_amount'] = $order_info[0]['tip_amount'];
+                    $email['tax_amount'] = $order_info[0]['tax_amount'];
+                    $email['points_dollar_amount'] = $order_info[0]['points_dollar_amount'];
 
                     if ($order_payment_detail['cc_info']['email1'] != '' && $order_payment_detail['cc_info']['email1'] != NULL) {
                         $this->mail_receipt($email, $order_payment_detail['cc_info']['email1']);
@@ -225,19 +229,31 @@ class Site extends CI_Controller {
 //        echo $this->email->print_debugger();
     }
 
-    
-
     function send_mail_demo() {
-        $data['order_detail'] = [array('quantity' => 3, 'name' => 'test', 'short_description' => 'This is short description', 'price' => 6)];
-        $data['total'] = 10;
-        $data['order_id'] = 194;
-        $data['cc_no'] = 4242424242424242;
-        $data['exp_month'] = 12;
-        $data['exp_year'] = 2024;
-        $data['business_id'] = is_login();
-        $data['business_name'] = $this->session->userdata('name');
+//        $data['order_detail'] = [array('quantity' => 3, 'name' => 'test', 'short_description' => 'This is short description', 'price' => 6)];
+//        $data['total'] = 10;
+//        $data['order_id'] = 194;
+//        $data['cc_no'] = 4242424242424242;
+//        $data['exp_month'] = 12;
+//        $data['exp_year'] = 2024;
+//        $data['business_id'] = is_login();
+//        $data['business_name'] = $this->session->userdata('name');
+        $order_payment_detail = $this->m_site->get_order_payment_detail('420');
+        $order_info = $this->m_site->get_ordelist_order('420');
+        $email['order_detail'] = $this->m_site->get_order_detail('420');
+        $email['order_id'] = '420';
+        $email['total'] = $order_payment_detail['total'];
+        $email['cc_no'] = $order_payment_detail['cc_info']['cc_no'];
+        $email['exp_month'] = $order_payment_detail['cc_info']['month'];
+        $email['exp_year'] = $order_payment_detail['cc_info']['year'];
+        $email['subtotal'] = $order_info[0]['subtotal'];
+        $email['tip_amount'] = $order_info[0]['tip_amount'];
+        $email['tax_amount'] = $order_info[0]['tax_amount'];
+        $email['points_dollar_amount'] = $order_info[0]['points_dollar_amount'];
+        $email['business_id'] = 1;
+        $email['business_name'] = $this->session->userdata('name');
 
-        $this->load->view('v_email_receipt',$data);
+        $this->load->view('v_email_receipt', $email);
     }
 
     function phpinfo() {
