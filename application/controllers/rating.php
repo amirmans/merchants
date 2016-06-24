@@ -16,18 +16,20 @@ class Rating extends CI_Controller {
     }
 
     function index() {
-       
+        
     }
 
-    function positive() {
+    function business_rating() {
+        $param = $_REQUEST;
+        $this->m_site->business_rating($param);
         $this->load->view('v_rating');
     }
-    function negative() {
-         $this->load->view('v_rating');
-    }
-    
-    
 
-    
+    function product_rating() {
+        $param = $_REQUEST;
+        
+        $this->m_site->product_rating($param);
+        $this->load->view('v_product_rating');
+    }
 
 }

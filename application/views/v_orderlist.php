@@ -160,14 +160,14 @@
         <div id="alertbottom" class="kode-alert kode-alert-icon alert7 kode-alert-top-right" style="z-index: 99;" >
 
             <i class="fa fa-info"></i>
-            <a href="#" class="closed">Ã—</a>
+            <a href="#" class="closed">×</a>
             <h4>You have a new <span id="count_new_order"></span> Order!</h4>
         </div>
 
         <div id="alertPendingOrder" class="kode-alert kode-alert-icon  kode-alert-top-right alert6-light" style="z-index: 99;" >
 
             <i class="fa fa-info"></i>
-            <a href="#" class="closed">Ã—</a>
+            <a href="#" class="closed">×</a>
             <h4>You have new <span id="count_pending_order"></span> orders remaining for approval!</h4>
         </div>
 

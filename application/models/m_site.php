@@ -94,7 +94,7 @@ class M_site extends CI_Model {
         if ($param['process_time'] != '') {
             $data['process_time'] = $param['process_time'];
         }
-        if($param['icon'] != ""){
+        if ($param['icon'] != "") {
             $data['icon'] = $param['icon'];
         }
 
@@ -142,13 +142,13 @@ class M_site extends CI_Model {
         $this->db->limit(1);
         $result = $this->db->get();
         $row = $result->result_array();
-        
+
         return $row;
     }
 
     function get_order_detail($order_id) {
 
-        $this->db->select('o.order_item_id,o.price,o.quantity,p.name,p.short_description,o.option_ids');
+        $this->db->select('o.order_item_id,o.price,o.quantity,p.name,p.short_description,o.option_ids,o.product_id');
         $this->db->from('order_item as o');
         $this->db->join('product as p', 'o.product_id = p.product_id', 'left');
         $this->db->where('o.order_id', $order_id);
@@ -178,7 +178,6 @@ class M_site extends CI_Model {
         $row = $result->result_array();
         $return['total'] = $row[0]['total'];
         $return['consumer_id'] = $row[0]['consumer_id'];
-
 
         $this->db->select('ci.cc_no,expiration_date,cp.email1');
         $this->db->from('consumer_cc_info as ci');
@@ -224,32 +223,32 @@ class M_site extends CI_Model {
         $this->db->update('order', $data);
 
 
-        $this->db->select('device_token');
-        $this->db->from('consumer_profile');
-        //$this->db->join('product as p', 'o.product_id = p.product_id', 'left');
-        $this->db->where('uid', $consumer_id);
-        $this->db->limit(1);
-        $result = $this->db->get();
-        $row = $result->result_array();
+//        $this->db->select('device_token');
+//        $this->db->from('consumer_profile');
+//        //$this->db->join('product as p', 'o.product_id = p.product_id', 'left');
+//        $this->db->where('uid', $consumer_id);
+//        $this->db->limit(1);
+//        $result = $this->db->get();
+//        $row = $result->result_array();
 
-        if (count($row) > 0) {
-            $device_token = $row[0]['device_token'];
-            $message_body = array(
-                'type' => "0",
-                'alert' => "Your order #" . $order_id . " is approved ",
-                'badge' => 0,
-                'sound' => 'newMessage.wav'
-            );
-            push_notification_ios($device_token, $message_body);
-
-            $notification['consumer_id'] = $consumer_id;
-            $notification['business_id'] = is_login();
-            $notification['message'] = "Your order #" . $order_id . " is approved ";
-            $notification['image'] = "";
-            $notification['time_sent'] = date("Y-m-d H:i:s");
-            $notification['notification_type_id'] = "5";
-            $this->db->insert('notification', $notification);
-        }
+//        if (count($row) > 0) {
+//            $device_token = $row[0]['device_token'];
+//            $message_body = array(
+//                'type' => "0",
+//                'alert' => "Your order #" . $order_id . " is approved ",
+//                'badge' => 0,
+//                'sound' => 'newMessage.wav'
+//            );
+//            push_notification_ios($device_token, $message_body);
+//
+//            $notification['consumer_id'] = $consumer_id;
+//            $notification['business_id'] = is_login();
+//            $notification['message'] = "Your order #" . $order_id . " is approved ";
+//            $notification['image'] = "";
+//            $notification['time_sent'] = date("Y-m-d H:i:s");
+//            $notification['notification_type_id'] = "5";
+//            $this->db->insert('notification', $notification);
+//        }
     }
 
     function completedorder($order_id) {
@@ -376,7 +375,7 @@ class M_site extends CI_Model {
             $updatedata['product_category_id'] = $categoryId;
             $this->db->where('table_id', $categoryId);
             $this->db->update('product_category', $updatedata);
-            
+
             $this->db->select('*');
             $this->db->from('product_category');
             $this->db->where('table_id', $categoryId);
@@ -724,6 +723,76 @@ class M_site extends CI_Model {
 
             return "";
         }
+    }
+
+    function business_rating($param) {
+        $orderId = decrypt_string($param['orderId']);
+        $order_info = $this->get_order_info($orderId);
+        $avg_rating = 0.0;
+        if ($param['is_positive'] == '1') {
+            $avg_rating = 5.0;
+        } else if ($param['is_positive'] == '0') {
+            $avg_rating = 1.0;
+        }
+        $this->db->select('*');
+        $this->db->from('business_rating');
+        $this->db->where('consumer_id', $order_info['consumer_id']);
+        $this->db->where('businessID', $order_info['business_id']);
+        $this->db->limit(1);
+        $result = $this->db->get();
+        $row = $result->result_array();
+        if (count($row) > 0) {
+            $data['avg_rating'] = $avg_rating;
+            $this->db->where('consumer_id', $order_info['consumer_id']);
+            $this->db->where('businessID', $order_info['business_id']);
+            $this->db->update('business_rating', $data);
+        } else {
+            $data['avg_rating'] = $avg_rating;
+            $data['consumer_id'] = $order_info['consumer_id'];
+            $data['businessID'] = $order_info['business_id'];
+            $this->db->insert('business_rating', $data);
+        }
+    }
+
+    function product_rating($param) {
+        $orderId = decrypt_string($param['orderId']);
+        $productId = decrypt_string($param['productId']);
+        $order_info = $this->get_order_info($orderId);
+        $avg_rating = 5.0;
+
+        $this->db->select('*');
+        $this->db->from('rating');
+        $this->db->where('consumer_id', $order_info['consumer_id']);
+        $this->db->where('type', 2);
+        $this->db->where('id', $productId);
+        $this->db->limit(1);
+        $result = $this->db->get();
+        $row = $result->result_array();
+        if (count($row) > 0) {
+            $data['avg'] = $avg_rating;
+            $this->db->where('consumer_id', $order_info['consumer_id']);
+            $this->db->where('type', 2);
+            $this->db->where('id', $productId);
+            $this->db->update('rating', $data);
+        } else {
+            $data['consumer_id'] = $order_info['consumer_id'];
+            $data['avg'] = $avg_rating;
+            $data['type'] = 2;
+            $data['id'] = $productId;
+            $this->db->insert('rating', $data);
+        }
+    }
+
+    function get_redeemed_points($order_id) {
+        $this->db->select('points');
+        $this->db->from('points');
+        $this->db->where('order_id', $order_id);
+        $this->db->where('time_redeemed IS NOT NULL', null,FALSE);
+        $this->db->limit(1);
+        $result = $this->db->get();
+        $row = $result->row_array();
+        
+        return $row;
     }
 
 }

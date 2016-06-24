@@ -83,6 +83,12 @@ class Site extends CI_Controller {
 
                     $order_info = $this->m_site->get_ordelist_order($order_id);
                     $email['order_detail'] = $this->m_site->get_order_detail($order_id);
+                    $redeemed_points = $this->m_site->get_redeemed_points($order_id);
+                    if (count($redeemed_points) > 0) {
+                        $email['redeem_points'] = $redeemed_points['points'];
+                    } else {
+                        $email['redeem_points'] = 0;
+                    }
                     $email['order_id'] = $order_id;
                     $email['total'] = $order_payment_detail['total'];
                     $email['cc_no'] = $order_payment_detail['cc_info']['cc_no'];
@@ -238,7 +244,13 @@ class Site extends CI_Controller {
 //        $data['exp_year'] = 2024;
 //        $data['business_id'] = is_login();
 //        $data['business_name'] = $this->session->userdata('name');
-        $order_payment_detail = $this->m_site->get_order_payment_detail('420');
+        $order_payment_detail = $this->m_site->get_order_payment_detail(420);
+        $redeemed_points = $this->m_site->get_redeemed_points(420);
+        if (count($redeemed_points) > 0) {
+            $email['redeem_points'] = $redeemed_points['points'];
+        } else {
+            $email['redeem_points'] = 0;
+        }
         $order_info = $this->m_site->get_ordelist_order('420');
         $email['order_detail'] = $this->m_site->get_order_detail('420');
         $email['order_id'] = '420';
