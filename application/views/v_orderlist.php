@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -161,21 +160,26 @@
         <div id="alertbottom" class="kode-alert kode-alert-icon alert7 kode-alert-top-right" style="z-index: 99;" >
 
             <i class="fa fa-info"></i>
-            <a href="#" class="closed">×</a>
+            <a href="#" class="closed">Ã—</a>
             <h4>You have a new <span id="count_new_order"></span> Order!</h4>
         </div>
 
         <div id="alertPendingOrder" class="kode-alert kode-alert-icon  kode-alert-top-right alert6-light" style="z-index: 99;" >
 
             <i class="fa fa-info"></i>
-            <a href="#" class="closed">×</a>
+            <a href="#" class="closed">Ã—</a>
             <h4>You have new <span id="count_pending_order"></span> orders remaining for approval!</h4>
         </div>
 
 
 
         <?php $this->load->view('v_script'); ?>
-        <audio id="audiotag1" src="audio/audio1.mp3" preload="auto"></audio>
+        
+        <audio id="audiotag1">
+            <source src="<?php echo base_url('assets/audio/audio1.ogg'); ?>" type="audio/ogg">
+            <source src="<?php echo base_url('assets/audio/audio1.mp3'); ?>"  type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
 
         <script>
             window.history.forward(-1);
@@ -233,6 +237,7 @@
                     $("#latest_order_id").val(data['latest_order_id']);
                     $("#count_new_order").html(data['count_new_order']);
                     $("#alertbottom").show();
+                     document.getElementById("audiotag1").play();
                 }
 
 
@@ -249,7 +254,7 @@
 
                                 $("#count_pending_order").html(data);
                                 $("#alertPendingOrder").show();
-                                document.getElementById('audiotag1').play();
+                                document.getElementById("audiotag1").play();
 
                             }
                         });
@@ -270,7 +275,7 @@
                 }, 1000);
             }
         </script>
-        
+
 
     </body>
 </html>
