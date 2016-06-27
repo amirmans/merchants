@@ -126,7 +126,7 @@
                                     <p style="font-weight: bold;font-size: 20px;margin-left: 10px">Tax</p>
                                 </td>
                                 <td>
-                                    <h1 style="text-align: right;margin-right: 10px">$<?php echo $tip_amount; ?></h1>
+                                    <h1 style="text-align: right;margin-right: 10px">$<?php echo $tax_amount; ?></h1>
                                 </td>
                             </tr>
                             <tr style="line-height: 0">
@@ -134,7 +134,7 @@
                                     <p style="font-weight: bold;font-size: 20px;margin-left: 10px">Tip</p>
                                 </td>
                                 <td>
-                                    <h1 style="text-align: right;margin-right: 10px">$<?php echo $tax_amount; ?></h1>
+                                    <h1 style="text-align: right;margin-right: 10px">$<?php echo $tip_amount; ?></h1>
                                 </td>
                             </tr>
                             <tr style="line-height: 0">

@@ -7,19 +7,19 @@
                 <h4 id="order_view_h4" >
 
                     <?php if ($orderlist[0]['status'] == "1") {
-                        ?>     <span class="">
+                        ?>     
                             <img   src="<?php echo base_url('assets/img/ic_error@3x.png'); ?>" alt="img" class="img order_view_icon">
-                        </span> NEW ORDER
+                         NEW ORDER
                     <?php } elseif ($orderlist[0]['status'] == "2") {
                         ?>
-                        <span class="">
+                        
                             <img src="<?php echo base_url('assets/img/ic_reload@3x.png'); ?>" alt="img" class="img order_view_icon">
-                        </span> In Progress
+                         In Progress
                     <?php } elseif ($orderlist[0]['status'] == "3") {
                         ?>
-                        <span class="">
+                        
                             <img src="<?php echo base_url('assets/img/ic_check_active@3x.png'); ?>" alt="img" class="img order_view_icon">
-                        </span> Completed
+                         Completed
                         <?php
                     }
                     ?>
@@ -238,6 +238,8 @@
     function PrintDiv() {
 
         var divToPrint = document.getElementById('printDiv');
+        var content = divToPrint.innerHTML.replace(/<img[^>]*>/g,"");
+        
         var frame1 = document.createElement('iframe');
         frame1.name = "frame1";
         frame1.style.position = "absolute";
@@ -245,9 +247,9 @@
         document.body.appendChild(frame1);
         var frameDoc = frame1.contentWindow ? frame1.contentWindow : frame1.contentDocument.document ? frame1.contentDocument.document : frame1.contentDocument;
         frameDoc.document.open();
-        frameDoc.document.write('<html><link media="print" href="<?php echo base_url('assets/css/root.css'); ?>" rel="stylesheet"></link><style>@media print { body {margin-left:150px;margin-right:150px;} @media print { .invoice .logo{ font-size:10px}} @media print { .invoice{ font-size:10px}} @media print {.invoice .line h2 { font-size:10px} } @media print {.invoice .line h4 { font-size:10px} } @media print { .invoice .table {font-size:10px}} @media print { .invoice .table .title{ font-size:12px}} @media print {#order_view_h4 img{ display:none}} @media{.invoice .table p{font-size:10px}}</style><body onload="window.print()"><div class="invoice invoice-row"><div class="logo"><h1><?php echo $this->session->userdata('name'); ?></h1> </div>' + divToPrint.innerHTML + '</div></html>');
+//        frameDoc.document.write('<html><link media="print" href="<?php echo base_url('assets/css/root.css'); ?>" rel="stylesheet"></link><style>@media print {  * { margin: 0 !important; padding: 7.5px !important; }} @media print { body {margin-left:50;margin-right:50px;}} @media print  { .invoice .logo{ font-size:7px}} @media print  { .invoice{ font-size:7px}} @media print  {.invoice .line h2 { font-size:7px} } @media print {.invoice .line h4 { font-size:7px} } @media print and (width: 3in) { .invoice .table {font-size:7px}} @media print and (width: 3in) { .invoice .table .title{ font-size:9px}} @media print and (width: 3in) { img{ display:none}} @media print and (width: 3in) {.invoice .table p{font-size:7px}}@media print  { table { page-break-inside : auto }}@media print  { table tr td {  font-size: 6pt;}}</style><body onload="window.print()"><div class="invoice invoice-row"><div class="logo"><h1><?php echo $this->session->userdata('name'); ?></h1> </div>' + content + '</div></html>');
+        frameDoc.document.write('<html><link media="print" href="<?php echo base_url('assets/css/root.css'); ?>" rel="stylesheet"></link><style>@media print {  * { margin: 0 !important; padding: 8px !important; }}@media print   { .invoice .logo{ font-size:7pt;padding:0}} @media print   { .time { font-size:7px;}} @media print   { .note { font-size:7px;line-height:0}} @media print  {.invoice .line h2 { font-size:10px;line-height:0} } @media print  {.invoice .line h4 { font-size:7px} } @media print  { table { page-break-inside : auto }}@media print  { table tr td {  font-size: 5pt;}}@media print  { table .th_total { white-space: nowrap;}}@media print  { table .th_price { white-space: nowrap;}}@media print   {.invoice .table p { font-size:7px;line-height:0}}  </style><body onload="window.print()"><div class="invoice invoice-row"><div class="logo"><h1><?php echo $this->session->userdata('name'); ?></h1> </div>' + content + '</div></html>');
         frameDoc.document.close();
-
         return false;
 
     }
