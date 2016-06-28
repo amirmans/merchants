@@ -1,13 +1,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <?php
-    function limit_text($text, $limit) {
-      if (str_word_count($text, 0) > $limit) {
-          $words = str_word_count($text, 2);
-          $pos = array_keys($words);
-          $text = substr($text, 0, $pos[$limit]) . '...';
-      }
-      return $text;
+
+function limit_text($text, $limit) {
+    if (str_word_count($text, 0) > $limit) {
+        $words = str_word_count($text, 2);
+        $pos = array_keys($words);
+        $text = substr($text, 0, $pos[$limit]) . '...';
     }
+    return $text;
+}
 ?>
 <html xmlns="">
     <head>
@@ -19,12 +20,12 @@
 
     <body style="font-family: sans-serif;background-color: #E5E5E5" >
         <center>
-            <table border="0" width="500"  bgcolor="white" style="display: table;border-collapse: separate;border-spacing: 2px;border-top:5px solid #E5E5E5;border-bottom:5px solid #E5E5E5">
+            <table border="0" width="500"  bgcolor="white" style="display: table;border-collapse: separate;border-spacing: 2px;border-top:5px solid #E5E5E5;border-bottom:5px solid #E5E5E5" >
 
                 <tr>
                     <td>
 
-                        <table border="0" width="510" bgcolor="black" >
+                        <table border="0" width="100%"  bgcolor="black" >
                             <tr>
                                 <td height="10" style="text-align: center">
                                     <img src="<?php echo base_url('assets/email_templete/tap-in-logo-with-name~iphone@2x.png'); ?>" ></img>
@@ -37,10 +38,10 @@
                 </tr>
                 <tr>
                     <td>
-                        <table border="0" width="510"  style="background-color: #4DBEC7">
+                        <table border="0" width="100%"   style="background-color: #4DBEC7">
                             <tr>
                                 <td height="10">
-                                    <h2 style="color: #fff;text-align: center"><?php echo $business_name ?></h2>
+                                    <h2 style="color: #fff;text-align: center"><?php echo $business_name; ?></h2>
                                 </td>
 
                             </tr>
@@ -50,7 +51,31 @@
                 </tr>
                 <tr>
                     <td>
-                        <table border="0" width="510" style="background-color: #4DBEC7;text-align: center">
+                        <table  border="0" width="100%" bgcolor="4DBEC7" style="padding: 10px">
+                            <tr>
+                                <td style="text-align: center">
+                                    <span  style="color:#fff;font-size: 20px;">How was your experience?</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: center" >
+                                    <span style="color:#4DBEC7;"><a style="padding: 10px 10px 10px 10px;display: inline-block;white-space: nowrap;vertical-align: middle; -ms-touch-action: manipulation;touch-action: manipulation;cursor: pointer;-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;" href="<?php echo base_url('index.php/rating/business_rating/?is_positive=1&orderId=' . encrypt_string($order_id)); ?>"><img src="<?php echo base_url('assets/email_templete/emoji_happy.png'); ?>" ></img></a></span>&nbsp;&nbsp;
+                                    <span style="color:#4DBEC7"><a  style="padding: 10px 10px 10px 10px;display: inline-block;white-space: nowrap;vertical-align: middle; -ms-touch-action: manipulation;touch-action: manipulation;cursor: pointer;-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;" href="<?php echo base_url('index.php/rating/business_rating/?is_positive=0&orderId=' . encrypt_string($order_id)); ?>"><img src="<?php echo base_url('assets/email_templete/emoji_unhappy.png'); ?>" ></img></a></span>
+                                </td>
+                            </tr>
+
+                        </table>
+                    </td>
+
+                </tr>
+<!--                <tr style="background-color: #4DBEC7">
+                    <td style="text-align: center">
+                        <div style="text-align: center;border-bottom-color:#546476;border-bottom-style:solid;border-left-color:transparent;border-left-style:solid;border-right-color:transparent;border-right-style:solid;border-width:0 8px 8px;min-height:0;vertical-align:bottom;width:0;"></div>
+                    </td>
+                </tr>-->
+                <tr>
+                    <td>
+                        <table border="0" width="100%" style="background-color: #4DBEC7;text-align: center">
                             <tr>
                                 <td>
                                     <h3 style="color: #fff;"> Thanks for your order <?php echo $order_id; ?>!</h3>
@@ -78,7 +103,7 @@
                                             </tr>
                                             <tr style="">
                                                 <td>
-                                                    <a href="<?php echo base_url('index.php/rating/product_rating/?&orderId=' . encrypt_string($order_id).'&productId='.  encrypt_string($order_detail[$i]['product_id'])); ?>"><img src="<?php echo base_url('assets/email_templete/ic_heart_unlike@3x.png'); ?>" width="30" height="30"></img></a>
+                                                    <a href="<?php echo base_url('index.php/rating/product_rating/?&orderId=' . encrypt_string($order_id) . '&productId=' . encrypt_string($order_detail[$i]['product_id'])); ?>"><img src="<?php echo base_url('assets/email_templete/ic_heart_unlike@3x.png'); ?>" width="30" height="30"></img></a>
                                                 </td>
                                             </tr>
                                         </table>
@@ -89,8 +114,22 @@
 
                                                 <td rowspan="2"> 
                                                     <p style="font-weight: bold"><?php echo $order_detail[$i]['name']; ?></p>
-                                                    <p style="color: #808080"><?php echo limit_text($order_detail[$i]['short_description'], 20);?></p>
-                                                    
+                                                    <p style="color: #808080"><?php echo limit_text($order_detail[$i]['short_description'], 12); ?></p>
+                                                    <?php if (count($order_detail[$i]['option_ids']) > 0) {
+                                                        ?>
+                                                        <ul style="list-style: none;color: #808080; padding-left:15px">
+
+                                                            
+                                                            <?php foreach ($order_detail[$i]['option_ids'] as $option) {
+                                                                ?>
+                                                                <li>+ <?php echo $option['name']; ?></li>
+                                                            <?php }
+                                                            ?>
+                                                        </ul>
+                                                        <?php }
+                                                    ?>
+
+
                                                 </td>
                                                 <td rowspan="2">
                                                     <h1 style="text-align: right;margin-right: 10px">$<?php echo $order_detail[$i]['price']; ?></h1>
@@ -105,25 +144,36 @@
                         </td>   
                     </tr>
                 <?php } ?>
+
                 <tr>
                     <td>
-                        <table   width="510"  style="" >
-                            <tr style="line-height: 0">
+                        <table border="0"   width="100%"  style="" >
+                            <tr>
+                                <td colspan="2" height="1" style="border-collapse:collapse;border-top-color:#e0e1e2;border-top-style:dashed;border-top-width:2px;font-size:0;line-height:0;padding:0"></td>
+                            </tr>
+                            <tr style="line-height: 0;">
                                 <td>
-                                    <p style="font-weight: bold;font-size: 20px;margin-left: 10px">Subtotal</p>
+
+                                    <p style="font-weight: bold;font-size: 21px;margin-left: 10px">Subtotal</p>
                                 </td>
                                 <td >
-                                    <h1 style="text-align: right;margin-right: 10px">$<?php if($subtotal==null || $subtotal==''){
-                                        echo '0.00';
-                                    }else{
-                                        echo $subtotal;
-                                    }
-                                         ?></h1>
+
+                                    <h1 style="text-align: right;margin-right: 10px">$<?php
+                                        if ($subtotal == null || $subtotal == '') {
+                                            echo '0.00';
+                                        } else {
+                                            echo $subtotal;
+                                        }
+                                        ?></h1>
                                 </td>
                             </tr>
+                            <tr>
+                                <td colspan="2" height="1" style="border-collapse:collapse;border-top-color:#e0e1e2;border-top-style:dashed;border-top-width:2px;font-size:0;line-height:0;padding:0"></td>
+                            </tr>
+
                             <tr style="line-height: 0">
                                 <td>
-                                    <p style="font-weight: bold;font-size: 20px;margin-left: 10px">Tax</p>
+                                    <p style="font-weight: bold;font-size: 21px;margin-left: 10px">Tax</p>
                                 </td>
                                 <td>
                                     <h1 style="text-align: right;margin-right: 10px">$<?php echo $tax_amount; ?></h1>
@@ -131,7 +181,7 @@
                             </tr>
                             <tr style="line-height: 0">
                                 <td>
-                                    <p style="font-weight: bold;font-size: 20px;margin-left: 10px">Tip</p>
+                                    <p style="font-weight: bold;font-size: 21px;margin-left: 10px">Tip</p>
                                 </td>
                                 <td>
                                     <h1 style="text-align: right;margin-right: 10px">$<?php echo $tip_amount; ?></h1>
@@ -139,17 +189,24 @@
                             </tr>
                             <tr style="line-height: 0">
                                 <td >
-                                    <p style="font-weight: bold;font-size: 20px;margin-left: 10px">Points</p>
+                                    <p style="font-weight: bold;font-size: 21px;margin-left: 10px">Points</p>
+
                                 </td>
                                 <td >
+
                                     <h1 style="text-align: right;margin-right: 10px">$
-                                    <?php if($points_dollar_amount==null || $points_dollar_amount==''){
-                                        echo '0.00';
-                                    }else{
-                                        echo $points_dollar_amount;
-                                    }
-                                         ?></h1>
+                                        <?php
+                                        if ($points_dollar_amount == null || $points_dollar_amount == '') {
+                                            echo '0.00';
+                                        } else {
+                                            echo $points_dollar_amount;
+                                        }
+                                        ?></h1>
+
                                 </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" height="1" style="border-collapse:collapse;border-top-color:#e0e1e2;border-top-style:dashed;border-top-width:2px;font-size:0;line-height:0;padding:0"></td>
                             </tr>
                         </table>
                     </td>
@@ -187,17 +244,17 @@
                 </tr>
                 <tr>
                     <td>
-                        <table  border="0" width="500" >
+                        <table  border="0" width="100%" >
                             <tr>
                                 <td style="padding: 5px"><span style="color:#4DBEC7"><img src="<?php echo base_url('assets/email_templete/ic_rewards@3x.png'); ?>" width="30" height="30"></img></span></td>
-                                <?php  
-                                    $earnPoints =  round($total);
+                                <?php
+                                $earnPoints = round($total);
                                 ?>
                                 <td style="padding: 5px"><span style="color:#4DBEC7">Earn <?php echo $earnPoints; ?> Reward Points</span></td>
                             </tr>
                             <tr>
                                 <td style="padding: 5px"><span style="color:#4DBEC7"><img src="<?php echo base_url('assets/email_templete/ic_rewards@3x.png'); ?>" width="30" height="30"></img></span></td>
-                                <td style="padding: 5px"><span style="color:#4DBEC7">You Redeem <?php echo $redeem_points;?> Reward Points</span></td>
+                                <td style="padding: 5px"><span style="color:#4DBEC7">You Redeem <?php echo $redeem_points; ?> Reward Points</span></td>
                             </tr>
                             <tr>
                                 <td style="padding: 5px"><span style="color:#4DBEC7"><img src="<?php echo base_url('assets/email_templete/ic_heart_like@3x.png'); ?>" width="30" height="30"></img></span></td>
@@ -207,7 +264,7 @@
                     </td>
 
                 </tr>
-                <tr>
+<!--                <tr>
                     <td>
                         <table  border="0" width="510" bgcolor="4DBEC7">
 
@@ -227,7 +284,7 @@
                         </table>
                     </td>
 
-                </tr>
+                </tr>-->
             </table>
 
 

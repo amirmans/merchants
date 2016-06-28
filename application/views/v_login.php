@@ -50,6 +50,14 @@
         <script>
             window.history.forward(-1);
         </script>
+        <script type="text/javascript" src="<?php echo base_url('assets/js/jquery.min.js'); ?>"></script>
+        <script src="<?php echo base_url('assets/js/webshim/minified/polyfiller.js'); ?>"></script>
+        <script>
+            webshim.activeLang('en');
+            webshims.polyfill('forms');
+            webshims.cfg.no$Switch = true;
+        </script>
+
 
     </body>
 </html>

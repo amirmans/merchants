@@ -296,9 +296,6 @@
 
                                 $("#count_pending_order").html(data);
                                 $("#alertPendingOrder").show();
-                                $('#audio1').click();
-
-
                             }
                         });
 

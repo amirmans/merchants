@@ -230,7 +230,6 @@ class M_site extends CI_Model {
 //        $this->db->limit(1);
 //        $result = $this->db->get();
 //        $row = $result->result_array();
-
 //        if (count($row) > 0) {
 //            $device_token = $row[0]['device_token'];
 //            $message_body = array(
@@ -787,12 +786,47 @@ class M_site extends CI_Model {
         $this->db->select('points');
         $this->db->from('points');
         $this->db->where('order_id', $order_id);
-        $this->db->where('time_redeemed IS NOT NULL', null,FALSE);
+        $this->db->where('time_redeemed IS NOT NULL', null, FALSE);
         $this->db->limit(1);
         $result = $this->db->get();
         $row = $result->row_array();
-        
+
         return $row;
+    }
+
+    function total_orders_count($param) {
+        $this->db->select('*');
+        $this->db->from('order');
+        $this->db->where('business_id', $param['businessID']);
+        $this->db->where('date > DATE_SUB(NOW(), INTERVAL 1 DAY)');
+        $result = $this->db->get();
+        $rowcount = $result->num_rows();
+        $return['today']=$rowcount;
+        
+        $this->db->select('*');
+        $this->db->from('order');
+        $this->db->where('business_id', $param['businessID']);
+        $this->db->where('date > DATE_SUB(NOW(), INTERVAL 1 WEEK)');
+        $weekresult = $this->db->get();
+        $weekcount = $weekresult->num_rows();
+        $return['week']=$weekcount;
+        
+        
+        $this->db->select('*');
+        $this->db->from('order');
+        $this->db->where('business_id', $param['businessID']);
+        $this->db->where('date > DATE_SUB(NOW(), INTERVAL 1 MONTH)');
+        $monthresult = $this->db->get();
+        $monthcount = $monthresult->num_rows();
+        $return['month']=$monthcount;
+        
+        $this->db->select('*');
+        $this->db->from('order');
+        $this->db->where('business_id', $param['businessID']);
+        $totalresult = $this->db->get();
+        $totalcount = $totalresult->num_rows();
+        $return['total']=$totalcount;
+        return $return;
     }
 
 }

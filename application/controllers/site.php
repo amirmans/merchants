@@ -244,15 +244,15 @@ class Site extends CI_Controller {
 //        $data['exp_year'] = 2024;
 //        $data['business_id'] = is_login();
 //        $data['business_name'] = $this->session->userdata('name');
-        $order_payment_detail = $this->m_site->get_order_payment_detail(420);
-        $redeemed_points = $this->m_site->get_redeemed_points(420);
+        $order_payment_detail = $this->m_site->get_order_payment_detail(177);
+        $redeemed_points = $this->m_site->get_redeemed_points(177);
         if (count($redeemed_points) > 0) {
             $email['redeem_points'] = $redeemed_points['points'];
         } else {
             $email['redeem_points'] = 0;
         }
-        $order_info = $this->m_site->get_ordelist_order('420');
-        $email['order_detail'] = $this->m_site->get_order_detail('420');
+        $order_info = $this->m_site->get_ordelist_order('177');
+        $email['order_detail'] = $this->m_site->get_order_detail('177');
         $email['order_id'] = '420';
         $email['total'] = $order_payment_detail['total'];
         $email['cc_no'] = $order_payment_detail['cc_info']['cc_no'];
@@ -264,8 +264,10 @@ class Site extends CI_Controller {
         $email['points_dollar_amount'] = $order_info[0]['points_dollar_amount'];
         $email['business_id'] = 1;
         $email['business_name'] = $this->session->userdata('name');
-
+//        echo json_encode($email);
+//        die;
         $this->load->view('v_email_receipt', $email);
+        
     }
 
     function phpinfo() {
