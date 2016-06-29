@@ -42,14 +42,23 @@
         <input type="hidden" name="order_id" id="order_id" value="<?php echo encrypt_string($orderlist[0]['order_id']); ?>" />
         <table class="table" >
             <thead  class="title">
+                <tr id="dashed_line">
+                    <td colspan="4" height="1" style="border-collapse:collapse;border-top-color:rgb(103, 104, 105);border-top-style:dashed;border-top-width:2px;font-size:0;line-height:0;padding:0"></td>
+                </tr>   
                 <tr>
-                    <td class="th_product">PRODUCT</td>
-                    <td class="th_price" >PRICE</td>
-                    <td class="th_quantity">QUANTITY</td>
-                    <td class="th_total text-right">TOTAL</td>
+                    <th class="th_product">PRODUCT</th>
+                    <th class="th_price" >PRICE</th>
+                    <th class="th_quantity">QT</th>
+                    <th class="th_total text-right">TOTAL</th>
                 </tr>
+                <tr id="dashed_line">
+                    <td colspan="4" height="1" style="border-collapse:collapse;border-top-color:rgb(103, 104, 105);border-top-style:dashed;border-top-width:2px;font-size:0;line-height:0;padding:0"></td>
+                </tr>   
+
             </thead>
+
             <tbody>
+
 
                 <?php for ($i = 0; $i < count($order_detail); $i++) {
                     ?>
@@ -62,9 +71,9 @@
                             <?php }
                             ?>
                         </td>
-                        <td class="th_price" >$ <?php echo $order_detail[$i]['price']; ?></td>
+                        <td class="th_price" ><?php echo $order_detail[$i]['price']; ?></td>
                         <td class="th_quantity"><?php echo $order_detail[$i]['quantity']; ?></td>
-                        <td class="th_total text-right">$ <?php
+                        <td class="th_total text-right"><?php
                             $per_item_total[$i] = $order_detail[$i]['price'] * $order_detail[$i]['quantity'];
                             echo number_format((float) $per_item_total[$i], 2, '.', '')
                             ?></td>
@@ -73,29 +82,45 @@
 
                 <?php }
                 ?>
-
+                <tr id="dashed_line">
+                    <td colspan="4" height="1" style="border-collapse:collapse;border-top-color:rgb(103, 104, 105);border-top-style:dashed;border-top-width:2px;font-size:0;line-height:0;padding:0"></td>
+                </tr>   
                 <tr>
-                    <td>Subtotal</td>
-                    <td colspan="3" class="text-right "><h6 class="total">$ <?php echo $orderlist[0]['subtotal']; ?></h6></td>
+                    <td class="th_product">Subtotal</td>
+                    <td class="th_price"></td>
+                    <td class="th_quantity"></td>
+                    <td class="th_total text-right">$ <?php echo $orderlist[0]['subtotal']; ?></td>
                 </tr>
                 <tr>
-                    <td>Tax</td>
-                    <td colspan="3" class="text-right"><h6 class="total">$ <?php echo $orderlist[0]['tax_amount']; ?></h6></td>
+                    <td class="th_product">Tax</td>
+                    <td class="th_price"></td>
+                    <td class="th_quantity"></td>
+                    <td class="th_total text-right">$ <?php echo $orderlist[0]['tax_amount']; ?></td>
                 </tr>
                 <tr>
-                    <td>Tip</td>
-                    <td colspan="3" class="text-right"><h6 class="total">$ <?php echo $orderlist[0]['tip_amount']; ?></h6></td>
+                    <td class="th_product">Tip</td>
+                    <td class="th_price"></td>
+                    <td class="th_quantity"></td>
+                    <td class="th_total text-right">$ <?php echo $orderlist[0]['tip_amount']; ?></td>
                 </tr>
                 <tr>
-                    <td>Points</td>
-                    <td colspan="3" class="text-right"><h6 class="total">$ <?php echo $orderlist[0]['points_dollar_amount']; ?></h6></td>
+                    <td class="th_product">Points</td>
+                    <td class="th_price"></td>
+                    <td class="th_quantity"></td>
+                    <td class="th_total text-right">$ <?php echo $orderlist[0]['points_dollar_amount']; ?></td>
                 </tr>
-
-
+                <tr id="dashed_line">
+                    <td colspan="4" height="1" style="border-collapse:collapse;border-top-color:rgb(103, 104, 105);border-top-style:dashed;border-top-width:2px;font-size:0;line-height:0;padding:0"></td>
+                </tr>  
                 <tr>
-                    <td>TOTAL</td>                    
-                    <td colspan="3" class="text-right "><h4 class="total"><input type="hidden" name="order_amount" id="order_amount" value="<?php echo $orderlist[0]['total']; ?>"  /> $ <?php echo $orderlist[0]['total']; ?></h4></td>
+                    <td class="th_product">TOTAL</td>
+                    <td class="th_price"></td>
+                    <td class="th_quantity"></td>
+                    <td class="th_total text-right" id="grand_total"><input type="hidden" name="order_amount" id="order_amount" value="<?php echo $orderlist[0]['total']; ?>"  /> $ <?php echo $orderlist[0]['total']; ?></td>
                 </tr>
+                <tr id="dashed_line">
+                    <td colspan="4" height="1" style="border-collapse:collapse;border-top-color:rgb(103, 104, 105);border-top-style:dashed;border-top-width:2px;font-size:0;line-height:0;padding:0"></td>
+                </tr>     
             </tbody>
         </table>
     </div>
@@ -244,7 +269,6 @@
         var content = divToPrint.innerHTML.replace(/<img[^>]*>/g, "");
 
         var order_status = $('#orderstatus').val();
-        console.log(order_status)
         if (order_status == 1)
         {
             $("#button_approve").html('APPROVE..');
@@ -275,10 +299,6 @@
         {
             print_html(content)
         }
-
-
-
-
         return false;
 
     }
@@ -292,7 +312,8 @@
         document.body.appendChild(frame1);
         var frameDoc = frame1.contentWindow ? frame1.contentWindow : frame1.contentDocument.document ? frame1.contentDocument.document : frame1.contentDocument;
         frameDoc.document.open();
-        frameDoc.document.write('<html><link media="print" href="<?php echo base_url('assets/css/root.css'); ?>" rel="stylesheet"></link><style>@media print {  * { margin: 0 !important; padding: 8px !important; }}@media print   { .invoice .logo{ font-size:7pt;padding:0}} @media print   { .time { font-size:7px;}} @media print   { .note { font-size:7px;line-height:0}} @media print  {.invoice .line h2 { font-size:10px;line-height:0} } @media print  {.invoice .line h4 { font-size:7px} } @media print  { table { page-break-inside : auto }}@media print  { table tr td {  font-size: 5pt;}}@media print  { table .th_total { white-space: nowrap;}}@media print  { table .th_price { white-space: nowrap;}}@media print   {.invoice .table p { font-size:7px;line-height:0}}  </style><body onload="window.print()"><div class="invoice invoice-row"><div class="logo"><h1><?php echo $this->session->userdata('name'); ?></h1> </div>' + content + '</div></html>');
+        frameDoc.document.write('<html><style> @media print { @page {size: 3.5in;margin:0;}}@media print {  * { margin: 0 !important; padding: 4px !important;text-transform: uppercase;font-family:monospace; }}@media print   { .invoice .logo{ font-size:7pt;padding:0;text-align:center;}} @media print   { .time { font-size:8px;}} @media print   { .note { font-size:8px;}} @media print  {.invoice .line h2 { font-size:10px;line-height:0} } @media print  {.invoice .line h4 { font-size:7px} } @media print  { table { page-break-inside : auto;width:100%; }}@media print  { table tr th,td{ font-size: 10pt;text-align:left;letter-spacing:0}}@media print  { table .th_total { white-space: nowrap;}}@media print  { table .th_price { white-space: nowrap;}}@media print   {.invoice .table p { font-size:8pt;}}  @media print   { #grand_total { font-weight:bold}} @media print  { table .th_quantity { font-weight:bold;}}  </style><body onload="window.print()"><div class="invoice invoice-row"><div class="logo"><h1><?php echo $this->session->userdata('name'); ?></h1> </div>' + content + '</div></html>');
+        
         frameDoc.document.close();
     }
 

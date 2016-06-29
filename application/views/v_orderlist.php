@@ -69,6 +69,23 @@
                 top:90px;
             }
             .audiojs{width: 1px;height: 1px}
+            
+            #grand_total{
+                font-size: 1.5em;
+            }
+            #dashed_line{
+                display: none;
+            }
+            #dashed_line td{
+                border-collapse:collapse;
+                border-top-color:rgb(103, 104, 105);
+                border-top-style:dashed;
+                border-top-width:2px;
+                font-size:0;
+                line-height:0;
+                padding:0
+            }
+            
 
 
         </style>
