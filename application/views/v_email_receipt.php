@@ -254,7 +254,7 @@ function limit_text($text, $limit) {
                             </tr>
                             <tr>
                                 <td style="padding: 5px"><span style="color:#4DBEC7"><img src="<?php echo base_url('assets/email_templete/ic_rewards@3x.png'); ?>" width="30" height="30"></img></span></td>
-                                <td style="padding: 5px"><span style="color:#4DBEC7">You Redeem <?php echo $redeem_points; ?> Reward Points</span></td>
+                                <td style="padding: 5px"><span style="color:#4DBEC7">You Redeemed <?php echo $redeem_points; ?> Reward Points</span></td>
                             </tr>
                             <tr>
                                 <td style="padding: 5px"><span style="color:#4DBEC7"><img src="<?php echo base_url('assets/email_templete/ic_heart_like@3x.png'); ?>" width="30" height="30"></img></span></td>

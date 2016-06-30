@@ -132,6 +132,21 @@ class M_site extends CI_Model {
         $row = $result->result_array();
         return $row;
     }
+    
+    function get_search_business_order_list($param) {
+        $this->db->select('o.order_id,o.payment_id,o.total,o.date,o.no_items,o.status,cp.nickname,TIMESTAMPDIFF(SECOND,o.date,now()) as seconds',FALSE);
+        $this->db->from('order as o');
+        $this->db->join('consumer_profile as cp', 'o.consumer_id = cp.uid', 'left');
+        $this->db->where('o.status !=', 0);
+        $this->db->where('o.status', 3);
+        $this->db->where('o.business_id', $param['businessID']);
+        $this->db->where("o.order_id  LIKE '%".$param['keyword']."%'");
+        $this->db->order_by("o.order_id", "desc");
+        //$this->db->limit(10);
+        $result = $this->db->get();
+        $row = $result->result_array();
+        return $row;
+    }
 
     function get_ordelist_order($order_id) {
         $this->db->select('o.order_id,o.payment_id,o.total,o.date,cp.nickname,o.status,o.note,o.subtotal,o.tip_amount,o.tax_amount,o.points_dollar_amount,TIMESTAMPDIFF(SECOND,o.date,now()) as seconds');
@@ -164,6 +179,17 @@ class M_site extends CI_Model {
             $option_row = $option_result->result_array();
             $r['option_ids'] = $option_row;
         }
+        return $row;
+    }
+    
+    function get_order_charge_detail($order_id) {
+
+        $this->db->select('*');
+        $this->db->from('order_charge');
+        $this->db->where('order_id', $order_id);
+        $result = $this->db->get();
+        $row = $result->row_array();
+
         return $row;
     }
 
@@ -249,7 +275,7 @@ class M_site extends CI_Model {
 //            $this->db->insert('notification', $notification);
 //        }
     }
-
+    
     function completedorder($order_id) {
         $data = array();
         $data['status'] = '3';
@@ -827,6 +853,19 @@ class M_site extends CI_Model {
         $totalcount = $totalresult->num_rows();
         $return['total']=$totalcount;
         return $return;
+    }
+    
+    function update_order_charge_status($charge_id,$order_id,$stripe_refund_id, $refundamt, $refund_type) {
+        $data['order_id'] = $order_id;
+        $data['stripe_refund_id'] = $charge_id;
+        $data['amount'] = $refundamt;
+        $data['refund_type'] = $refund_type;
+        $data['created'] = date('Y-m-d H:i:s');
+        $this->db->insert('refund_order', $data);
+        $data = array();
+        $data['is_refunded'] = '1';
+        $this->db->where('charge_id', $charge_id);
+        $this->db->update('order_charge', $data);
     }
 
 }

@@ -36,6 +36,23 @@ class Site extends CI_Controller {
         $this->load->view('v_orderlist', $data);
     }
 
+    function search_orderlist($keyword = "") {
+//Check business Customer is login
+        is_login() ? '' : redirect('index.php/login');
+        $param = $_REQUEST;
+        $param['businessID'] = is_login();
+
+        $this->validation->is_parameter_blank('businessID', $param['businessID']);
+        $data['order_status'] = 'completed';
+        $data['orderlist'] = $this->m_site->get_search_business_order_list($param);
+
+        $order_detail['order_detail'] = $this->m_site->get_order_detail($data['orderlist'][0]['order_id']);
+        $order_detail['orderlist'] = $this->m_site->get_ordelist_order($data['orderlist'][0]['order_id']);
+        $data['order_view'] = $this->load->view('v_order_view', $order_detail, TRUE);
+
+        $this->load->view('v_orderlist', $data);
+    }
+
     function order_view() {
 //Check business Customer is login
         is_login() ? '' : redirect('index.php/login');
@@ -267,7 +284,6 @@ class Site extends CI_Controller {
 //        echo json_encode($email);
 //        die;
         $this->load->view('v_email_receipt', $email);
-        
     }
 
     function phpinfo() {
@@ -295,6 +311,40 @@ class Site extends CI_Controller {
         echo '<pre>';
         echo json_encode($result);
         echo 'ok';
+    }
+
+    function refund_order_amount() {
+        is_login() ? '' : redirect('index.php/login');
+        $param = $_REQUEST;
+        $business_id = is_login();
+        $this->validation->is_parameter_blank('order_id', $param['order_id']);
+        $order_id = decrypt_string($param['order_id']);
+        $order_charge_detail = $this->m_site->get_order_charge_detail($order_id);
+        $refundamt = $order_charge_detail['amount'];
+        if ($param['refund_type'] == 2) {
+            if ($param['amount'] > $refundamt) {
+                $response = error_res("Invalid Amount");
+            } else {
+                $response = success_res("Order Refunded Successfully");
+                $secret_key = $this->get_stripe_secret_key($business_id);
+                $refund['charge'] = $order_charge_detail['stripe_charge_id'];
+                $refund['amount'] = $refundamt * 100;
+                \Stripe\Stripe::setApiKey($secret_key);
+                $re = \Stripe\Refund::create($refund);
+                $stripe_refund_id = $re->id;
+                $this->m_site->update_order_charge_status($order_charge_detail['charge_id'], $order_id, $stripe_refund_id, $refundamt, $param['refund_type']);
+            }
+        } else if ($param['refund_type'] == 1) {
+            $secret_key = $this->get_stripe_secret_key($business_id);
+            $refund['charge'] = $order_charge_detail['stripe_charge_id'];
+            \Stripe\Stripe::setApiKey($secret_key);
+            $re = \Stripe\Refund::create($refund);
+            $stripe_refund_id = $re->id;
+            $this->m_site->update_order_charge_status($order_charge_detail['charge_id'], $order_id, $stripe_refund_id, $refundamt, $param['refund_type']);
+        } else {
+            $response = error_res("Something went wrong");
+        }
+        
     }
 
 }

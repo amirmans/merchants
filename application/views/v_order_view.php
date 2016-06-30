@@ -253,7 +253,37 @@
 
 
 
-            <?php }
+                <?php
+            } elseif ($orderlist[0]['status'] == "3") {
+                ?>
+                <a id="button_refund" href="#" class=" btn btn-primary " data-toggle="modal" data-target="#completeModal"    style=" font-size: 20px;">
+                    REFUND
+                </a>
+                <script>
+                    document.querySelector('#button_refund').onclick = function() {
+
+
+                        $("#refundModal").modal('show');
+                        var order_id = $("#order_id").val();
+                        var param = {order_id: order_id};
+                        //                        $.post("<?php //echo base_url('index.php/site/completedorder')       ?>", param)
+                        //                                .done(function(data) {
+                        //                                    data = jQuery.parseJSON(data);
+                        //                                    if (data['status'] == '1')
+                        //                                    {
+                        //                                        swal("Completed order", "", "success");
+                        //                        
+                        //                                    } else {
+                        //                                     
+                        //                                    }
+                        //                                });
+                    };
+                </script>
+
+
+
+                <?php
+            }
             ?>
 
 
@@ -262,7 +292,65 @@
     </div>
 </div>
 
+<div class="modal fade" id="refundModal" tabindex="-1" role="dialog" aria-hidden="true" style="display: none; vertical-align: middle">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form class="form-horizontal" id="form_refund_order" action="" method="post">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title">Refund Order</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <label class="col-sm-3 control-label form-label">Refund Type</label>
+                        <div class="col-sm-6">
+                            <div class="radio">
+                                <input type="radio" name="refund_type" id="full" value="1" checked onchange="hideShow(1)">
+                                <label for="full">
+                                    Full
+                                </label>
+                            </div>
+                            <div class="radio radio-warning">
+                                <input type="radio" name="refund_type" id="partial" value="2" onchange="hideShow(2)">
+                                <label for="partial">
+                                    Partial
+                                </label>
+                            </div>
+                            <br/>
+                            <div class="form-group" style="display: none" id="refund_amt">
+                                <div class="col-sm-8">
+                                    <input type="number" class="form-control" id="rfd_amount" name="rfd_amount"  placeholder="Refund Amount" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3"></div>
+                    </div>
+
+                    <br>
+                </div>
+                <div class="modal-footer">
+                    <label id="category_error_text" class="pull-left color10"></label>
+                    <button type="button" class="btn btn-white" data-dismiss="modal" >Close</button>
+                    <button type="submit" class="btn btn-default" >Refund</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script type="text/javascript">
+    function hideShow(sendto)
+    {
+        if (sendto == 1)
+        {
+            $('#refund_amt').hide();
+        }
+        else
+        {
+            $('#refund_amt').show();
+        }
+    }
+
     function PrintDiv() {
 
         var divToPrint = document.getElementById('printDiv');
@@ -313,8 +401,32 @@
         var frameDoc = frame1.contentWindow ? frame1.contentWindow : frame1.contentDocument.document ? frame1.contentDocument.document : frame1.contentDocument;
         frameDoc.document.open();
         frameDoc.document.write('<html><style> @media print { @page {size: 3.5in;margin:0;}}@media print {  * { margin: 0 !important; padding: 4px !important;text-transform: uppercase;font-family:monospace; }}@media print   { .invoice .logo{ font-size:7pt;padding:0;text-align:center;}} @media print   { .time { font-size:8px;}} @media print   { .note { font-size:8px;}} @media print  {.invoice .line h2 { font-size:10px;line-height:0} } @media print  {.invoice .line h4 { font-size:7px} } @media print  { table { page-break-inside : auto;width:100%; }}@media print  { table tr th,td{ font-size: 10pt;text-align:left;letter-spacing:0}}@media print  { table .th_total { white-space: nowrap;}}@media print  { table .th_price { white-space: nowrap;}}@media print   {.invoice .table p { font-size:8pt;}}  @media print   { #grand_total { font-weight:bold}} @media print  { table .th_quantity { font-weight:bold;}}  </style><body onload="window.print()"><div class="invoice invoice-row"><div class="logo"><h1><?php echo $this->session->userdata('name'); ?></h1> </div>' + content + '</div></html>');
-        
+
         frameDoc.document.close();
+    }
+
+    var options = {
+        success: processRefundResponse
+    }
+    window.history.forward(-1);
+
+    $(document).ready(function() {
+        // bind 'myForm' and provide a simple callback function 
+        $('#form_refund_order').ajaxForm(options);
+    });
+
+    function processRefundResponse(data) {
+         $('#refundModal').modal('toggle');
+
+//        var data = JSON.parse(data);
+//        if (data.status)
+//        {
+//            $('#refundModal').modal('toggle');
+//        }
+//        else
+//        {
+//             $('#refundModal').modal('toggle');
+//        }
     }
 
 

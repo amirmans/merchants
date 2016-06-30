@@ -352,8 +352,8 @@ Searchbox - Top Search Input
 .searchbox {
     border-radius: 999px;
     border: none;
-    height: 32px;
-    width: 220px;
+    height: 30px;
+    width: 115px;
     padding-left: 20px;
     padding-right: 36px;
     background: rgba(255, 255, 255, 0.95);
@@ -3565,7 +3565,7 @@ div[data-role="editor-toolbar"] {
     font-size: 16px;
 }
 .modal-content {
-//    box-shadow: 2px 2px 2px red;
+    //    box-shadow: 2px 2px 2px red;
 }
 .modalicon {
     background: #fff;
@@ -4200,7 +4200,13 @@ Widgets
 .active_tab{
     border: 2px solid gold !important;
 }
-
+.newtopstats{
+    height: 80px;padding-top: 25px;
+}
+.newtopstats1{width: 33%;float: left;}
+.newtopstats2{width: 12%;float: left;}
+.newtopstats3{width: 55%;float: left;}
+.newtopstats1 span{font-size: 15px;float: left;font-weight: bold;margin-right: 5%;}
 @media only screen and (max-width : 768px) { 
     .applogo{
         padding-left: 0;
@@ -4245,6 +4251,7 @@ Widgets
         right: 10px !important;
     }
     .total_price h4{font-size: 20px;}
+
 }
 @media only screen and (max-width : 569px) { 
     .applogo{
@@ -4274,10 +4281,10 @@ Widgets
         box-shadow: none;
     }
     .order-list{
-         width: 102%;
+        width: 102%;
     }
     .order-detail_view{
-         width: 102%;
+        width: 102%;
     }
     .invoice{
         padding: 20px 50px 70px 50px;
@@ -4320,10 +4327,10 @@ Widgets
         box-shadow: none;
     }
     .order-list{
-         width: 104%;
+        width: 104%;
     }
     .order-detail_view{
-         width: 104%;
+        width: 104%;
     }
     .invoice{
         padding: 20px 50px 70px 50px;
@@ -4336,6 +4343,11 @@ Widgets
         right: 10px !important;
     }
     .total_price h4{font-size: 20px;}
+    .newtopstats{height: 140px;}
+    .newtopstats1{width: 100%;float: left;margin-bottom: 15px;}
+    .newtopstats2{width: 50%;float: left;padding-left: 20px;}
+    .newtopstats3{width: 50%;float: left;}
+    .newtopstats1 span{font-size: 13px;float: left;font-weight: bold;margin-right: 1%;}
 }
 @media only screen and (max-width : 414px) { 
     .applogo{
@@ -4355,7 +4367,8 @@ Widgets
         padding-top: 20px;
         padding-left: 0;
         font-weight: 600;
-        margin-left: 20px;
+        margin-left: -5px;
+        font-size: 13px;
     }
 
     .order-menu {
@@ -4365,10 +4378,10 @@ Widgets
         box-shadow: none;
     }
     .order-list{
-         width: 104%;
+        width: 104%;
     }
     .order-detail_view{
-         width: 104%;
+        width: 104%;
     }
     .invoice{
         padding: 20px 50px 70px 50px;
@@ -4384,6 +4397,11 @@ Widgets
     .th_price {
         width: 200px !important;
     }
+    .newtopstats{height: 140px;}
+    .newtopstats1{width: 100%;float: left;margin-bottom: 15px;}
+    .newtopstats2{width: 50%;float: left;padding-left: 20px;}
+    .newtopstats3{width: 50%;float: left;}
+    .newtopstats1 span{font-size: 13px;float: left;font-weight: bold;margin-right: 1%;}
 }
 @media only screen and (max-width : 375px) { 
     .applogo{
@@ -4403,7 +4421,8 @@ Widgets
         padding-top: 20px;
         padding-left: 0;
         font-weight: 600;
-        margin-left: 20px;
+        margin-left: -10px;
+        font-size: 12px;
     }
 
     .order-menu {
@@ -4413,10 +4432,10 @@ Widgets
         box-shadow: none;
     }
     .order-list{
-         width: 104%;
+        width: 104%;
     }
     .order-detail_view{
-         width: 104%;
+        width: 104%;
     }
     .invoice{
         padding: 20px 50px 70px 50px;
@@ -4429,6 +4448,11 @@ Widgets
         right: 10px !important;
     }
     .total_price h4{font-size: 20px;}
+    .newtopstats{height: 140px;}
+    .newtopstats1{width: 100%;float: left;margin-bottom: 15px;}
+    .newtopstats2{width: 50%;float: left;padding-left: 20px;}
+    .newtopstats3{width: 50%;float: left;}
+    .newtopstats1 span{font-size: 13px;float: left;font-weight: bold;margin-right: 1%;}
 }
 @media only screen and (max-width : 360px) { 
     .applogo{
@@ -4448,7 +4472,8 @@ Widgets
         padding-top: 20px;
         padding-left: 0;
         font-weight: 600;
-        margin-left: 20px;
+        margin-left: -20px;
+        font-size: 12px;
     }
 
     .order-menu {
@@ -4458,10 +4483,10 @@ Widgets
         box-shadow: none;
     }
     .order-list{
-         width: 104%;
+        width: 104%;
     }
     .order-detail_view{
-         width: 104%;
+        width: 104%;
     }
     .invoice{
         padding: 20px 50px 70px 50px;
@@ -4474,6 +4499,11 @@ Widgets
         right: 10px !important;
     }
     .total_price h4{font-size: 20px;}
+    .newtopstats{height: 140px;}
+    .newtopstats1{width: 100%;float: left;margin-bottom: 15px;}
+    .newtopstats2{width: 50%;float: left;padding-left: 20px;}
+    .newtopstats3{width: 50%;float: left;}
+    .newtopstats1 span{font-size: 13px;float: left;font-weight: bold;margin-right: 1%;}
 }
 @media only screen and (max-width : 320px) { 
     .applogo{
@@ -4493,7 +4523,8 @@ Widgets
         padding-top: 20px;
         padding-left: 0;
         font-weight: 600;
-        margin-left: 0px;
+        margin-left: -20px;
+        font-size: 10px;
     }
 
     .order-menu {
@@ -4503,10 +4534,10 @@ Widgets
         box-shadow: none;
     }
     .order-list{
-         width: 104%;
+        width: 104%;
     }
     .order-detail_view{
-         width: 104%;
+        width: 104%;
     }
     .invoice{
         padding: 20px 20px 70px 20px;
@@ -4519,44 +4550,49 @@ Widgets
         right: 10px !important;
     }
     .total_price h4{font-size: 20px;}
+    .newtopstats{height: 140px;}
+    .newtopstats1{width: 100%;float: left;margin-bottom: 15px;}
+    .newtopstats2{width: 50%;float: left;padding-left: 20px;}
+    .newtopstats3{width: 50%;float: left;}
+    .newtopstats1 span{font-size: 13px;float: left;font-weight: bold;margin-right: 1%;}
 }
 /*shortcut.css*/  
 
 .demolayout{
-	background: #399BFF;
-	width: 60px;
-	overflow: hidden;
+    background: #399BFF;
+    width: 60px;
+    overflow: hidden;
 }
 .demobox{
-	background: #ccc;
-	color: #333;
-	font-size: 13px;
-	text-align: center;
-	line-height: 40px;
-	display: block;
+    background: #ccc;
+    color: #333;
+    font-size: 13px;
+    text-align: center;
+    line-height: 40px;
+    display: block;
 }
 .demotext{
-	width: 60px;
-	background: #ccc;
-	line-height: 40px;
-	color: #333;
+    width: 60px;
+    background: #ccc;
+    line-height: 40px;
+    color: #333;
 }
 .demoboxborder{
-	width: 60px;
-	background: #ccc;
-	border: 5px solid #399BFF;
-	line-height: 40px;
-	color: #333;
-	text-align: center;
+    width: 60px;
+    background: #ccc;
+    border: 5px solid #399BFF;
+    line-height: 40px;
+    color: #333;
+    text-align: center;
 }
 .democolors{
-	font-size: 13px;
-	line-height: 40px;
-	width: 60px;
-	text-align: center;
-	font-weight: bold;
-	min-height: 40px;
-	text-transform: uppercase;
+    font-size: 13px;
+    line-height: 40px;
+    width: 60px;
+    text-align: center;
+    font-weight: bold;
+    min-height: 40px;
+    text-transform: uppercase;
 }
 
 
@@ -4687,50 +4723,50 @@ Widgets
 
 /*** Float ***/
 .float-l{
-	float: left;
+    float: left;
 }
 .float-r{
-	float: right;
+    float: right;
 }
 .float-none{
-	float: none;
+    float: none;
 }
 
 /** Text Align **/
 .text-l{
-	text-align: left;
+    text-align: left;
 }
 .text-r{
-	text-align: right;
+    text-align: right;
 }
 .text-c{
-	text-align: center;
+    text-align: center;
 }
 
 
 /** Border None **/
 .border-b-none{
-	border-bottom:none;
+    border-bottom:none;
 }
 .border-t-none{
-	border-top:none;
+    border-top:none;
 }
 .border-l-none{
-	border-left:none;
+    border-left:none;
 }
 .border-r-none{
-	border-right:none;
+    border-right:none;
 }
 .border-none{
-	border:none;
+    border:none;
 }
 
 /** Display **/
 .display-block{
-	display: block;
+    display: block;
 }
 .hidden{
-	display: none;
+    display: none;
 }
 
 /** Text **/
@@ -4764,42 +4800,42 @@ Widgets
 .pointer{cursor: pointer;}
 .edit_icon{float: right; position: relative;top: 70px;right: 60px;}
 #imgArea {
-                display: inline-block;
-                margin: 0 auto;
-                width: 150px;
-                height: 150px;
-                position: relative;
-                background-color: #eee;
-                font-family: Arial, Helvetica, sans-serif;
-                font-size: 13px;
-                padding: 0px;
-            }
-            #imgArea img {
-                outline: medium none;
-                vertical-align: middle;
-                width: 100%;
-            }
-            #imgChange {
-                background: url("../img/overlay.png") repeat scroll 0 0 rgba(0, 0, 0, 0);
-                bottom: 0;
-                color: #FFFFFF;
-                display: block;
-                height: 30px;
-                left: 0;
-                line-height: 32px;
-                position: absolute;
-                text-align: center;
-                width: 100%;
-            }
-            #imgChange input[type="file"] {
-                bottom: 0;
-                cursor: pointer;
-                height: 100%;
-                left: 0;
-                margin: 0;
-                opacity: 0;
-                padding: 0;
-                position: absolute;
-                width: 100%;
-                z-index: 0;
-            }
+    display: inline-block;
+    margin: 0 auto;
+    width: 150px;
+    height: 150px;
+    position: relative;
+    background-color: #eee;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 13px;
+    padding: 0px;
+}
+#imgArea img {
+    outline: medium none;
+    vertical-align: middle;
+    width: 100%;
+}
+#imgChange {
+    background: url("../img/overlay.png") repeat scroll 0 0 rgba(0, 0, 0, 0);
+    bottom: 0;
+    color: #FFFFFF;
+    display: block;
+    height: 30px;
+    left: 0;
+    line-height: 32px;
+    position: absolute;
+    text-align: center;
+    width: 100%;
+}
+#imgChange input[type="file"] {
+    bottom: 0;
+    cursor: pointer;
+    height: 100%;
+    left: 0;
+    margin: 0;
+    opacity: 0;
+    padding: 0;
+    position: absolute;
+    width: 100%;
+    z-index: 0;
+}

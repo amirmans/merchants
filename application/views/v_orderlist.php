@@ -69,7 +69,7 @@
                 top:90px;
             }
             .audiojs{width: 1px;height: 1px}
-            
+
             #grand_total{
                 font-size: 1.5em;
             }
@@ -85,7 +85,7 @@
                 line-height:0;
                 padding:0
             }
-            
+
 
 
         </style>
@@ -113,15 +113,41 @@
                         <div class="col-lg-3 col-md-4 padding-0">
                             <div class="row order-menu">
 
-                                <div class="col-md-2 float-l"><span class="order_text"><h5>&nbsp;&nbsp;&nbsp;ORDERS</h5></span></div> 
-                                <div class="col-md-10 text-right">
+                                <?php
+                                if ($order_status == 'completed') {
+                                    ?>
+                                    <div class="col-md-2 float-l"><span class="order_text"><h5>&nbsp;&nbsp;&nbsp;ORDERS</h5></span></div> 
+                                    <div class="col-md-5">
+                                        <form id="search_form" class="searchform" action="<?php echo base_url('index.php/site/search_orderlist'); ?>" method="post">
+                                            <input type="text" class="searchbox" name="keyword" id="keyword" placeholder="Search">
+                                            &nbsp;<button type="submit" class="btn btn-rounded btn-option1" onclick="return search_order()">Go</button>
+                                        </form>
+                                        
+                                    </div> 
+                                    <div class="col-md-5 text-right">
 
-                                    <select class="selectpicker" id="order_status" style="margin: 10px 24px;" onchange="change_order_status()" >
-                                        <option value="neworder"  >New Order</option>
-                                        <option value="completed" selected >Completed</option>
-                                    </select>
+                                        <select class="selectpicker" id="order_status" style="margin: 10px 24px;" onchange="change_order_status()" >
+                                            <option value="neworder"  >New Order</option>
+                                            <option value="completed" selected >Completed</option>
+                                        </select>
+                                    </div>
 
-                                </div> 
+                                    <?php
+                                } else {
+                                    ?>
+                                    <div class="col-md-2 float-l"><span class="order_text"><h5>&nbsp;&nbsp;&nbsp;ORDERS</h5></span></div> 
+                                    <div class="col-md-10 text-right">
+
+                                        <select class="selectpicker" id="order_status" style="margin: 10px 24px;" onchange="change_order_status()" >
+                                            <option value="neworder"  >New Order</option>
+                                            <option value="completed" selected >Completed</option>
+                                        </select>
+                                    </div>    
+                                    <?php
+                                }
+                                ?>
+
+
                             </div>
                             <ul class="order-list" id="ui_orderlist">
 
@@ -196,10 +222,10 @@
         <?php $this->load->view('v_script'); ?>
         <audio></audio>
         <script>
-            $(function () {
+            $(function() {
                 // Setup the player to autoplay the next track
                 var a = audiojs.createAll({
-                    trackEnded: function () {
+                    trackEnded: function() {
                         audio.pause();
                     }
                 });
@@ -211,14 +237,14 @@
                 audio.load(first);
 
                 // Load in a track on click
-                $('#audio1').click(function (e) {
+                $('#audio1').click(function(e) {
                     e.preventDefault();
                     $(this).addClass('playing').siblings().removeClass('playing');
                     audio.load($('a', this).attr('data-src'));
                     audio.play();
                 });
                 // Keyboard shortcuts
-                $(document).keydown(function (e) {
+                $(document).keydown(function(e) {
                     var unicode = e.charCode ? e.charCode : e.keyCode;
                     // right arrow
                     if (unicode == 39) {
@@ -246,7 +272,7 @@
             {
                 var param = {order_id: order_id};
                 $.post("<?php echo base_url('index.php/site/order_view') ?>", param)
-                        .done(function (data) {
+                        .done(function(data) {
                             data = jQuery.parseJSON(data);
                             $("#order_view").html(data['order_view']);
 
@@ -268,6 +294,17 @@
                 }
             }
 
+            function search_order()
+            {
+                var keyword = $("#keyword").val();
+                if (keyword == "")
+                {
+                    swal("", "Please Enter Keyword", "error");
+                    return false;
+                }
+                return true;
+            }
+
             $("#order_status").val('<?php echo $order_status; ?>')
             $("#orderlist_tab").addClass('active_tab');
 
@@ -278,7 +315,7 @@
             {
                 $("#new_order_form").submit();
             }
-            $(document).ready(function () {
+            $(document).ready(function() {
                 // bind 'myForm' and provide a simple callback function 
                 $('#new_order_form').ajaxForm({
                     success: displayneworder
@@ -306,7 +343,7 @@
             {
                 var parm
                 $.get("<?php echo base_url('index.php/site/count_order_for_remaining_approve') ?>")
-                        .done(function (data) {
+                        .done(function(data) {
                             data = jQuery.parseJSON(data);
                             if (data)
                             {
@@ -322,7 +359,7 @@
             function scroll_to_orderview()
             {
                 console.log('true')
-                setTimeout(function () {
+                setTimeout(function() {
                     console.log('true')
 //                        $('.invoice').focus();
                     var target = ".invoice";
