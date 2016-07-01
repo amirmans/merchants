@@ -22,6 +22,13 @@ class Reports extends CI_Controller {
         $data['reports'] = $this->m_site->total_orders_count($param);
         $this->load->view('v_reports', $data);
     }
-    
-
+    function searchreport(){
+        is_login() ? '' : redirect('index.php/login');
+         $param = $_REQUEST;
+        $param['businessID'] = is_login();
+        $this->validation->is_parameter_blank('businessID', $param['businessID']);
+        $this->validation->is_parameter_blank('hiddendate', $param['hiddendate']);
+        $data['report'] = $this->m_site->search_orders_count($param);
+         echo json_encode($data);
+    }
 }

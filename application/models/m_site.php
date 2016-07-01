@@ -91,9 +91,8 @@ class M_site extends CI_Model {
         $data['marketing_statement'] = $param['marketing_statement'];
         $data['short_name'] = $param['short_name'];
         $data['sms_no'] = $param['sms_no'];
-        if ($param['process_time'] != '') {
-            $data['process_time'] = $param['process_time'];
-        }
+        $data['process_time'] = $param['process_time'];
+
         if ($param['icon'] != "") {
             $data['icon'] = $param['icon'];
         }
@@ -116,9 +115,10 @@ class M_site extends CI_Model {
     }
 
     function get_business_order_list($param) {
-        $this->db->select('o.order_id,o.payment_id,o.total,o.date,o.no_items,o.status,cp.nickname,TIMESTAMPDIFF(SECOND,o.date,now()) as seconds');
+        $this->db->select('o.order_id,o.payment_id,o.total,o.date,o.no_items,o.status,cp.nickname,TIMESTAMPDIFF(SECOND,o.date,now()) as seconds,oc.is_refunded');
         $this->db->from('order as o');
         $this->db->join('consumer_profile as cp', 'o.consumer_id = cp.uid', 'left');
+        $this->db->join('order_charge as oc', 'oc.order_id = o.order_id', 'left');
         $this->db->where('o.status !=', 0);
         if ($param['order_status'] == "completed") {
             $this->db->where('o.status', 3);
@@ -132,15 +132,16 @@ class M_site extends CI_Model {
         $row = $result->result_array();
         return $row;
     }
-    
+
     function get_search_business_order_list($param) {
-        $this->db->select('o.order_id,o.payment_id,o.total,o.date,o.no_items,o.status,cp.nickname,TIMESTAMPDIFF(SECOND,o.date,now()) as seconds',FALSE);
+        $this->db->select('o.order_id,o.payment_id,o.total,o.date,o.no_items,o.status,cp.nickname,TIMESTAMPDIFF(SECOND,o.date,now()) as seconds,oc.is_refunded', FALSE);
         $this->db->from('order as o');
         $this->db->join('consumer_profile as cp', 'o.consumer_id = cp.uid', 'left');
+        $this->db->join('order_charge as oc', 'oc.order_id = o.order_id', 'left');
         $this->db->where('o.status !=', 0);
         $this->db->where('o.status', 3);
         $this->db->where('o.business_id', $param['businessID']);
-        $this->db->where("o.order_id  LIKE '%".$param['keyword']."%'");
+        $this->db->where("o.order_id  LIKE '%" . $param['keyword'] . "%'");
         $this->db->order_by("o.order_id", "desc");
         //$this->db->limit(10);
         $result = $this->db->get();
@@ -149,9 +150,10 @@ class M_site extends CI_Model {
     }
 
     function get_ordelist_order($order_id) {
-        $this->db->select('o.order_id,o.payment_id,o.total,o.date,cp.nickname,o.status,o.note,o.subtotal,o.tip_amount,o.tax_amount,o.points_dollar_amount,TIMESTAMPDIFF(SECOND,o.date,now()) as seconds');
+        $this->db->select('o.order_id,o.payment_id,o.total,o.date,cp.nickname,o.status,o.note,o.subtotal,o.tip_amount,o.tax_amount,o.points_dollar_amount,TIMESTAMPDIFF(SECOND,o.date,now()) as seconds,oc.is_refunded');
         $this->db->from('order as o');
         $this->db->join('consumer_profile as cp', 'o.consumer_id = cp.uid', 'left');
+        $this->db->join('order_charge as oc', 'oc.order_id = o.order_id', 'left');
         $this->db->where('o.order_id', $order_id);
         $this->db->where('o.business_id', is_login());
         $this->db->limit(1);
@@ -181,7 +183,7 @@ class M_site extends CI_Model {
         }
         return $row;
     }
-    
+
     function get_order_charge_detail($order_id) {
 
         $this->db->select('*');
@@ -275,7 +277,7 @@ class M_site extends CI_Model {
 //            $this->db->insert('notification', $notification);
 //        }
     }
-    
+
     function completedorder($order_id) {
         $data = array();
         $data['status'] = '3';
@@ -827,37 +829,52 @@ class M_site extends CI_Model {
         $this->db->where('date > DATE_SUB(NOW(), INTERVAL 1 DAY)');
         $result = $this->db->get();
         $rowcount = $result->num_rows();
-        $return['today']=$rowcount;
-        
+        $return['today'] = $rowcount;
+
         $this->db->select('*');
         $this->db->from('order');
         $this->db->where('business_id', $param['businessID']);
         $this->db->where('date > DATE_SUB(NOW(), INTERVAL 1 WEEK)');
         $weekresult = $this->db->get();
         $weekcount = $weekresult->num_rows();
-        $return['week']=$weekcount;
-        
-        
+        $return['week'] = $weekcount;
+
+
         $this->db->select('*');
         $this->db->from('order');
         $this->db->where('business_id', $param['businessID']);
         $this->db->where('date > DATE_SUB(NOW(), INTERVAL 1 MONTH)');
         $monthresult = $this->db->get();
         $monthcount = $monthresult->num_rows();
-        $return['month']=$monthcount;
-        
+        $return['month'] = $monthcount;
+
         $this->db->select('*');
         $this->db->from('order');
         $this->db->where('business_id', $param['businessID']);
         $totalresult = $this->db->get();
         $totalcount = $totalresult->num_rows();
-        $return['total']=$totalcount;
+        $return['total'] = $totalcount;
         return $return;
     }
-    
-    function update_order_charge_status($charge_id,$order_id,$stripe_refund_id, $refundamt, $refund_type) {
+
+    function search_orders_count($param) {
+        $date = explode(" - ", $param['hiddendate']);
+        $start_date = $date[0];
+        $end_date = $date[1];
+        $this->db->select('*');
+        $this->db->from('order');
+        $this->db->where('business_id', $param['businessID']);
+        $this->db->where('date >=', $start_date);
+        $this->db->where('date <=', $end_date);
+        $result = $this->db->get();
+        $rowcount = $result->num_rows();
+        $return = $rowcount;
+        return $return;
+    }
+
+    function update_order_charge_status($charge_id, $order_id, $stripe_refund_id, $refundamt, $refund_type) {
         $data['order_id'] = $order_id;
-        $data['stripe_refund_id'] = $charge_id;
+        $data['stripe_refund_id'] = $stripe_refund_id;
         $data['amount'] = $refundamt;
         $data['refund_type'] = $refund_type;
         $data['created'] = date('Y-m-d H:i:s');

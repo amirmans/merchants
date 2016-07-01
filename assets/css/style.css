@@ -4206,7 +4206,7 @@ Widgets
 .newtopstats1{width: 33%;float: left;}
 .newtopstats2{width: 12%;float: left;}
 .newtopstats3{width: 55%;float: left;}
-.newtopstats1 span{font-size: 15px;float: left;font-weight: bold;margin-right: 5%;}
+.newtopstats1 span{font-size: 15px;float: left;font-weight: bold;margin-right: 5%;margin-left: 5%;}
 @media only screen and (max-width : 768px) { 
     .applogo{
         padding-left: 0;

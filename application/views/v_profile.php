@@ -27,7 +27,7 @@
                     <div class="invoicename">Business Profile</div>
                     <div class="edit_icon"> <a class="btn btn-primary pointer " onclick="edit_profile()">Edit</a></div>
                     <div class="logo">
-                        <img id="icon_url" src="../../tapin-server-staging/customer_files/icons/<?php echo $business_detail['icon'] ?>" alt="logo" width="150" ><br>
+                        <img id="icon_url" src="../../<?php echo staging_directory(); ?>/customer_files/icons/<?php echo $business_detail['icon'] ?>" alt="logo" width="150" ><br>
 
                         <h1><?php echo $business_detail['name']; ?></h1 >
 
@@ -102,7 +102,7 @@
         <div class="modal fade" id="stripeTokenModal" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <form class="form-horizontal" id="form_stripe_secret_key" action="<?php echo base_url('index.php/profile/edit_profile'); ?>" method="post">
+                    <form class="form-horizontal" id="form_stripe_secret_key" action="<?php echo base_url('index.php/profile/edit_profile'); ?>" method="post" >
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
                             <h4 class="modal-title">Edit Profile</h4>
@@ -119,19 +119,19 @@
                                     <div class="form-group">
                                         <label for="email" class="col-sm-4 control-label form-label">Email</label>
                                         <div class="col-sm-8">
-                                            <input type="text" class="form-control" id="email" name="email" required>
+                                            <input type="text" class="form-control" id="email" name="email" >
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label for="website" class="col-sm-4 control-label form-label">Website</label>
                                         <div class="col-sm-8">
-                                            <input type="text" class="form-control" id="website" name="website" required>
+                                            <input type="text" class="form-control" id="website" name="website" >
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label for="phone" class="col-sm-4 control-label form-label">Phone</label>
                                         <div class="col-sm-8">
-                                            <input type="text" class="form-control" id="phone" name="phone" required>
+                                            <input type="text" class="form-control" id="phone" name="phone" >
                                         </div>
                                     </div>
                                     <!--                                    <div class="form-group">
@@ -143,7 +143,7 @@
                                     <div class="form-group">
                                         <label for="marketing_statement" class="col-sm-4 control-label form-label">Tagline</label>
                                         <div class="col-sm-8">
-                                            <input type="text" class="form-control" id="marketing_statement" name="marketing_statement" required>
+                                            <input type="text" class="form-control" id="marketing_statement" name="marketing_statement" >
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -161,7 +161,7 @@
                                     <div class="form-group">
                                         <label for="sms_no" class="col-sm-4 control-label form-label">Customer service’s SMS</label>
                                         <div class="col-sm-8">
-                                            <input type="text" class="form-control" id="sms_no" name="sms_no" required>
+                                            <input type="text" class="form-control" id="sms_no" name="sms_no" >
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -227,12 +227,12 @@
                     $('#short_name_text').text(data.short_name);
                     $('#sms_no_text').text(data.sms_no);
                     $('#stripeTokenModal').modal('toggle');
-                    swal('', "Stripe token updated successfully", 'success')
+                    swal('', "Profile updated successfully", 'success')
                     location.reload();
 
                 } else {
                     $('#stripeTokenModal').modal('toggle');
-                    swal('', "Stripe token updated unsuccessfully", 'error')
+                    swal('', "Profile updated unsuccessfully", 'error')
 
                 }
             }

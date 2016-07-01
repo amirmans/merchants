@@ -31,8 +31,8 @@ class Site extends CI_Controller {
         $data['orderlist'] = $this->m_site->get_business_order_list($param);
         $order_detail['order_detail'] = $this->m_site->get_order_detail($data['orderlist'][0]['order_id']);
         $order_detail['orderlist'] = $this->m_site->get_ordelist_order($data['orderlist'][0]['order_id']);
-        $data['order_view'] = $this->load->view('v_order_view', $order_detail, TRUE);
 
+        $data['order_view'] = $this->load->view('v_order_view', $order_detail, TRUE);
         $this->load->view('v_orderlist', $data);
     }
 
@@ -82,44 +82,49 @@ class Site extends CI_Controller {
                     $response = error_res("Something went wrong");
                 } else {
 
-                    if ($amount != 0) {
+                    try {
+                        if ($amount != 0) {
 
-                        require_once('lib/stripe-php-master/init.php');
-                        \Stripe\Stripe::setApiKey($secret_key);
-                        $myCard = array('number' => $order_payment_detail['cc_info']['cc_no'], 'exp_month' => $order_payment_detail['cc_info']['month'], 'exp_year' => $order_payment_detail['cc_info']['year']);
-                        $charge = \Stripe\Charge::create(array('card' => $myCard, 'amount' => $amount, 'currency' => 'usd'));
-                        $response = success_res("your payment has been successfully processed");
-                        $charge_id = $charge->id;
-                    } else {
-                        $response = success_res("your payment has been successfully processed");
-                        $charge_id = 0;
-                    }
-                    $response['amount'] = $amount / 100;
+                            require_once('lib/stripe-php-master/init.php');
 
-                    $this->m_site->update_order_status($order_id, $charge_id, $response['amount'], $order_payment_detail['consumer_id']);
+                            \Stripe\Stripe::setApiKey($secret_key);
+                            $myCard = array('number' => $order_payment_detail['cc_info']['cc_no'], 'exp_month' => $order_payment_detail['cc_info']['month'], 'exp_year' => $order_payment_detail['cc_info']['year']);
+                            $charge = \Stripe\Charge::create(array('card' => $myCard, 'amount' => $amount, 'currency' => 'usd'));
+                            $response = success_res("your payment has been successfully processed");
+                            $charge_id = $charge->id;
+                        } else {
+                            $response = success_res("your payment has been successfully processed");
+                            $charge_id = 0;
+                        }
+                        $response['amount'] = $amount / 100;
 
-                    $order_info = $this->m_site->get_ordelist_order($order_id);
-                    $email['order_detail'] = $this->m_site->get_order_detail($order_id);
-                    $redeemed_points = $this->m_site->get_redeemed_points($order_id);
-                    if (count($redeemed_points) > 0) {
-                        $email['redeem_points'] = $redeemed_points['points'];
-                    } else {
-                        $email['redeem_points'] = 0;
-                    }
-                    $email['order_id'] = $order_id;
-                    $email['total'] = $order_payment_detail['total'];
-                    $email['cc_no'] = $order_payment_detail['cc_info']['cc_no'];
-                    $email['exp_month'] = $order_payment_detail['cc_info']['month'];
-                    $email['exp_year'] = $order_payment_detail['cc_info']['year'];
-                    $email['business_id'] = $business_id;
-                    $email['business_name'] = $this->session->userdata('name');
-                    $email['subtotal'] = $order_info[0]['subtotal'];
-                    $email['tip_amount'] = $order_info[0]['tip_amount'];
-                    $email['tax_amount'] = $order_info[0]['tax_amount'];
-                    $email['points_dollar_amount'] = $order_info[0]['points_dollar_amount'];
+                        $this->m_site->update_order_status($order_id, $charge_id, $response['amount'], $order_payment_detail['consumer_id']);
 
-                    if ($order_payment_detail['cc_info']['email1'] != '' && $order_payment_detail['cc_info']['email1'] != NULL) {
-                        $this->mail_receipt($email, $order_payment_detail['cc_info']['email1']);
+                        $order_info = $this->m_site->get_ordelist_order($order_id);
+                        $email['order_detail'] = $this->m_site->get_order_detail($order_id);
+                        $redeemed_points = $this->m_site->get_redeemed_points($order_id);
+                        if (count($redeemed_points) > 0) {
+                            $email['redeem_points'] = $redeemed_points['points'];
+                        } else {
+                            $email['redeem_points'] = 0;
+                        }
+                        $email['order_id'] = $order_id;
+                        $email['total'] = $order_payment_detail['total'];
+                        $email['cc_no'] = $order_payment_detail['cc_info']['cc_no'];
+                        $email['exp_month'] = $order_payment_detail['cc_info']['month'];
+                        $email['exp_year'] = $order_payment_detail['cc_info']['year'];
+                        $email['business_id'] = $business_id;
+                        $email['business_name'] = $this->session->userdata('name');
+                        $email['subtotal'] = $order_info[0]['subtotal'];
+                        $email['tip_amount'] = $order_info[0]['tip_amount'];
+                        $email['tax_amount'] = $order_info[0]['tax_amount'];
+                        $email['points_dollar_amount'] = $order_info[0]['points_dollar_amount'];
+
+                        if ($order_payment_detail['cc_info']['email1'] != '' && $order_payment_detail['cc_info']['email1'] != NULL) {
+                            $this->mail_receipt($email, $order_payment_detail['cc_info']['email1']);
+                        }
+                    } catch (Exception $exc) {
+                        $response = error_res("Something went wrong");
                     }
                 }
             } else {
@@ -315,36 +320,60 @@ class Site extends CI_Controller {
 
     function refund_order_amount() {
         is_login() ? '' : redirect('index.php/login');
+        require_once('lib/stripe-php-master/init.php');
         $param = $_REQUEST;
+
         $business_id = is_login();
+
         $this->validation->is_parameter_blank('order_id', $param['order_id']);
         $order_id = decrypt_string($param['order_id']);
         $order_charge_detail = $this->m_site->get_order_charge_detail($order_id);
+
         $refundamt = $order_charge_detail['amount'];
         if ($param['refund_type'] == 2) {
             if ($param['amount'] > $refundamt) {
                 $response = error_res("Invalid Amount");
             } else {
+                $refundamt = $param['amount'];
                 $response = success_res("Order Refunded Successfully");
                 $secret_key = $this->get_stripe_secret_key($business_id);
                 $refund['charge'] = $order_charge_detail['stripe_charge_id'];
                 $refund['amount'] = $refundamt * 100;
+                try {
+                    \Stripe\Stripe::setApiKey($secret_key);
+                    $re = \Stripe\Refund::create($refund);
+                    $stripe_refund_id = $re->id;
+                    $this->m_site->update_order_charge_status($order_charge_detail['charge_id'], $order_id, $stripe_refund_id, $refundamt, $param['refund_type']);
+                } catch (Exception $exc) {
+                    $response = error_res("Something went wrong");
+                }
+            }
+        } else if ($param['refund_type'] == 1) {
+            $response = success_res("Order Refunded Successfully");
+            $secret_key = $this->get_stripe_secret_key($business_id);
+            $refund['charge'] = $order_charge_detail['stripe_charge_id'];
+
+            try {
                 \Stripe\Stripe::setApiKey($secret_key);
                 $re = \Stripe\Refund::create($refund);
                 $stripe_refund_id = $re->id;
                 $this->m_site->update_order_charge_status($order_charge_detail['charge_id'], $order_id, $stripe_refund_id, $refundamt, $param['refund_type']);
+            } catch (Exception $exc) {
+                $response = error_res("Something went wrong");
             }
-        } else if ($param['refund_type'] == 1) {
-            $secret_key = $this->get_stripe_secret_key($business_id);
-            $refund['charge'] = $order_charge_detail['stripe_charge_id'];
-            \Stripe\Stripe::setApiKey($secret_key);
-            $re = \Stripe\Refund::create($refund);
-            $stripe_refund_id = $re->id;
-            $this->m_site->update_order_charge_status($order_charge_detail['charge_id'], $order_id, $stripe_refund_id, $refundamt, $param['refund_type']);
         } else {
             $response = error_res("Something went wrong");
         }
-        
+
+        echo json_encode($response);
+    }
+
+    function test_refund() {
+        require_once('lib/stripe-php-master/init.php');
+        \Stripe\Stripe::setApiKey($secret_key);
+        $re = \Stripe\Refund::create(array('charge' => 'ch_18SPh3A4o51atGGFHbOnDpf8'));
+        $stripe_refund_id = $re->id;
+        print_r($re);
     }
 
 }

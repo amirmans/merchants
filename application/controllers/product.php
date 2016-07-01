@@ -79,13 +79,13 @@ class Product extends CI_Controller {
         $param['has_option'] = $this->validation->set_blank_parameter($param['has_option']);
         $param['bought_with_rewards'] = $this->validation->set_blank_parameter($param['bought_with_rewards']);
         $param['more_information'] = $this->validation->set_blank_parameter($param['more_information']);
-        if (!file_exists('../tapin-server-staging/customer_files/' . $param['businessID'])) {
-            mkdir('../tapin-server-staging/customer_files/' . $param['businessID'], 0777, true);
+        if (!file_exists('../'.staging_directory().'/customer_files/' . $param['businessID'])) {
+            mkdir('../'.staging_directory().'/customer_files/' . $param['businessID'], 0777, true);
         }
-        if (!file_exists('../tapin-server-staging/customer_files/' . $param['businessID'].'/products')) {
-            mkdir('../tapin-server-staging/customer_files/' . $param['businessID'].'/products', 0777, true);
+        if (!file_exists('../'.staging_directory().'/customer_files/' . $param['businessID'].'/products')) {
+            mkdir('../'.staging_directory().'/customer_files/' . $param['businessID'].'/products', 0777, true);
         }
-        $param['pictures'] = $this->validation->file_upload("pictures", '../tapin-server-staging/customer_files/' . $param['businessID'] . '/products');
+        $param['pictures'] = $this->validation->file_upload("pictures", '../'.staging_directory().'/customer_files/' . $param['businessID'] . '/products');
 
         $data = $this->m_site->insert_product($param);
         echo json_encode($data);
@@ -169,9 +169,9 @@ class Product extends CI_Controller {
         $param['has_option'] = $this->validation->set_blank_parameter($param['has_option']);
         $param['bought_with_rewards'] = $this->validation->set_blank_parameter($param['bought_with_rewards']);
         $param['more_information'] = $this->validation->set_blank_parameter($param['more_information']);
-        $param['pictures'] = $this->validation->file_upload("pictures", '../tapin-server-staging/customer_files/' . $param['businessID'] . '/products');
+        $param['pictures'] = $this->validation->file_upload("pictures", '../'.staging_directory().'/customer_files/' . $param['businessID'] . '/products');
         if ($param['pictures'] != '') {
-            $oldfilepath = '../tapin-server-staging/customer_files/' . $param['businessID'] . '/products/' . $param['old_pictures'];
+            $oldfilepath = '../'.staging_directory().'/customer_files/' . $param['businessID'] . '/products/' . $param['old_pictures'];
             if (file_exists($oldfilepath)) {
                 unlink($oldfilepath);
             }

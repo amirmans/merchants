@@ -255,28 +255,25 @@
 
                 <?php
             } elseif ($orderlist[0]['status'] == "3") {
-                ?>
-                <a id="button_refund" href="#" class=" btn btn-primary " data-toggle="modal" data-target="#completeModal"    style=" font-size: 20px;">
+                if($orderlist[0]['is_refunded'] == "1")
+                {
+                    ?>
+                <span id="refunded_label"><label class="label label-primary padding-10" style="font-weight: normal;font-size: 20px;"><i class="fa fa-check"></i>REFUNDED</label></span>
+                        <?php
+                }
+                else
+                {
+                    ?><a id="button_refund" href="#" class=" btn btn-primary " data-toggle="modal" data-target="#completeModal"    style=" font-size: 20px;">
                     REFUND
                 </a>
+                <span id="refunded_label" style="display: none"><label class="label label-primary padding-10" style="font-weight: normal;font-size: 20px;"><i class="fa fa-check"></i>REFUNDED</label></span>
+                        <?php
+                }
+                ?>
+                
                 <script>
                     document.querySelector('#button_refund').onclick = function() {
-
-
                         $("#refundModal").modal('show');
-                        var order_id = $("#order_id").val();
-                        var param = {order_id: order_id};
-                        //                        $.post("<?php //echo base_url('index.php/site/completedorder')       ?>", param)
-                        //                                .done(function(data) {
-                        //                                    data = jQuery.parseJSON(data);
-                        //                                    if (data['status'] == '1')
-                        //                                    {
-                        //                                        swal("Completed order", "", "success");
-                        //                        
-                        //                                    } else {
-                        //                                     
-                        //                                    }
-                        //                                });
                     };
                 </script>
 
@@ -295,45 +292,45 @@
 <div class="modal fade" id="refundModal" tabindex="-1" role="dialog" aria-hidden="true" style="display: none; vertical-align: middle">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form class="form-horizontal" id="form_refund_order" action="" method="post">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                    <h4 class="modal-title">Refund Order</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <label class="col-sm-3 control-label form-label">Refund Type</label>
-                        <div class="col-sm-6">
-                            <div class="radio">
-                                <input type="radio" name="refund_type" id="full" value="1" checked onchange="hideShow(1)">
-                                <label for="full">
-                                    Full
-                                </label>
-                            </div>
-                            <div class="radio radio-warning">
-                                <input type="radio" name="refund_type" id="partial" value="2" onchange="hideShow(2)">
-                                <label for="partial">
-                                    Partial
-                                </label>
-                            </div>
-                            <br/>
-                            <div class="form-group" style="display: none" id="refund_amt">
-                                <div class="col-sm-8">
-                                    <input type="number" class="form-control" id="rfd_amount" name="rfd_amount"  placeholder="Refund Amount" required>
-                                </div>
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">Refund Order</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <label class="col-sm-3 control-label form-label">Refund Type</label>
+                    <div class="col-sm-6">
+                        <div class="radio">
+                            <input type="radio" name="refund_type" id="full" value="1" checked onchange="hideShow(1)">
+                            <label for="full">
+                                Full
+                            </label>
+                        </div>
+                        <div class="radio radio-warning">
+                            <input type="radio" name="refund_type" id="partial" value="2" onchange="hideShow(2)">
+                            <label for="partial">
+                                Partial
+                            </label>
+                        </div>
+                        <br/>
+                        <div class="form-group" style="display: none" id="refund_amt">
+                            <div class="col-sm-8">
+                                <input type="number" class="form-control" id="rfd_amount" name="rfd_amount"  placeholder="Refund Amount" required>
                             </div>
                         </div>
-                        <div class="col-sm-3"></div>
                     </div>
+                    <div class="col-sm-3"></div>
+                </div>
 
-                    <br>
-                </div>
-                <div class="modal-footer">
-                    <label id="category_error_text" class="pull-left color10"></label>
-                    <button type="button" class="btn btn-white" data-dismiss="modal" >Close</button>
-                    <button type="submit" class="btn btn-default" >Refund</button>
-                </div>
-            </form>
+                <br>
+            </div>
+            <div class="modal-footer">
+                <label id="category_error_text" class="pull-left color10"></label>
+                <button type="button" class="btn btn-white" data-dismiss="modal" >Close</button>
+                <button  class="btn btn-default" onclick="refund_order()" >Refund</button>
+            </div>
+
         </div>
     </div>
 </div>
@@ -405,28 +402,40 @@
         frameDoc.document.close();
     }
 
-    var options = {
-        success: processRefundResponse
-    }
     window.history.forward(-1);
 
-    $(document).ready(function() {
-        // bind 'myForm' and provide a simple callback function 
-        $('#form_refund_order').ajaxForm(options);
-    });
+    function refund_order() {
 
-    function processRefundResponse(data) {
-         $('#refundModal').modal('toggle');
-
-//        var data = JSON.parse(data);
-//        if (data.status)
-//        {
-//            $('#refundModal').modal('toggle');
-//        }
-//        else
-//        {
-//             $('#refundModal').modal('toggle');
-//        }
+        var order_id = $("#order_id").val();
+        var refund_type = $("input[name=refund_type]:checked").val();
+        var param = {order_id: order_id, refund_type: refund_type};
+        if (refund_type == 2)
+        {
+            var amount = $("#rfd_amount").val();
+            var order_amount = $("#order_amount").val();
+            if (amount > order_amount)
+            {
+                swal("", "Invalid  Amount", "error");
+                return false;
+            }
+            param.amount = amount;
+        }
+        
+        $.post("<?php echo base_url('index.php/site/refund_order_amount') ?>", param)
+                .done(function(data) {
+                    data = jQuery.parseJSON(data);
+                    if (data['status'] == '1')
+                    {
+                        $('#refundModal').modal('toggle');
+                        $("#button_refund").remove();
+                        $("#refunded_label").show();
+                        swal("Refunded order", "", "success");
+                        
+                    } else {
+                        $('#refundModal').modal('toggle');
+                        swal("Refunded order", data['msg'], "error");
+                    }
+                });
     }
 
 
