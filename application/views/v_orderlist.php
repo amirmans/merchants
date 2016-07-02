@@ -109,46 +109,35 @@
             <div class="container-mail">
                 <div class="mailbox clearfix">
                     <div class="container-mailbox">
-
                         <div class="col-lg-3 col-md-4 padding-0">
                             <div class="row order-menu">
+                                <div class="col-md-2 float-l"><span class="order_text"><h5>&nbsp;&nbsp;&nbsp;ORDERS</h5></span></div> 
+                                <div class="col-md-10 text-right">
 
-                                <?php
-                                if ($order_status == 'completed') {
-                                    ?>
-                                    <div class="col-md-2 float-l"><span class="order_text"><h5>&nbsp;&nbsp;&nbsp;ORDERS</h5></span></div> 
-                                    <div class="col-md-5">
+                                    <select class="selectpicker" id="order_status" style="margin: 10px 24px;" onchange="change_order_status()" >
+                                        <option value="neworder"  >New Order</option>
+                                        <option value="completed" selected >Completed</option>
+                                    </select>
+                                </div>    
+                            </div>    
+
+                            <?php
+                            if ($order_status == 'completed') {
+                                ?>
+                                <div class="row order-menu">
+                                    <div class="col-md-12">
                                         <form id="search_form" class="searchform" action="<?php echo base_url('index.php/site/search_orderlist'); ?>" method="post">
                                             <input type="text" class="searchbox" name="keyword" id="keyword" placeholder="Search">
                                             &nbsp;<button type="submit" class="btn btn-rounded btn-option1" onclick="return search_order()">Go</button>
                                         </form>
-                                        
                                     </div> 
-                                    <div class="col-md-5 text-right">
-
-                                        <select class="selectpicker" id="order_status" style="margin: 10px 24px;" onchange="change_order_status()" >
-                                            <option value="neworder"  >New Order</option>
-                                            <option value="completed" selected >Completed</option>
-                                        </select>
-                                    </div>
-
-                                    <?php
-                                } else {
-                                    ?>
-                                    <div class="col-md-2 float-l"><span class="order_text"><h5>&nbsp;&nbsp;&nbsp;ORDERS</h5></span></div> 
-                                    <div class="col-md-10 text-right">
-
-                                        <select class="selectpicker" id="order_status" style="margin: 10px 24px;" onchange="change_order_status()" >
-                                            <option value="neworder"  >New Order</option>
-                                            <option value="completed" selected >Completed</option>
-                                        </select>
-                                    </div>    
-                                    <?php
-                                }
-                                ?>
+                                </div>
+                                <?php
+                            }
+                            ?>
 
 
-                            </div>
+
                             <ul class="order-list" id="ui_orderlist">
 
                                 <?php for ($i = 0; $i < count($orderlist); $i++) {

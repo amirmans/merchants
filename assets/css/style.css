@@ -343,17 +343,18 @@ Sidebar Open Button - Show or Hide Sidebar
 Searchbox - Top Search Input
 ================================================================================= */
 .searchform {
-    width: 220px;
+    width: 353px;
     margin: 0 20px;
     float: left;
     padding-top: 14px;
     position: relative;
+    margin-bottom: 10px;    
 }
 .searchbox {
     border-radius: 999px;
     border: none;
     height: 30px;
-    width: 115px;
+    width: 180px;
     padding-left: 20px;
     padding-right: 36px;
     background: rgba(255, 255, 255, 0.95);
@@ -4203,9 +4204,13 @@ Widgets
 .newtopstats{
     height: 80px;padding-top: 25px;
 }
-.newtopstats1{width: 33%;float: left;}
-.newtopstats2{width: 12%;float: left;}
-.newtopstats3{width: 55%;float: left;}
+
+.newtopstats3 label{
+    width: 55%;float: left;font-size: 28px;
+    font-weight: bold;
+    font-family: 'Montserrat', sans-serif;    letter-spacing: -1px;
+    line-height: normal;
+    margin: 1px 0;}
 .newtopstats1 span{font-size: 15px;float: left;font-weight: bold;margin-right: 5%;margin-left: 5%;}
 @media only screen and (max-width : 768px) { 
     .applogo{
