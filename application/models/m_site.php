@@ -366,8 +366,8 @@ class M_site extends CI_Model {
 
     function get_business_options($param) {
         $this->db->select('*');
-        $this->db->from('business_option');
-        $this->db->where('business_id', $param['businessID']);
+        $this->db->from('option');
+//        $this->db->where('business_id', $param['businessID']);
         $this->db->order_by("option_id", "desc");
         $result = $this->db->get();
         $row = $result->result_array();
@@ -511,24 +511,13 @@ class M_site extends CI_Model {
 
     function insert_option($param) {
 
-        $this->db->select('*');
-        $this->db->from('business_option');
-        $this->db->where('name', $param['name']);
-        $option_result = $this->db->get();
-        $option_row = $option_result->row_array();
-        if (count($option_row) == 0) {
-            $data['business_id'] = $param['businessID'];
-            $data['name'] = $param['name'];
-            $data['price'] = $param['price'];
-            $data['description'] = $param['description'];
-            $data['product_option_category_id'] = $param['product_option_category_id'];
-            $this->db->insert('business_option', $data);
-            $return['status'] = 1;
-            $return['msg'] = 'Option added successfully';
-        } else {
-            $return['status'] = 0;
-            $return['msg'] = 'Option name already exist';
-        }
+        $data['name'] = $param['name'];
+        $data['price'] = $param['price'];
+        $data['description'] = $param['description'];
+        $data['product_option_category_id'] = $param['product_option_category_id'];
+        $this->db->insert('option', $data);
+        $return['status'] = 1;
+        $return['msg'] = 'Option added successfully';
         return $return;
     }
 
@@ -544,7 +533,7 @@ class M_site extends CI_Model {
 
         for ($i = 0; $i < count($checkedOptionIds); $i++) {
             $this->db->select('*');
-            $this->db->from('business_option');
+            $this->db->from('option');
             $this->db->where('option_id', $checkedOptionIds[$i]);
             $option_result = $this->db->get();
             $option_row = $option_result->row_array();
@@ -552,12 +541,13 @@ class M_site extends CI_Model {
             $this->db->select('option_id,name');
             $this->db->from('product_option');
             $this->db->where('product_id', $param['product_id']);
-            $this->db->where('name', $option_row['name']);
+            $this->db->where('option_id', $option_row['option_id']);
             $this->db->order_by("option_id", "desc");
             $product_result = $this->db->get();
             $product_row = $product_result->row_array();
             if (count($product_row) == 0) {
                 $data = array();
+                $data['option_id'] = $option_row['option_id'];
                 $data['product_option_category_id'] = $option_row['product_option_category_id'];
                 $data['name'] = $option_row['name'];
                 $data['price'] = $option_row['price'];
@@ -565,35 +555,41 @@ class M_site extends CI_Model {
                 $data['product_id'] = $param['product_id'];
 
                 $this->db->insert('product_option', $data);
-            } else {
-                if ($product_row['availability_status'] == 0) {
-                    $data = array();
-                    $data['availability_status'] = 1;
-                    $this->db->where('option_id', $product_row['option_id']);
-                    $this->db->update('product_option', $data);
-                }
             }
+//            else {
+//                if ($product_row['availability_status'] == 0) {
+//                    $data = array();
+//                    $data['availability_status'] = 1;
+//                    $this->db->where('option_id', $product_row['option_id']);
+//                    $this->db->update('product_option', $data);
+//                }
+//            }
         }
         for ($i = 0; $i < count($uncheckedOptionIds); $i++) {
-            $this->db->select('*');
-            $this->db->from('business_option');
-            $this->db->where('option_id', $uncheckedOptionIds[$i]);
-            $option_result = $this->db->get();
-            $option_row = $option_result->row_array();
+//            $this->db->select('*');
+//            $this->db->from('business_option');
+//            $this->db->where('option_id', $uncheckedOptionIds[$i]);
+//            $option_result = $this->db->get();
+//            $option_row = $option_result->row_array();
 
-            $this->db->select('option_id,name');
-            $this->db->from('product_option');
+            
             $this->db->where('product_id', $param['product_id']);
-            $this->db->where('name', $option_row['name']);
-            $this->db->order_by("option_id", "desc");
-            $product_result = $this->db->get();
-            $product_row = $product_result->row_array();
-            if (count($product_row) > 0) {
-                $data = array();
-                $data['availability_status'] = 0;
-                $this->db->where('option_id', $product_row['option_id']);
-                $this->db->update('product_option', $data);
-            }
+            $this->db->where('option_id', $uncheckedOptionIds[$i]);
+            $this->db->delete('product_option');
+
+//            $this->db->select('option_id,name');
+//            $this->db->from('product_option');
+//            $this->db->where('product_id', $param['product_id']);
+//            $this->db->where('name', $option_row['name']);
+//            $this->db->order_by("option_id", "desc");
+//            $product_result = $this->db->get();
+//            $product_row = $product_result->row_array();
+//            if (count($product_row) > 0) {
+//                $data = array();
+//                $data['availability_status'] = 0;
+//                $this->db->where('option_id', $product_row['option_id']);
+//                $this->db->update('product_option', $data);
+//            }
         }
 
 //        $this->db->select('name');
@@ -620,29 +616,28 @@ class M_site extends CI_Model {
     }
 
     function get_products_options($param) {
-        $this->db->select('*');
-        $this->db->from('business_option');
-        $this->db->where('business_id', $param['businessID']);
+        $this->db->select('o.*,CASE WHEN po.product_id IS NOT NULL THEN 1 ELSE 0 END AS is_add', false);
+        $this->db->from('option o');
+        $this->db->join('product_option po', 'o.option_id=po.option_id and po.product_id=' . $param['product_id'], 'left');
         $this->db->order_by("option_id", "desc");
         $result = $this->db->get();
         $row = $result->result_array();
 
 
-        $this->db->select('name');
-        $this->db->from('product_option');
-        $this->db->where('product_id', $param['product_id']);
-        $this->db->where('availability_status', 1);
-        $this->db->order_by("option_id", "desc");
-        $product_result = $this->db->get();
-        $product_row = $product_result->result_array();
-
-        foreach ($row as &$r) {
-            foreach ($product_row as $p) {
-                if ($p['name'] == $r['name']) {
-                    $r['is_add'] = 1;
-                }
-            }
-        }
+//        $this->db->select('option_id');
+//        $this->db->from('product_option');
+//        $this->db->where('product_id', $param['product_id']);
+//        $this->db->order_by("option_id", "desc");
+//        $product_result = $this->db->get();
+//        $product_row = $product_result->result_array();
+//
+//        foreach ($row as &$r) {
+//            foreach ($product_row as $p) {
+//                if ($p[''] == $r['name']) {
+//                    $r['is_add'] = 1;
+//                }
+//            }
+//        }
         return $row;
     }
 
