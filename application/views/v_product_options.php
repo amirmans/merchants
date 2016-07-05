@@ -117,18 +117,18 @@
                 var param={checked:checkedOptionId,unchecked:uncheckedOptionId,product_id:product_id}
                 console.log(param)
                 
-//                $.post("<?php echo base_url('index.php/product/insert_product_options') ?>", param)
-//                        .done(function(data) {
-//                            data = jQuery.parseJSON(data);
-//                            if (data['status'] == '1')
-//                            {
-//                                
-//                                swal("", data['msg'], "success");
-//                            } else {
-//                                
-//                                swal("",data['msg'], "error");
-//                            }
-//                        });
+                $.post("<?php echo base_url('index.php/product/insert_product_options') ?>", param)
+                        .done(function(data) {
+                            data = jQuery.parseJSON(data);
+                            if (data['status'] == '1')
+                            {
+                                
+                                swal("", data['msg'], "success");
+                            } else {
+                                
+                                swal("",data['msg'], "error");
+                            }
+                        });
 
 
             }

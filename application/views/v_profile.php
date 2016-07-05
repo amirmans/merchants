@@ -89,7 +89,61 @@
 
                         </div>
                     </div>
+                    <div class="line row">
+                        <div class="col-md-6 col-xs-6 padding-0 text-left">
+                            <h4>Opening Hours</h4>
 
+                        </div>
+                        <div class="col-md-6 col-xs-3 padding-0 text-right">
+                            <a class="btn btn-primary pointer " onclick="edit_opening_hours()">Edit Opening Hours</a>
+                        </div>
+
+                    </div>
+                    <table class="table text-center" >
+                        <thead class="title">
+                            <tr>
+                                <td>WEEK DAY</td>
+                                <td>FROM DATE</td>
+                                <td>TO DATE</td>
+                                <td>OPENING TIME</td>
+                                <td class="">CLOSING TIME</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            for ($i = 0; $i < count($business_detail['hours']); $i++) {
+                                ?>
+                                <tr>
+                                    <td><?php
+                                        if ($business_detail['hours'][$i]['weekday_id'] == 0) {
+                                            echo 'Sunday';
+                                        } elseif ($business_detail['hours'][$i]['weekday_id'] == 1) {
+                                            echo 'Monday';
+                                        } elseif ($business_detail['hours'][$i]['weekday_id'] == 2) {
+                                            echo 'Tuesday';
+                                        } elseif ($business_detail['hours'][$i]['weekday_id'] == 3) {
+                                            echo 'Wednesday';
+                                        } elseif ($business_detail['hours'][$i]['weekday_id'] == 4) {
+                                            echo 'Thursday';
+                                        } elseif ($business_detail['hours'][$i]['weekday_id'] == 5) {
+                                            echo 'Friday';
+                                        } elseif ($business_detail['hours'][$i]['weekday_id'] == 6) {
+                                            echo 'Saturday';
+                                        }
+                                        ?></td>
+                                    <td><?php echo $business_detail['hours'][$i]['from_date'] ?></td>
+                                    <td><?php echo $business_detail['hours'][$i]['to_date'] ?></td>
+                                    <td><?php echo $business_detail['hours'][$i]['opening_time'] ?></td>
+                                    <td class=""><?php echo $business_detail['hours'][$i]['closing_time'] ?></td>
+                                </tr>
+                            <?php }
+                            ?>
+
+
+
+
+                        </tbody>
+                    </table>
 
 
 
@@ -194,6 +248,79 @@
             </div>
         </div>
 
+        <div class="modal fade" id="openingHoursModal" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <form class="form-horizontal" id="form_stripe_secret_key" action="<?php echo base_url('index.php/profile/edit_profile'); ?>" method="post" >
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                            <h4 class="modal-title">Edit Opening Hours</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-12">
+
+                                    <table class="table text-center" >
+                        <thead class="title">
+                            <tr>
+                                <td>WEEK DAY</td>
+                                <td>FROM DATE</td>
+                                <td>TO DATE</td>
+                                <td>OPENING TIME</td>
+                                <td class="">CLOSING TIME</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            for ($i = 0; $i < count($business_detail['hours']); $i++) {
+                                ?>
+                                <tr>
+                                    <td><?php
+                                        if ($business_detail['hours'][$i]['weekday_id'] == 0) {
+                                            echo 'Sunday';
+                                        } elseif ($business_detail['hours'][$i]['weekday_id'] == 1) {
+                                            echo 'Monday';
+                                        } elseif ($business_detail['hours'][$i]['weekday_id'] == 2) {
+                                            echo 'Tuesday';
+                                        } elseif ($business_detail['hours'][$i]['weekday_id'] == 3) {
+                                            echo 'Wednesday';
+                                        } elseif ($business_detail['hours'][$i]['weekday_id'] == 4) {
+                                            echo 'Thursday';
+                                        } elseif ($business_detail['hours'][$i]['weekday_id'] == 5) {
+                                            echo 'Friday';
+                                        } elseif ($business_detail['hours'][$i]['weekday_id'] == 6) {
+                                            echo 'Saturday';
+                                        }
+                                        ?></td>
+                                    <td><?php echo $business_detail['hours'][$i]['from_date'] ?></td>
+                                    <td><?php echo $business_detail['hours'][$i]['to_date'] ?></td>
+                                    <td><?php echo $business_detail['hours'][$i]['opening_time'] ?></td>
+                                    <td class=""><?php echo $business_detail['hours'][$i]['closing_time'] ?></td>
+                                </tr>
+                            <?php }
+                            ?>
+
+
+
+
+                        </tbody>
+                    </table>
+
+
+                                </div>
+                            </div>
+                            <br>
+                        </div>
+                        <div class="modal-footer">
+                            <label id="category_error_text" class="pull-left color10"></label>
+                            <button type="button" class="btn btn-white" data-dismiss="modal" >Close</button>
+                            <button type="submit" class="btn btn-default" >Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
         <?php $this->load->view('v_script'); ?>
 
 
@@ -204,7 +331,7 @@
             }
             window.history.forward(-1);
 
-            $(document).ready(function () {
+            $(document).ready(function() {
                 // bind 'myForm' and provide a simple callback function 
                 $('#form_stripe_secret_key').ajaxForm(options);
 
@@ -259,18 +386,18 @@
                 var sms_no_text = $('#sms_no_text').text();
                 $('#sms_no').val(sms_no_text);
                 var stripe_secret_key_text = $('#stripe_secret_key_text').text();
-                
+
                 var icon_url = document.getElementById("icon_url").src;
-                
+
                 document.getElementById("image").src = icon_url;
-                
+
                 $('#stripe_secret_key').val(stripe_secret_key_text);
                 $('#stripeTokenModal').modal('show');
             }
-            document.getElementById("image_upload_file").onchange = function () {
+            document.getElementById("image_upload_file").onchange = function() {
                 var reader = new FileReader();
 
-                reader.onload = function (e) {
+                reader.onload = function(e) {
                     // get loaded data and render thumbnail.
                     document.getElementById("image").src = e.target.result;
                 };
@@ -280,7 +407,11 @@
                 reader.readAsDataURL(this.files[0]);
 
             };
+            function edit_opening_hours() {
+
+                $('#openingHoursModal').modal('show');
+            }
         </script>
-        
+
     </body>
 </html>

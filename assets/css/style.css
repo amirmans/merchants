@@ -3711,9 +3711,9 @@ Widgets
     padding: 15px 0;
 }
 .widget-inline-list li span {
-    font-size: 18px;
+    font-size: 28px;
     display: block;
-    color: inherit;
+    color: #37363e;
     font-family: 'Montserrat', sans-serif;
     font-weight: 600;
 }
@@ -3766,11 +3766,11 @@ Widgets
 }
 .chart-with-stats .top-label {
     position: absolute;
-    right: 170px;
-    top: 20px;
+    right: 100px;
+    top: 0px;
     background: #f2f2f2;
     border-radius: 3px;
-    text-align: right;
+    text-align: center;
     padding: 10px 20px;
 }
 .chart-with-stats .top-label h2 {

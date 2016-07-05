@@ -20,7 +20,7 @@ class Reports extends CI_Controller {
         $param['businessID'] = is_login();
         $this->validation->is_parameter_blank('businessID', $param['businessID']);
         $data['reports'] = $this->m_site->total_orders_count($param);
-        $this->load->view('v_reports', $data);
+         $this->load->view('v_reports', $data);
     }
     function searchreport(){
         is_login() ? '' : redirect('index.php/login');

@@ -42,6 +42,16 @@ class M_site extends CI_Model {
         $this->db->limit(1);
         $result = $this->db->get();
         $row = $result->result_array();
+
+
+        $this->db->select('entry_id,from_date,to_date,weekday_id,opening_time,closing_time');
+        $this->db->from('opening_hours');
+        $this->db->where('businessID', $businessID);
+        $this->db->order_by('weekday_id', 'asc');
+        $openinghours_result = $this->db->get();
+        $hours = $openinghours_result->result_array();
+        $row[0]['hours'] = $hours;
+
         if (count($row) > 0) {
             $return = success_res("Business is available");
             $return['business_detail'] = $row[0];
@@ -572,7 +582,7 @@ class M_site extends CI_Model {
 //            $option_result = $this->db->get();
 //            $option_row = $option_result->row_array();
 
-            
+
             $this->db->where('product_id', $param['product_id']);
             $this->db->where('option_id', $uncheckedOptionIds[$i]);
             $this->db->delete('product_option');
@@ -818,37 +828,50 @@ class M_site extends CI_Model {
     }
 
     function total_orders_count($param) {
-        $this->db->select('*');
+        $this->db->select('count(order_id) as total_orders,ifnull(sum(subtotal),"0.00") as total_subtotal,ifnull(sum(tip_amount),"0.00") as total_tip, ifnull(sum(points_dollar_amount),"0.00") as total_points',FALSE);
         $this->db->from('order');
         $this->db->where('business_id', $param['businessID']);
         $this->db->where('date > DATE_SUB(NOW(), INTERVAL 1 DAY)');
         $result = $this->db->get();
-        $rowcount = $result->num_rows();
-        $return['today'] = $rowcount;
+        $row = $result->row_array();
+        $return['today']['orders'] = $row['total_orders'];
+        $return['today']['subtotals'] = $row['total_subtotal'];
+        $return['today']['tips'] = $row['total_tip'];
+        $return['today']['points'] = $row['total_points'];
 
-        $this->db->select('*');
+        $this->db->select('count(order_id) as total_orders,ifnull(sum(subtotal),"0.00") as total_subtotal,ifnull(sum(tip_amount),"0.00") as total_tip, ifnull(sum(points_dollar_amount),"0.00") as total_points',FALSE);
         $this->db->from('order');
         $this->db->where('business_id', $param['businessID']);
         $this->db->where('date > DATE_SUB(NOW(), INTERVAL 1 WEEK)');
         $weekresult = $this->db->get();
-        $weekcount = $weekresult->num_rows();
-        $return['week'] = $weekcount;
+        $weekrow = $weekresult->row_array();
+        $return['week']['orders'] = $weekrow['total_orders'];
+        $return['week']['subtotals'] = $weekrow['total_subtotal'];
+        $return['week']['tips'] = $weekrow['total_tip'];
+        $return['week']['points'] = $weekrow['total_points'];
 
-
-        $this->db->select('*');
+        $this->db->select('count(order_id) as total_orders,ifnull(sum(subtotal),"0.00") as total_subtotal,ifnull(sum(tip_amount),"0.00") as total_tip, ifnull(sum(points_dollar_amount),"0.00") as total_points',FALSE);
         $this->db->from('order');
         $this->db->where('business_id', $param['businessID']);
         $this->db->where('date > DATE_SUB(NOW(), INTERVAL 1 MONTH)');
         $monthresult = $this->db->get();
+        $monthrow = $monthresult->row_array();
         $monthcount = $monthresult->num_rows();
-        $return['month'] = $monthcount;
+        $return['month']['orders'] = $monthrow['total_orders'];
+        $return['month']['subtotals'] = $monthrow['total_subtotal'];
+        $return['month']['tips'] = $monthrow['total_tip'];
+        $return['month']['points'] = $monthrow['total_points'];
 
-        $this->db->select('*');
+        $this->db->select('count(order_id) as total_orders,ifnull(sum(subtotal),"0.00") as total_subtotal,ifnull(sum(tip_amount),"0.00") as total_tip, ifnull(sum(points_dollar_amount),"0.00") as total_points',FALSE);
         $this->db->from('order');
         $this->db->where('business_id', $param['businessID']);
         $totalresult = $this->db->get();
+        $totalrow = $totalresult->row_array();
         $totalcount = $totalresult->num_rows();
-        $return['total'] = $totalcount;
+        $return['total']['orders'] = $totalrow['total_orders'];
+        $return['total']['subtotals'] = $totalrow['total_subtotal'];
+        $return['total']['tips'] = $totalrow['total_tip'];
+        $return['total']['points'] = $totalrow['total_points'];
         return $return;
     }
 
@@ -856,15 +879,15 @@ class M_site extends CI_Model {
         $date = explode(" - ", $param['hiddendate']);
         $start_date = $date[0];
         $end_date = $date[1];
-        $this->db->select('*');
+        $this->db->select('count(order_id) as total_orders,ifnull(sum(subtotal),"0.00") as total_subtotal,ifnull(sum(tip_amount),"0.00") as total_tip, ifnull(sum(points_dollar_amount),"0.00") as total_points',FALSE);
         $this->db->from('order');
         $this->db->where('business_id', $param['businessID']);
         $this->db->where('date >=', $start_date);
         $this->db->where('date <=', $end_date);
         $result = $this->db->get();
-        $rowcount = $result->num_rows();
-        $return = $rowcount;
-        return $return;
+        $row = $result->row_array();
+        
+        return $row;
     }
 
     function update_order_charge_status($charge_id, $order_id, $stripe_refund_id, $refundamt, $refund_type) {
