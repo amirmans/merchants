@@ -5,6 +5,7 @@
 <script type="text/javascript" src="<?php echo base_url('assets/js/plugins.js'); ?>"></script>
 <script type="text/javascript" src=<?php echo base_url('assets/js/moment/moment.min.js'); ?>></script>
 <script src="<?php echo base_url('assets/js/date-range-picker/daterangepicker.js'); ?>"></script>
+<script src="<?php echo base_url('assets/js/bootstrap-timepicker/bootstrap-datetimepicker.js'); ?>"></script>
 <script src="<?php echo base_url('assets/js/sweet-alert/sweet-alert.min.js'); ?>"></script>
 <script src="<?php echo base_url('assets/js/kode-alert/main.js'); ?>"></script>
 <script src="<?php echo base_url('assets/js/webshim/minified/polyfiller.js'); ?>"></script>

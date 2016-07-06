@@ -37,14 +37,14 @@ class Profile extends CI_Controller {
 //        $this->validation->is_parameter_blank('sms_no', $param['sms_no']);
         $this->validation->is_parameter_blank('stripe_secret_key', $param['stripe_secret_key']);
 //        $this->validation->is_parameter_blank('process_time', $param['process_time']);
-        
+
         if ($_FILES['image_upload_file']['tmp_name'] != "") {
-            $image_url = $this->m_site->file_upload("image_upload_file", '../'.staging_directory().'/customer_files/icons');
+            $image_url = $this->m_site->file_upload("image_upload_file", '../' . staging_directory() . '/customer_files/icons');
             $param['icon'] = $image_url;
-        }else{
+        } else {
             $param['icon'] = "";
         }
-     
+
 
         $data = $this->m_site->update_business_profile($param);
 
@@ -52,6 +52,13 @@ class Profile extends CI_Controller {
         echo json_encode($data);
     }
 
-    
+    function edit_opening_hours() {
+        is_login() ? '' : redirect('index.php/login');
+        $param = $_REQUEST;
+        $param['businessID'] = is_login();
+        $data = $this->m_site->update_business_opening_hours($param);
+
+        echo json_encode($data);
+    }
 
 }

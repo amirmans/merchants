@@ -26,7 +26,7 @@ class Option extends CI_Controller {
     function add() {
         is_login() ? '' : redirect('index.php/login');
         $param['businessID'] = is_login();
-        $data['product_option_category'] = $this->m_site->get_products_option_category();
+        $data['product_option_category'] = $this->m_site->get_products_option_category($param);
         $this->load->view('v_option_add', $data);
     }
     

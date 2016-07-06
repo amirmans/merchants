@@ -94,14 +94,14 @@
                     <form class="form-horizontal" id="form_product_option_category" action="<?php echo base_url('index.php/product/add_option_category'); ?>" method="post" >
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                            <h4 class="modal-title">Add Product Option Category</h4>
+                            <h4 class="modal-title">Add product option category</h4>
                         </div>
                         <div class="modal-body">
 
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label for="category_name" class="col-sm-4 control-label form-label">OPtion Category Name</label>
+                                        <label for="category_name" class="col-sm-4 control-label form-label">Option Category Name</label>
                                         <div class="col-sm-8">
                                             <input type="text" class="form-control" id="category_name" name="option_category_name" required>
                                         </div>

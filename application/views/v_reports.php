@@ -156,7 +156,7 @@
                             </li>
                             <li class="col-xs-3">
                                 <h3 id="subtotals">0.00</h3>
-                                <span class="title"> SubTotals </span>
+                                <span class="title"> Subtotal </span>
                             </li>
                             <li class="col-xs-3">
                                 <h3 id="tips">0.00</h3>
@@ -170,7 +170,7 @@
                     </div>
 
                 </div>
-               
+
 
 
 
@@ -209,10 +209,7 @@
 
                 $('input[name="startdate"]').daterangepicker({
                     autoUpdateInput: false,
-                    locale: {
-                        cancelLabel: 'Clear',
-                        format: 'YYYY-MM-DD'
-                    }
+                    format: 'YYYY-MM-DD'
                 });
 
                 $('input[name="startdate"]').on('apply.daterangepicker', function(ev, picker) {

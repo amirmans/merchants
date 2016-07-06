@@ -124,6 +124,23 @@ class M_site extends CI_Model {
         return $return;
     }
 
+    function update_business_opening_hours($param) {
+
+        $entryids = explode(',', $param['entryids']);
+        
+        foreach ($entryids as $entry_id) {
+            $data = array();
+            $data['from_date'] = $param['fromdate_' . $entry_id];
+            $data['to_date'] = $param['todate_' . $entry_id];
+            $data['opening_time'] = $param['openingtime_' . $entry_id];
+            $data['closing_time'] = $param['closingtime_' . $entry_id];
+            $this->db->where('entry_id',$entry_id);
+            $this->db->update('opening_hours', $data);
+        }
+        $return = success_res("Opening hours updated successfully");
+        return $return;
+    }
+
     function get_business_order_list($param) {
         $this->db->select('o.order_id,o.payment_id,o.total,o.date,o.no_items,o.status,cp.nickname,TIMESTAMPDIFF(SECOND,o.date,now()) as seconds,oc.is_refunded');
         $this->db->from('order as o');
@@ -377,7 +394,7 @@ class M_site extends CI_Model {
     function get_business_options($param) {
         $this->db->select('*');
         $this->db->from('option');
-//        $this->db->where('business_id', $param['businessID']);
+        $this->db->where('business_id', $param['businessID']);
         $this->db->order_by("option_id", "desc");
         $result = $this->db->get();
         $row = $result->result_array();
@@ -432,12 +449,13 @@ class M_site extends CI_Model {
         $this->db->select('*');
         $this->db->from('product_option_category');
         $this->db->where('name', $param['option_category_name']);
+        $this->db->where('business_id', $param['businessID']);
         $category_result = $this->db->get();
         $category_row = $category_result->row_array();
         if (count($category_row) == 0) {
             $data['name'] = $param['option_category_name'];
             $data['desc'] = $param['desc'];
-
+            $data['business_id'] = $param['businessID'];
             $this->db->insert('product_option_category', $data);
             $categoryId = $this->db->insert_id();
 
@@ -525,6 +543,7 @@ class M_site extends CI_Model {
         $data['price'] = $param['price'];
         $data['description'] = $param['description'];
         $data['product_option_category_id'] = $param['product_option_category_id'];
+        $data['business_id'] = $param['businessID'];
         $this->db->insert('option', $data);
         $return['status'] = 1;
         $return['msg'] = 'Option added successfully';
@@ -629,6 +648,7 @@ class M_site extends CI_Model {
         $this->db->select('o.*,CASE WHEN po.product_id IS NOT NULL THEN 1 ELSE 0 END AS is_add', false);
         $this->db->from('option o');
         $this->db->join('product_option po', 'o.option_id=po.option_id and po.product_id=' . $param['product_id'], 'left');
+        $this->db->where("o.business_id", $param['businessID']);
         $this->db->order_by("option_id", "desc");
         $result = $this->db->get();
         $row = $result->result_array();
@@ -651,9 +671,10 @@ class M_site extends CI_Model {
         return $row;
     }
 
-    function get_products_option_category() {
+    function get_products_option_category($param) {
         $this->db->select('*');
         $this->db->from('product_option_category');
+        $this->db->where('business_id', $param['businessID']);
         $result = $this->db->get();
         $row = $result->result_array();
         return $row;
@@ -828,7 +849,7 @@ class M_site extends CI_Model {
     }
 
     function total_orders_count($param) {
-        $this->db->select('count(order_id) as total_orders,ifnull(sum(subtotal),"0.00") as total_subtotal,ifnull(sum(tip_amount),"0.00") as total_tip, ifnull(sum(points_dollar_amount),"0.00") as total_points',FALSE);
+        $this->db->select('count(order_id) as total_orders,ifnull(sum(subtotal),"0.00") as total_subtotal,ifnull(sum(tip_amount),"0.00") as total_tip, ifnull(sum(points_dollar_amount),"0.00") as total_points', FALSE);
         $this->db->from('order');
         $this->db->where('business_id', $param['businessID']);
         $this->db->where('date > DATE_SUB(NOW(), INTERVAL 1 DAY)');
@@ -839,7 +860,7 @@ class M_site extends CI_Model {
         $return['today']['tips'] = $row['total_tip'];
         $return['today']['points'] = $row['total_points'];
 
-        $this->db->select('count(order_id) as total_orders,ifnull(sum(subtotal),"0.00") as total_subtotal,ifnull(sum(tip_amount),"0.00") as total_tip, ifnull(sum(points_dollar_amount),"0.00") as total_points',FALSE);
+        $this->db->select('count(order_id) as total_orders,ifnull(sum(subtotal),"0.00") as total_subtotal,ifnull(sum(tip_amount),"0.00") as total_tip, ifnull(sum(points_dollar_amount),"0.00") as total_points', FALSE);
         $this->db->from('order');
         $this->db->where('business_id', $param['businessID']);
         $this->db->where('date > DATE_SUB(NOW(), INTERVAL 1 WEEK)');
@@ -850,7 +871,7 @@ class M_site extends CI_Model {
         $return['week']['tips'] = $weekrow['total_tip'];
         $return['week']['points'] = $weekrow['total_points'];
 
-        $this->db->select('count(order_id) as total_orders,ifnull(sum(subtotal),"0.00") as total_subtotal,ifnull(sum(tip_amount),"0.00") as total_tip, ifnull(sum(points_dollar_amount),"0.00") as total_points',FALSE);
+        $this->db->select('count(order_id) as total_orders,ifnull(sum(subtotal),"0.00") as total_subtotal,ifnull(sum(tip_amount),"0.00") as total_tip, ifnull(sum(points_dollar_amount),"0.00") as total_points', FALSE);
         $this->db->from('order');
         $this->db->where('business_id', $param['businessID']);
         $this->db->where('date > DATE_SUB(NOW(), INTERVAL 1 MONTH)');
@@ -862,7 +883,7 @@ class M_site extends CI_Model {
         $return['month']['tips'] = $monthrow['total_tip'];
         $return['month']['points'] = $monthrow['total_points'];
 
-        $this->db->select('count(order_id) as total_orders,ifnull(sum(subtotal),"0.00") as total_subtotal,ifnull(sum(tip_amount),"0.00") as total_tip, ifnull(sum(points_dollar_amount),"0.00") as total_points',FALSE);
+        $this->db->select('count(order_id) as total_orders,ifnull(sum(subtotal),"0.00") as total_subtotal,ifnull(sum(tip_amount),"0.00") as total_tip, ifnull(sum(points_dollar_amount),"0.00") as total_points', FALSE);
         $this->db->from('order');
         $this->db->where('business_id', $param['businessID']);
         $totalresult = $this->db->get();
@@ -879,14 +900,14 @@ class M_site extends CI_Model {
         $date = explode(" - ", $param['hiddendate']);
         $start_date = $date[0];
         $end_date = $date[1];
-        $this->db->select('count(order_id) as total_orders,ifnull(sum(subtotal),"0.00") as total_subtotal,ifnull(sum(tip_amount),"0.00") as total_tip, ifnull(sum(points_dollar_amount),"0.00") as total_points',FALSE);
+        $this->db->select('count(order_id) as total_orders,ifnull(sum(subtotal),"0.00") as total_subtotal,ifnull(sum(tip_amount),"0.00") as total_tip, ifnull(sum(points_dollar_amount),"0.00") as total_points', FALSE);
         $this->db->from('order');
         $this->db->where('business_id', $param['businessID']);
         $this->db->where('date >=', $start_date);
         $this->db->where('date <=', $end_date);
         $result = $this->db->get();
         $row = $result->row_array();
-        
+
         return $row;
     }
 

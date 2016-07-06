@@ -131,17 +131,21 @@
                                             echo 'Saturday';
                                         }
                                         ?></td>
-                                    <td><?php echo $business_detail['hours'][$i]['from_date'] ?></td>
-                                    <td><?php echo $business_detail['hours'][$i]['to_date'] ?></td>
-                                    <td><?php echo $business_detail['hours'][$i]['opening_time'] ?></td>
-                                    <td class=""><?php echo $business_detail['hours'][$i]['closing_time'] ?></td>
+                                    <td>
+                                       <?php echo $business_detail['hours'][$i]['from_date'] ?>
+                                    </td>
+                                    <td>
+                                        <?php echo $business_detail['hours'][$i]['to_date'] ?>
+                                    </td>
+                                    <td>
+                                        <?php echo $business_detail['hours'][$i]['opening_time'] ?>
+                                    </td>
+                                    <td>
+                                        <?php echo $business_detail['hours'][$i]['closing_time'] ?>
+                                    </td>
                                 </tr>
                             <?php }
                             ?>
-
-
-
-
                         </tbody>
                     </table>
 
@@ -251,7 +255,7 @@
         <div class="modal fade" id="openingHoursModal" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
-                    <form class="form-horizontal" id="form_stripe_secret_key" action="<?php echo base_url('index.php/profile/edit_profile'); ?>" method="post" >
+                    <form class="form-horizontal" id="form_opening_hours" action="<?php echo base_url('index.php/profile/edit_opening_hours'); ?>" method="post" >
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
                             <h4 class="modal-title">Edit Opening Hours</h4>
@@ -259,54 +263,64 @@
                         <div class="modal-body">
                             <div class="row">
                                 <div class="col-md-12">
-
                                     <table class="table text-center" >
-                        <thead class="title">
-                            <tr>
-                                <td>WEEK DAY</td>
-                                <td>FROM DATE</td>
-                                <td>TO DATE</td>
-                                <td>OPENING TIME</td>
-                                <td class="">CLOSING TIME</td>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
-                            for ($i = 0; $i < count($business_detail['hours']); $i++) {
-                                ?>
-                                <tr>
-                                    <td><?php
-                                        if ($business_detail['hours'][$i]['weekday_id'] == 0) {
-                                            echo 'Sunday';
-                                        } elseif ($business_detail['hours'][$i]['weekday_id'] == 1) {
-                                            echo 'Monday';
-                                        } elseif ($business_detail['hours'][$i]['weekday_id'] == 2) {
-                                            echo 'Tuesday';
-                                        } elseif ($business_detail['hours'][$i]['weekday_id'] == 3) {
-                                            echo 'Wednesday';
-                                        } elseif ($business_detail['hours'][$i]['weekday_id'] == 4) {
-                                            echo 'Thursday';
-                                        } elseif ($business_detail['hours'][$i]['weekday_id'] == 5) {
-                                            echo 'Friday';
-                                        } elseif ($business_detail['hours'][$i]['weekday_id'] == 6) {
-                                            echo 'Saturday';
-                                        }
-                                        ?></td>
-                                    <td><?php echo $business_detail['hours'][$i]['from_date'] ?></td>
-                                    <td><?php echo $business_detail['hours'][$i]['to_date'] ?></td>
-                                    <td><?php echo $business_detail['hours'][$i]['opening_time'] ?></td>
-                                    <td class=""><?php echo $business_detail['hours'][$i]['closing_time'] ?></td>
-                                </tr>
-                            <?php }
-                            ?>
+                                        <thead class="title">
+                                            <tr>
+                                                <td>WEEK DAY</td>
+                                                <td>FROM DATE</td>
+                                                <td>TO DATE</td>
+                                                <td>OPENING TIME</td>
+                                                <td class="">CLOSING TIME</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php
+                                            $enrtyids = '';
+                                            for ($i = 0; $i < count($business_detail['hours']); $i++) {
+                                                $enrtyids .= $business_detail['hours'][$i]['entry_id'];
+                                                if($i!=count($business_detail['hours'])-1)
+                                                {
+                                                    $enrtyids .=',';
+                                                }
+                                                ?>
+                                                <tr>
+                                                    <td>
+                                                        <?php
+                                                        if ($business_detail['hours'][$i]['weekday_id'] == 0) {
+                                                            echo 'Sunday';
+                                                        } elseif ($business_detail['hours'][$i]['weekday_id'] == 1) {
+                                                            echo 'Monday';
+                                                        } elseif ($business_detail['hours'][$i]['weekday_id'] == 2) {
+                                                            echo 'Tuesday';
+                                                        } elseif ($business_detail['hours'][$i]['weekday_id'] == 3) {
+                                                            echo 'Wednesday';
+                                                        } elseif ($business_detail['hours'][$i]['weekday_id'] == 4) {
+                                                            echo 'Thursday';
+                                                        } elseif ($business_detail['hours'][$i]['weekday_id'] == 5) {
+                                                            echo 'Friday';
+                                                        } elseif ($business_detail['hours'][$i]['weekday_id'] == 6) {
+                                                            echo 'Saturday';
+                                                        }
+                                                        ?></td>
+                                                    <td>    
+                                                        <input type="text" name="fromdate_<?php echo $business_detail['hours'][$i]['entry_id']; ?>" id="fromdate_<?php echo $business_detail['hours'][$i]['entry_id']; ?>" class="form-control" value="<?php echo $business_detail['hours'][$i]['from_date'] ?>">
+                                                    </td>
+                                                    <td>    
+                                                        <input type="text" name="todate_<?php echo $business_detail['hours'][$i]['entry_id']; ?>" id="todate_<?php echo $business_detail['hours'][$i]['entry_id']; ?>" class="form-control" style="" value="<?php echo $business_detail['hours'][$i]['to_date'] ?>">
+                                                    </td>
 
-
-
-
-                        </tbody>
-                    </table>
-
-
+                                                    <td>
+                                                        <input type="text" name="openingtime_<?php echo $business_detail['hours'][$i]['entry_id']; ?>" id="fromtime_<?php echo $business_detail['hours'][$i]['entry_id']; ?>" class="form-control" style="" value="<?php echo $business_detail['hours'][$i]['opening_time'] ?>">
+                                                    </td>
+                                                    <td class="">
+                                                        <input type="text" name="closingtime_<?php echo $business_detail['hours'][$i]['entry_id']; ?>" id="totime_<?php echo $business_detail['hours'][$i]['entry_id']; ?>" class="form-control" style="" value="<?php echo $business_detail['hours'][$i]['closing_time'] ?>">
+                                                    </td>
+                                                </tr>
+                                            <?php }
+                                            ?>
+                                        </tbody>
+                                    </table>
+                                    <input type="hidden" name="entryids" value="<?php echo $enrtyids; ?>">
                                 </div>
                             </div>
                             <br>
@@ -325,6 +339,7 @@
 
 
         <script>
+            var hours = $.parseJSON('<?php echo json_encode($business_detail['hours']); ?>')
 
             var options = {
                 success: processEditProfileResponse
@@ -334,8 +349,12 @@
             $(document).ready(function() {
                 // bind 'myForm' and provide a simple callback function 
                 $('#form_stripe_secret_key').ajaxForm(options);
+                $('#form_opening_hours').ajaxForm({
+                    success: processEditOpeningHoursResponse
+                });
 
             });
+
 
             function processEditProfileResponse(data) {
 
@@ -411,6 +430,52 @@
 
                 $('#openingHoursModal').modal('show');
             }
+
+            function processEditOpeningHoursResponse(data) {
+
+                var data = JSON.parse(data);
+                if (data.status)
+                {
+                    
+                    $('#openingHoursModal').modal('toggle');
+                    swal('', "Profile updated successfully", 'success')
+                    location.reload();
+
+                } else {
+                    console.log(data);
+                    $('#openingHoursModal').modal('toggle');
+                    swal('', "Profile updated unsuccessfully", 'error')
+
+                }
+            }
+
+            $(document).ready(function() {
+
+                for (var i = 0; i < hours.length; i++)
+                {
+                    var from = "fromdate_" + hours[i].entry_id;
+                    var to = "todate_" + hours[i].entry_id;
+                    var openingtime = "openingtime_" + hours[i].entry_id;
+                    var closingtime = "closingtime_" + hours[i].entry_id;
+
+                    $('input[name="' + from + '"]').daterangepicker({
+                        singleDatePicker: true,
+                        format: 'YYYY-MM-DD'
+                    });
+
+
+                    $('input[name="' + to + '"]').daterangepicker({
+                        singleDatePicker: true,
+                        format: 'YYYY-MM-DD'
+                    });
+
+                    $('input[name="' + openingtime + '"]').datetimepicker({format: 'HH:mm:ss', icons: {up: "fa fa-arrow-up", down: "fa fa-arrow-down"}});
+                    $('input[name="' + closingtime + '"]').datetimepicker({format: 'HH:mm:ss', icons: {up: "fa fa-arrow-up", down: "fa fa-arrow-down"}});
+
+                }
+
+            });
+
         </script>
 
     </body>

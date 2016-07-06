@@ -52,6 +52,7 @@ class Product extends CI_Controller {
     function add_option_category() {
         is_login() ? '' : redirect('index.php/login');
         $param = $_REQUEST;
+        $param['businessID'] = is_login();
         $this->validation->is_parameter_blank('option_category_name', $param['option_category_name']);
         $this->validation->is_parameter_blank('desc', $param['desc']);
         $data['product_option_category'] = $this->m_site->add_product_option_category($param);
@@ -79,13 +80,13 @@ class Product extends CI_Controller {
         $param['has_option'] = $this->validation->set_blank_parameter($param['has_option']);
         $param['bought_with_rewards'] = $this->validation->set_blank_parameter($param['bought_with_rewards']);
         $param['more_information'] = $this->validation->set_blank_parameter($param['more_information']);
-        if (!file_exists('../'.staging_directory().'/customer_files/' . $param['businessID'])) {
-            mkdir('../'.staging_directory().'/customer_files/' . $param['businessID'], 0777, true);
+        if (!file_exists('../' . staging_directory() . '/customer_files/' . $param['businessID'])) {
+            mkdir('../' . staging_directory() . '/customer_files/' . $param['businessID'], 0777, true);
         }
-        if (!file_exists('../'.staging_directory().'/customer_files/' . $param['businessID'].'/products')) {
-            mkdir('../'.staging_directory().'/customer_files/' . $param['businessID'].'/products', 0777, true);
+        if (!file_exists('../' . staging_directory() . '/customer_files/' . $param['businessID'] . '/products')) {
+            mkdir('../' . staging_directory() . '/customer_files/' . $param['businessID'] . '/products', 0777, true);
         }
-        $param['pictures'] = $this->validation->file_upload("pictures", '../'.staging_directory().'/customer_files/' . $param['businessID'] . '/products');
+        $param['pictures'] = $this->validation->file_upload("pictures", '../' . staging_directory() . '/customer_files/' . $param['businessID'] . '/products');
 
         $data = $this->m_site->insert_product($param);
         echo json_encode($data);
@@ -169,9 +170,9 @@ class Product extends CI_Controller {
         $param['has_option'] = $this->validation->set_blank_parameter($param['has_option']);
         $param['bought_with_rewards'] = $this->validation->set_blank_parameter($param['bought_with_rewards']);
         $param['more_information'] = $this->validation->set_blank_parameter($param['more_information']);
-        $param['pictures'] = $this->validation->file_upload("pictures", '../'.staging_directory().'/customer_files/' . $param['businessID'] . '/products');
+        $param['pictures'] = $this->validation->file_upload("pictures", '../' . staging_directory() . '/customer_files/' . $param['businessID'] . '/products');
         if ($param['pictures'] != '') {
-            $oldfilepath = '../'.staging_directory().'/customer_files/' . $param['businessID'] . '/products/' . $param['old_pictures'];
+            $oldfilepath = '../' . staging_directory() . '/customer_files/' . $param['businessID'] . '/products/' . $param['old_pictures'];
             if (file_exists($oldfilepath)) {
                 unlink($oldfilepath);
             }
