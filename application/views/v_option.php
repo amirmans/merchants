@@ -15,12 +15,9 @@
                 color: white !important;
             } 
         </style>
-
     </head>
     <body>
         <?php $this->load->view('v_header'); ?>
-
-
         <div class="content">
             <div class="container-mail">
                 <div class="mailbox clearfix">
@@ -46,7 +43,7 @@
                                                 <td>Name</td>
                                                 <td>Price</td>
                                                 <td>Description</td>
-                                                <!--<td>Add</td>-->
+                                                <td class="text-center">Edit</td>
 
                                             </tr>
                                         </thead>
@@ -58,8 +55,8 @@
                                                     <td><?php echo $options[$i]['name']; ?></td>
                                                     <td>$ <?php echo $options[$i]['price']; ?></td>
                                                     <td><?php echo $options[$i]['description']; ?></td>
-                                                    <!--<td><a href="<?php // echo base_url('index.php/product/options/' . $products[$i]['product_id']); ?>" class="btn btn-info add_product_btn"><i class="fa fa-eye"></i>View</a></td>-->
-
+                                                    <!--<td><a href="<?php // echo base_url('index.php/product/options/' . $products[$i]['product_id']);  ?>" class="btn btn-info add_product_btn"><i class="fa fa-eye"></i>View</a></td>-->
+                                                    <td><a href="<?php echo base_url('index.php/option/edit/' . $options[$i]['option_id']); ?>" class="btn btn-info add_product_btn"><i class="fa fa-edit"></i>Edit</a></td>
                                                 </tr>
                                             <?php } ?>
 

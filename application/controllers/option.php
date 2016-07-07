@@ -22,14 +22,14 @@ class Option extends CI_Controller {
         $data['options'] = $this->m_site->get_business_options($param);
         $this->load->view('v_option', $data);
     }
-    
+
     function add() {
         is_login() ? '' : redirect('index.php/login');
         $param['businessID'] = is_login();
         $data['product_option_category'] = $this->m_site->get_products_option_category($param);
         $this->load->view('v_option_add', $data);
     }
-    
+
     function insert_option() {
         is_login() ? '' : redirect('index.php/login');
         $param = $_REQUEST;
@@ -39,11 +39,33 @@ class Option extends CI_Controller {
         $this->validation->is_parameter_blank('price', $param['price']);
         $this->validation->is_parameter_blank('product_option_category_id', $param['product_option_category_id']);
         $param['description'] = $this->validation->set_blank_parameter($param['description']);
-        
+
         $data = $this->m_site->insert_option($param);
         echo json_encode($data);
     }
 
-    
+    function edit($optionId) {
+        is_login() ? '' : redirect('index.php/login');
+        $param['businessID'] = is_login();
+        $data['product_option_category'] = $this->m_site->get_products_option_category($param);
+        $data['option'] = $this->m_site->get_products_option($optionId);
+        $this->load->view('v_option_edit', $data);
+    }
+
+    function edit_option() {
+        is_login() ? '' : redirect('index.php/login');
+        $param = $_REQUEST;
+        $param['businessID'] = is_login();
+
+        $this->validation->is_parameter_blank('businessID', $param['businessID']);
+        $this->validation->is_parameter_blank('option_id', $param['option_id']);
+        $this->validation->is_parameter_blank('name', $param['name']);
+        $this->validation->is_parameter_blank('price', $param['price']);
+        $this->validation->is_parameter_blank('product_option_category_id', $param['product_option_category_id']);
+        $param['description'] = $this->validation->set_blank_parameter($param['description']);
+        $this->m_site->edit_option($param);
+        redirect('index.php/option');
+      
+    }
 
 }

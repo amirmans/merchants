@@ -127,14 +127,14 @@ class M_site extends CI_Model {
     function update_business_opening_hours($param) {
 
         $entryids = explode(',', $param['entryids']);
-        
+
         foreach ($entryids as $entry_id) {
             $data = array();
             $data['from_date'] = $param['fromdate_' . $entry_id];
             $data['to_date'] = $param['todate_' . $entry_id];
             $data['opening_time'] = $param['openingtime_' . $entry_id];
             $data['closing_time'] = $param['closingtime_' . $entry_id];
-            $this->db->where('entry_id',$entry_id);
+            $this->db->where('entry_id', $entry_id);
             $this->db->update('opening_hours', $data);
         }
         $return = success_res("Opening hours updated successfully");
@@ -922,6 +922,28 @@ class M_site extends CI_Model {
         $data['is_refunded'] = '1';
         $this->db->where('charge_id', $charge_id);
         $this->db->update('order_charge', $data);
+    }
+
+    function get_products_option($optionId) {
+        $this->db->select('*');
+        $this->db->from('option');
+        $this->db->where('option_id', $optionId);
+        $result = $this->db->get();
+        $row = $result->row_array();
+        return $row;
+    }
+
+    function edit_option($param) {
+
+        $data['name'] = $param['name'];
+        $data['price'] = $param['price'];
+        $data['description'] = $param['description'];
+        $data['product_option_category_id'] = $param['product_option_category_id'];
+        $data['business_id'] = $param['businessID'];
+        $this->db->where('option_id', $param['option_id']);
+        $this->db->update('option', $data);
+       
+
     }
 
 }
