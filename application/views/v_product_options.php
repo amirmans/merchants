@@ -32,7 +32,7 @@
                             <div class="panel panel-default">
 
                                 <div class="panel-title">
-                                    Prodcuts Options
+                                     <?php echo $product_name; ?> : Prodcuts Options
                                     <a  class="btn btn-success add_product_btn" onclick="save(<?php echo $product_id; ?>)"><i class="fa fa-save"></i>Save</a>
                                 </div>
 

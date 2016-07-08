@@ -125,6 +125,8 @@ class Product extends CI_Controller {
         $this->validation->is_parameter_blank('businessID', $param['businessID']);
         $data['options'] = $this->m_site->get_products_options($param);
         $data['product_id'] = $product_id;
+        $productInfo = $this->m_site->get_product_info($product_id);
+        $data['product_name'] = $productInfo['name'];
         $this->load->view('v_product_options', $data);
     }
 

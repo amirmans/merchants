@@ -202,7 +202,7 @@ class M_site extends CI_Model {
         foreach ($row as &$r) {
             $optionsId = explode(',', $r['option_ids']);
             $this->db->select('name');
-            $this->db->from('product_option');
+            $this->db->from('option');
             $this->db->where_in('option_id', $optionsId);
             $option_result = $this->db->get();
             $option_row = $option_result->result_array();
@@ -907,7 +907,39 @@ class M_site extends CI_Model {
         $this->db->where('date <=', $end_date);
         $result = $this->db->get();
         $row = $result->row_array();
-
+        
+        $this->db->select('count(order_id) as rejected_orders', FALSE);
+        $this->db->from('order');
+        $this->db->where('business_id', $param['businessID']);
+        $this->db->where('status',0);
+        $this->db->where('date >=', $start_date);
+        $this->db->where('date <=', $end_date);
+        $rejectedresult = $this->db->get();
+        $rejectedrow = $rejectedresult->row_array();
+        
+        
+        $this->db->select('sum(total) as total_processingfee', FALSE);
+        $this->db->from('order');
+        $this->db->where('business_id', $param['businessID']);
+        $this->db->where('status',2);
+        $this->db->where('date >=', $start_date);
+        $this->db->where('date <=', $end_date);
+        $processingFeeresult = $this->db->get();
+        $processingFeerow = $processingFeeresult->row_array();
+        
+        $this->db->select('sum(ro.amount) as total_refund', FALSE);
+        $this->db->from('refund_order ro');
+        $this->db->join('order o','o.order_id=ro.order_id','left');
+        $this->db->where('o.business_id', $param['businessID']);
+        $this->db->where('ro.created >=', $start_date);
+        $this->db->where('ro.created <=', $end_date);
+        $refundresult = $this->db->get();
+        $refundrow = $refundresult->row_array();
+        
+        $row['rejected_orders']=$rejectedrow['rejected_orders'];
+        $row['total_processingfee']=$processingFeerow['total_processingfee'];
+        $row['total_refund']=$refundrow['total_refund'];
+        $row['sql']=  $this->db->last_query();
         return $row;
     }
 

@@ -166,6 +166,14 @@
                                 <h3 id="points">0.00</h3>
                                 <span class="title"> Points </span>
                             </li>
+                            <li class="col-xs-3">
+                                <h3 id="rejected_orders">0.00</h3>
+                                <span class="title"> Rejected Orders </span>
+                            </li>
+                            <li class="col-xs-3">
+                                <h3 id="total_processing_fees">0.00</h3>
+                                <span class="title"> Total Processing Fees </span>
+                            </li>
                         </ul>
                     </div>
 
@@ -245,6 +253,8 @@
                 $("#subtotals").html(data.report.total_subtotal);
                 $("#tips").html(data.report.total_tip);
                 $("#points").html(data.report.total_points);
+                $("#rejected_orders").html(data.report.rejected_orders);
+                $("#total_processing_fees").html(data.report.total_processingfee);
             }
         </script>
 
