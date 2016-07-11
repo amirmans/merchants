@@ -311,7 +311,6 @@ class M_site extends CI_Model {
         $this->db->where('business_id', is_login());
         $this->db->where('order_id', $order_id);
         $this->db->update('order', $data);
-
         $order_detail = $this->get_order_info($order_id);
 
 
@@ -893,6 +892,119 @@ class M_site extends CI_Model {
         $return['total']['subtotals'] = $totalrow['total_subtotal'];
         $return['total']['tips'] = $totalrow['total_tip'];
         $return['total']['points'] = $totalrow['total_points'];
+
+
+
+        $this->db->select('count(order_id) as rejected_orders', FALSE);
+        $this->db->from('order');
+        $this->db->where('business_id', $param['businessID']);
+        $this->db->where('status', 0);
+        $this->db->where('date > DATE_SUB(NOW(), INTERVAL 1 DAY)');
+        $rejectedresult = $this->db->get();
+        $rejectedrow = $rejectedresult->row_array();
+        $return['today']['rejected'] = $rejectedrow['rejected_orders'];
+
+
+        $this->db->select('count(order_id) as rejected_orders', FALSE);
+        $this->db->from('order');
+        $this->db->where('business_id', $param['businessID']);
+        $this->db->where('status', 0);
+        $this->db->where('date > DATE_SUB(NOW(), INTERVAL 1 WEEK)');
+        $rejectedresult = $this->db->get();
+        $rejectedrow = $rejectedresult->row_array();
+        $return['week']['rejected'] = $rejectedrow['rejected_orders'];
+
+        $this->db->select('count(order_id) as rejected_orders', FALSE);
+        $this->db->from('order');
+        $this->db->where('business_id', $param['businessID']);
+        $this->db->where('status', 0);
+        $this->db->where('date > DATE_SUB(NOW(), INTERVAL 1 MONTH)');
+        $rejectedresult = $this->db->get();
+        $rejectedrow = $rejectedresult->row_array();
+        $return['month']['rejected'] = $rejectedrow['rejected_orders'];
+
+        $this->db->select('count(order_id) as rejected_orders', FALSE);
+        $this->db->from('order');
+        $this->db->where('business_id', $param['businessID']);
+        $this->db->where('status', 0);
+        $rejectedresult = $this->db->get();
+        $rejectedrow = $rejectedresult->row_array();
+        $return['total']['rejected'] = $rejectedrow['rejected_orders'];
+
+
+        $this->db->select('ifnull(sum(total),"0.00") as total_processingfee', FALSE);
+        $this->db->from('order');
+        $this->db->where('business_id', $param['businessID']);
+        $this->db->where('status', 2);
+        $this->db->where('date > DATE_SUB(NOW(), INTERVAL 1 DAY)');
+        $processingFeeresult = $this->db->get();
+        $processingFeerow = $processingFeeresult->row_array();
+        $return['today']['processing_fee'] = $processingFeerow['total_processingfee'];
+        
+
+        $this->db->select('ifnull(sum(total),"0.00") as total_processingfee', FALSE);
+        $this->db->from('order');
+        $this->db->where('business_id', $param['businessID']);
+        $this->db->where('status', 2);
+        $this->db->where('date > DATE_SUB(NOW(), INTERVAL 1 WEEK)');
+        $processingFeeresult = $this->db->get();
+        $processingFeerow = $processingFeeresult->row_array();
+        $return['week']['processing_fee'] = $processingFeerow['total_processingfee'];
+
+        $this->db->select('ifnull(sum(total),"0.00") as total_processingfee', FALSE);
+        $this->db->from('order');
+        $this->db->where('business_id', $param['businessID']);
+        $this->db->where('status', 2);
+        $this->db->where('date > DATE_SUB(NOW(), INTERVAL 1 MONTH)');
+        $processingFeeresult = $this->db->get();
+        $processingFeerow = $processingFeeresult->row_array();
+        $return['month']['processing_fee'] = $processingFeerow['total_processingfee'];
+
+        $this->db->select('ifnull(sum(total),"0.00") as total_processingfee', FALSE);
+        $this->db->from('order');
+        $this->db->where('business_id', $param['businessID']);
+        $this->db->where('status', 2);
+        $processingFeeresult = $this->db->get();
+        $processingFeerow = $processingFeeresult->row_array();
+        $return['total']['processing_fee'] = $processingFeerow['total_processingfee'];
+        
+        $this->db->select('ifnull(sum(ro.amount),"0.00") as total_refund', FALSE);
+        $this->db->from('refund_order ro');
+        $this->db->join('order o', 'o.order_id=ro.order_id', 'left');
+        $this->db->where('o.business_id', $param['businessID']);
+        $this->db->where('ro.created > DATE_SUB(NOW(), INTERVAL 1 DAY)');
+        $refundresult = $this->db->get();
+        $refundrow = $refundresult->row_array();
+        $return['today']['refund'] = $refundrow['total_refund'];
+        
+        
+
+        $this->db->select('ifnull(sum(ro.amount),"0.00") as total_refund', FALSE);
+        $this->db->from('refund_order ro');
+        $this->db->join('order o', 'o.order_id=ro.order_id', 'left');
+        $this->db->where('o.business_id', $param['businessID']);
+        $this->db->where('ro.created > DATE_SUB(NOW(), INTERVAL 1 WEEK)');
+        $refundresult = $this->db->get();
+        $refundrow = $refundresult->row_array();
+        $return['week']['refund'] = $refundrow['total_refund'];
+
+        $this->db->select('ifnull(sum(ro.amount),"0.00") as total_refund', FALSE);
+        $this->db->from('refund_order ro');
+        $this->db->join('order o', 'o.order_id=ro.order_id', 'left');
+        $this->db->where('o.business_id', $param['businessID']);
+        $this->db->where('ro.created > DATE_SUB(NOW(), INTERVAL 1 MONTH)');
+        $refundresult = $this->db->get();
+        $refundrow = $refundresult->row_array();
+        $return['month']['refund'] = $refundrow['total_refund'];
+
+        $this->db->select('ifnull(sum(ro.amount),"0.00") as total_refund', FALSE);
+        $this->db->from('refund_order ro');
+        $this->db->join('order o', 'o.order_id=ro.order_id', 'left');
+        $this->db->where('o.business_id', $param['businessID']);
+        $refundresult = $this->db->get();
+        $refundrow = $refundresult->row_array();
+        $return['total']['refund'] = $refundrow['total_refund'];
+
         return $return;
     }
 
@@ -907,39 +1019,38 @@ class M_site extends CI_Model {
         $this->db->where('date <=', $end_date);
         $result = $this->db->get();
         $row = $result->row_array();
-        
+
         $this->db->select('count(order_id) as rejected_orders', FALSE);
         $this->db->from('order');
         $this->db->where('business_id', $param['businessID']);
-        $this->db->where('status',0);
+        $this->db->where('status', 0);
         $this->db->where('date >=', $start_date);
         $this->db->where('date <=', $end_date);
         $rejectedresult = $this->db->get();
         $rejectedrow = $rejectedresult->row_array();
-        
-        
-        $this->db->select('sum(total) as total_processingfee', FALSE);
+
+
+        $this->db->select('ifnull(sum(total),"0.00") as total_processingfee', FALSE);
         $this->db->from('order');
         $this->db->where('business_id', $param['businessID']);
-        $this->db->where('status',2);
+        $this->db->where('status', 2);
         $this->db->where('date >=', $start_date);
         $this->db->where('date <=', $end_date);
         $processingFeeresult = $this->db->get();
         $processingFeerow = $processingFeeresult->row_array();
-        
-        $this->db->select('sum(ro.amount) as total_refund', FALSE);
+
+        $this->db->select('ifnull(sum(ro.amount),"0.00") as total_refund', FALSE);
         $this->db->from('refund_order ro');
-        $this->db->join('order o','o.order_id=ro.order_id','left');
+        $this->db->join('order o', 'o.order_id=ro.order_id', 'left');
         $this->db->where('o.business_id', $param['businessID']);
         $this->db->where('ro.created >=', $start_date);
         $this->db->where('ro.created <=', $end_date);
         $refundresult = $this->db->get();
         $refundrow = $refundresult->row_array();
-        
-        $row['rejected_orders']=$rejectedrow['rejected_orders'];
-        $row['total_processingfee']=$processingFeerow['total_processingfee'];
-        $row['total_refund']=$refundrow['total_refund'];
-        $row['sql']=  $this->db->last_query();
+
+        $row['rejected_orders'] = $rejectedrow['rejected_orders'];
+        $row['total_processingfee'] = $processingFeerow['total_processingfee'];
+        $row['total_refund'] = $refundrow['total_refund'];
         return $row;
     }
 
@@ -974,8 +1085,6 @@ class M_site extends CI_Model {
         $data['business_id'] = $param['businessID'];
         $this->db->where('option_id', $param['option_id']);
         $this->db->update('option', $data);
-       
-
     }
 
 }

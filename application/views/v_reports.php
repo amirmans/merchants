@@ -104,7 +104,6 @@
                         </li>
                     </ul>
                 </div>
-
             </div>
             <div class="container-widget">
                 <div class="col-md-12">
@@ -132,6 +131,92 @@
                         </li>
                     </ul>
                 </div>
+            </div>
+            
+             <div class="container-widget">
+                     <div class="col-md-12">
+                    <h4>Rejected Orders</h4>
+                    <ul class="topstats clearfix">
+                        <li class="arrow"></li>
+                        <li class="col-xs-6 col-lg-3">
+                            <span class="title"><i class="fa fa-dot-circle-o"></i> Today </span>
+                            <h3><?php echo $reports['today']['rejected']; ?></h3>
+
+                        </li>
+                        <li class="col-xs-6 col-lg-3">
+                            <span class="title"><i class="fa fa-calendar-o"></i>Week</span>
+                            <h3><?php echo $reports['week']['rejected']; ?></h3>
+
+                        </li>
+                        <li class="col-xs-6 col-lg-3">
+                            <span class="title color-fix"><i class="fa fa-calendar-o"></i>Month</span>
+                            <h3><?php echo $reports['month']['rejected']; ?></h3>
+
+                        </li>
+                        <li class="col-xs-6 col-lg-3">
+                            <span class="title"><i class="fa fa-shopping-cart"></i>Total</span>
+                            <h3><?php echo $reports['total']['rejected']; ?></h3>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="container-widget">
+                <div class="col-md-12">
+                    <h4>Total Processing Fee</h4>
+                    <ul class="topstats clearfix">
+                        <li class="arrow"></li>
+                        <li class="col-xs-6 col-lg-3">
+                            <span class="title"><i class="fa fa-dot-circle-o"></i> Today </span>
+                            <h3><?php echo $reports['today']['processing_fee']; ?></h3>
+
+                        </li>
+                        <li class="col-xs-6 col-lg-3">
+                            <span class="title"><i class="fa fa-calendar-o"></i>Week</span>
+                            <h3><?php echo $reports['week']['processing_fee']; ?></h3>
+
+                        </li>
+                        <li class="col-xs-6 col-lg-3">
+                            <span class="title color-fix"><i class="fa fa-calendar-o"></i>Month</span>
+                            <h3><?php echo $reports['month']['processing_fee']; ?></h3>
+
+                        </li>
+                        <li class="col-xs-6 col-lg-3">
+                            <span class="title"><i class="fa fa-shopping-cart"></i>Total</span>
+                            <h3><?php echo $reports['total']['processing_fee']; ?></h3>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+           
+            
+            <div class="container-widget">
+                <div class="col-md-12">
+                    <h4>Total Refund</h4>
+                    <ul class="topstats clearfix">
+                        <li class="arrow"></li>
+                        <li class="col-xs-6 col-lg-3">
+                            <span class="title"><i class="fa fa-dot-circle-o"></i> Today </span>
+                            <h3><?php echo $reports['today']['refund']; ?></h3>
+
+                        </li>
+                        <li class="col-xs-6 col-lg-3">
+                            <span class="title"><i class="fa fa-calendar-o"></i>Week</span>
+                            <h3><?php echo $reports['week']['refund']; ?></h3>
+
+                        </li>
+                        <li class="col-xs-6 col-lg-3">
+                            <span class="title color-fix"><i class="fa fa-calendar-o"></i>Month</span>
+                            <h3><?php echo $reports['month']['refund']; ?></h3>
+
+                        </li>
+                        <li class="col-xs-6 col-lg-3">
+                            <span class="title"><i class="fa fa-shopping-cart"></i>Total</span>
+                            <h3><?php echo $reports['total']['refund']; ?></h3>
+                        </li>
+                    </ul>
+                </div>
+           
                 <div class="row">
                     <div class="col-md-12">
                         <div class="panel panel-default">
@@ -173,6 +258,10 @@
                             <li class="col-xs-3">
                                 <h3 id="total_processing_fees">0.00</h3>
                                 <span class="title"> Total Processing Fees </span>
+                            </li>
+                            <li class="col-xs-3">
+                                <h3 id="total_refund">0.00</h3>
+                                <span class="title"> Total Refund </span>
                             </li>
                         </ul>
                     </div>
@@ -255,6 +344,7 @@
                 $("#points").html(data.report.total_points);
                 $("#rejected_orders").html(data.report.rejected_orders);
                 $("#total_processing_fees").html(data.report.total_processingfee);
+                $("#total_refund").html(data.report.total_processingfee);
             }
         </script>
 

@@ -134,7 +134,7 @@
                 </a>
                 <script>
                     document.querySelector('#button_approve').onclick = function() {
-                        $("#button_approve").html('APPROVE..');
+                        $("#button_approve").html('<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>APPROVE');
                         var order_id = $("#order_id").val();
                         var amout = $("#order_amount").val();
                         var param = {order_id: order_id};
@@ -169,7 +169,7 @@
                 </a>
                 <script>
                     document.querySelector('#button_reject').onclick = function() {
-                        $("#button_reject").html('REJECT..');
+                        $("#button_reject").html('<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>REJECT');
                         var order_id = $("#order_id").val();
                         var param = {order_id: order_id};
                         $.post("<?php echo base_url('index.php/site/rejectorder') ?>", param)
@@ -191,7 +191,7 @@
                 </a>
                 <script>
                     document.querySelector('#button_complete').onclick = function() {
-                        $("#button_complete").html('COMPLETE..');
+                        $("#button_complete").html('<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>COMPLETE');
                         var order_id = $("#order_id").val();
                         var param = {order_id: order_id};
                         $.post("<?php echo base_url('index.php/site/completedorder') ?>", param)
@@ -225,7 +225,7 @@
                 </a>
                 <script>
                     document.querySelector('#button_complete').onclick = function() {
-                        $("#button_complete").html('COMPlETE..');
+                        $("#button_complete").html('<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>COMPlETE');
                         var order_id = $("#order_id").val();
                         var param = {order_id: order_id};
                         $.post("<?php echo base_url('index.php/site/completedorder') ?>", param)
@@ -356,7 +356,7 @@
         var order_status = $('#orderstatus').val();
         if (order_status == 1)
         {
-            $("#button_approve").html('APPROVE..');
+            $("#button_approve").html('<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>APPROVE');
             var order_id = $("#order_id").val();
             var amout = $("#order_amount").val();
             var param = {order_id: order_id};
