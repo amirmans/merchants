@@ -132,9 +132,9 @@
                     </ul>
                 </div>
             </div>
-            
-             <div class="container-widget">
-                     <div class="col-md-12">
+
+            <div class="container-widget">
+                <div class="col-md-12">
                     <h4>Rejected Orders</h4>
                     <ul class="topstats clearfix">
                         <li class="arrow"></li>
@@ -160,7 +160,7 @@
                     </ul>
                 </div>
             </div>
-            
+
             <div class="container-widget">
                 <div class="col-md-12">
                     <h4>Total Processing Fee</h4>
@@ -188,8 +188,8 @@
                     </ul>
                 </div>
             </div>
-           
-            
+
+
             <div class="container-widget">
                 <div class="col-md-12">
                     <h4>Total Refund</h4>
@@ -216,7 +216,7 @@
                         </li>
                     </ul>
                 </div>
-           
+
                 <div class="row">
                     <div class="col-md-12">
                         <div class="panel panel-default">
@@ -306,7 +306,10 @@
 
                 $('input[name="startdate"]').daterangepicker({
                     autoUpdateInput: false,
-                    format: 'YYYY-MM-DD'
+                    locale: {
+                        format: 'YYYY-MM-DD'
+                    },
+                    linkedCalendars: false
                 });
 
                 $('input[name="startdate"]').on('apply.daterangepicker', function(ev, picker) {
@@ -344,7 +347,7 @@
                 $("#points").html(data.report.total_points);
                 $("#rejected_orders").html(data.report.rejected_orders);
                 $("#total_processing_fees").html(data.report.total_processingfee);
-                $("#total_refund").html(data.report.total_processingfee);
+                $("#total_refund").html(data.report.total_refund);
             }
         </script>
 

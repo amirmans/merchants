@@ -935,7 +935,7 @@ class M_site extends CI_Model {
         $this->db->select('ifnull(sum(total),"0.00") as total_processingfee', FALSE);
         $this->db->from('order');
         $this->db->where('business_id', $param['businessID']);
-        $this->db->where('status', 2);
+        $this->db->where('status', 3);
         $this->db->where('date > DATE_SUB(NOW(), INTERVAL 1 DAY)');
         $processingFeeresult = $this->db->get();
         $processingFeerow = $processingFeeresult->row_array();
@@ -945,7 +945,7 @@ class M_site extends CI_Model {
         $this->db->select('ifnull(sum(total),"0.00") as total_processingfee', FALSE);
         $this->db->from('order');
         $this->db->where('business_id', $param['businessID']);
-        $this->db->where('status', 2);
+        $this->db->where('status', 3);
         $this->db->where('date > DATE_SUB(NOW(), INTERVAL 1 WEEK)');
         $processingFeeresult = $this->db->get();
         $processingFeerow = $processingFeeresult->row_array();
@@ -954,7 +954,7 @@ class M_site extends CI_Model {
         $this->db->select('ifnull(sum(total),"0.00") as total_processingfee', FALSE);
         $this->db->from('order');
         $this->db->where('business_id', $param['businessID']);
-        $this->db->where('status', 2);
+        $this->db->where('status', 3);
         $this->db->where('date > DATE_SUB(NOW(), INTERVAL 1 MONTH)');
         $processingFeeresult = $this->db->get();
         $processingFeerow = $processingFeeresult->row_array();
@@ -963,7 +963,7 @@ class M_site extends CI_Model {
         $this->db->select('ifnull(sum(total),"0.00") as total_processingfee', FALSE);
         $this->db->from('order');
         $this->db->where('business_id', $param['businessID']);
-        $this->db->where('status', 2);
+        $this->db->where('status', 3);
         $processingFeeresult = $this->db->get();
         $processingFeerow = $processingFeeresult->row_array();
         $return['total']['processing_fee'] = $processingFeerow['total_processingfee'];
@@ -1033,7 +1033,7 @@ class M_site extends CI_Model {
         $this->db->select('ifnull(sum(total),"0.00") as total_processingfee', FALSE);
         $this->db->from('order');
         $this->db->where('business_id', $param['businessID']);
-        $this->db->where('status', 2);
+        $this->db->where('status', 3);
         $this->db->where('date >=', $start_date);
         $this->db->where('date <=', $end_date);
         $processingFeeresult = $this->db->get();

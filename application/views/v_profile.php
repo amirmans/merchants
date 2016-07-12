@@ -132,7 +132,7 @@
                                         }
                                         ?></td>
                                     <td>
-                                       <?php echo $business_detail['hours'][$i]['from_date'] ?>
+                                        <?php echo $business_detail['hours'][$i]['from_date'] ?>
                                     </td>
                                     <td>
                                         <?php echo $business_detail['hours'][$i]['to_date'] ?>
@@ -148,9 +148,6 @@
                             ?>
                         </tbody>
                     </table>
-
-
-
                 </div>
                 <!-- End Invoice -->
             </div>
@@ -278,8 +275,7 @@
                                             $enrtyids = '';
                                             for ($i = 0; $i < count($business_detail['hours']); $i++) {
                                                 $enrtyids .= $business_detail['hours'][$i]['entry_id'];
-                                                if($i!=count($business_detail['hours'])-1)
-                                                {
+                                                if ($i != count($business_detail['hours']) - 1) {
                                                     $enrtyids .=',';
                                                 }
                                                 ?>
@@ -302,18 +298,38 @@
                                                             echo 'Saturday';
                                                         }
                                                         ?></td>
-                                                    <td>    
-                                                        <input type="text" name="fromdate_<?php echo $business_detail['hours'][$i]['entry_id']; ?>" id="fromdate_<?php echo $business_detail['hours'][$i]['entry_id']; ?>" class="form-control" value="<?php echo $business_detail['hours'][$i]['from_date'] ?>">
-                                                    </td>
-                                                    <td>    
-                                                        <input type="text" name="todate_<?php echo $business_detail['hours'][$i]['entry_id']; ?>" id="todate_<?php echo $business_detail['hours'][$i]['entry_id']; ?>" class="form-control" style="" value="<?php echo $business_detail['hours'][$i]['to_date'] ?>">
-                                                    </td>
-
                                                     <td>
-                                                        <input type="text" name="openingtime_<?php echo $business_detail['hours'][$i]['entry_id']; ?>" id="fromtime_<?php echo $business_detail['hours'][$i]['entry_id']; ?>" class="form-control" style="" value="<?php echo $business_detail['hours'][$i]['opening_time'] ?>">
+                                                        <div class="form-group" style="position:relative;">
+                                                            <div class="col-sm-12">
+                                                                <input type="text" name="fromdate_<?php echo $business_detail['hours'][$i]['entry_id']; ?>" id="fromdate_<?php echo $business_detail['hours'][$i]['entry_id']; ?>" class="form-control" value="<?php echo $business_detail['hours'][$i]['from_date'] ?>">
+                                                            </div>
+
+                                                        </div>
+
+                                                    </td>
+                                                    <td> 
+                                                        <div class="form-group" style="position:relative;">
+                                                            <div class="col-sm-12 " >
+                                                                <input type="text" name="todate_<?php echo $business_detail['hours'][$i]['entry_id']; ?>" id="todate_<?php echo $business_detail['hours'][$i]['entry_id']; ?>" class="form-control" style="" value="<?php echo $business_detail['hours'][$i]['to_date'] ?>">
+                                                            </div>
+
+                                                        </div>
+
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-group" style="position:relative;">
+                                                            <div class="col-sm-offset-2 col-sm-10 "  >
+                                                                <input type="text" name="openingtime_<?php echo $business_detail['hours'][$i]['entry_id']; ?>" id="fromtime_<?php echo $business_detail['hours'][$i]['entry_id']; ?>" class="form-control" style="" value="<?php echo $business_detail['hours'][$i]['opening_time'] ?>">
+                                                            </div>
+                                                        </div>
                                                     </td>
                                                     <td class="">
-                                                        <input type="text" name="closingtime_<?php echo $business_detail['hours'][$i]['entry_id']; ?>" id="totime_<?php echo $business_detail['hours'][$i]['entry_id']; ?>" class="form-control" style="" value="<?php echo $business_detail['hours'][$i]['closing_time'] ?>">
+                                                        <div class="form-group"  style="position:relative;">
+                                                            <div class="col-sm-offset-2 col-sm-10 ">
+                                                                <input type="text" name="closingtime_<?php echo $business_detail['hours'][$i]['entry_id']; ?>" id="totime_<?php echo $business_detail['hours'][$i]['entry_id']; ?>" class="form-control" style="" value="<?php echo $business_detail['hours'][$i]['closing_time'] ?>">
+                                                            </div>                                                          
+                                                        </div>
+
                                                     </td>
                                                 </tr>
                                             <?php }
@@ -379,7 +395,6 @@
                 } else {
                     $('#stripeTokenModal').modal('toggle');
                     swal('', "Profile updated unsuccessfully", 'error')
-
                 }
             }
 
@@ -436,7 +451,7 @@
                 var data = JSON.parse(data);
                 if (data.status)
                 {
-                    
+
                     $('#openingHoursModal').modal('toggle');
                     swal('', "Profile updated successfully", 'success')
                     location.reload();
@@ -458,22 +473,25 @@
                     var openingtime = "openingtime_" + hours[i].entry_id;
                     var closingtime = "closingtime_" + hours[i].entry_id;
 
-                    $('input[name="' + from + '"]').daterangepicker({
+                    var option = {
                         singleDatePicker: true,
-                        format: 'YYYY-MM-DD'
-                    });
+                        locale: {
+                            format: 'YYYY-MM-DD'
+                        }
+                    }
+                    if (i >= (hours.length - 2))
+                    {
+                        option.drops = "up"
+                    }
+
+                    $('input[name="' + from + '"]').daterangepicker(option);
 
 
-                    $('input[name="' + to + '"]').daterangepicker({
-                        singleDatePicker: true,
-                        format: 'YYYY-MM-DD'
-                    });
+                    $('input[name="' + to + '"]').daterangepicker(option);
 
                     $('input[name="' + openingtime + '"]').datetimepicker({format: 'HH:mm:ss', icons: {up: "fa fa-arrow-up", down: "fa fa-arrow-down"}});
                     $('input[name="' + closingtime + '"]').datetimepicker({format: 'HH:mm:ss', icons: {up: "fa fa-arrow-up", down: "fa fa-arrow-down"}});
-
                 }
-
             });
 
         </script>
