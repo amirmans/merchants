@@ -31,7 +31,7 @@
                     <ul class="topstats clearfix">
                         <li class="arrow"></li>
                         <li class="col-xs-6 col-lg-3">
-                            <span class="title"><i class="fa fa-dot-circle-o"></i> Today </span>
+                            <span class="title"><i class="fa fa-dot-circle-o"></i>  Today's Business Day </span>
                             <h3><?php echo $reports['today']['orders']; ?></h3>
 
                         </li>
@@ -59,7 +59,7 @@
                     <ul class="topstats clearfix">
                         <li class="arrow"></li>
                         <li class="col-xs-6 col-lg-3">
-                            <span class="title"><i class="fa fa-dot-circle-o"></i> Today </span>
+                            <span class="title"><i class="fa fa-dot-circle-o"></i> Today's Business Day </span>
                             <h3><?php echo $reports['today']['subtotals']; ?></h3>
                         </li>
                         <li class="col-xs-6 col-lg-3">
@@ -84,7 +84,7 @@
                     <ul class="topstats clearfix">
                         <li class="arrow"></li>
                         <li class="col-xs-6 col-lg-3">
-                            <span class="title"><i class="fa fa-dot-circle-o"></i> Today </span>
+                            <span class="title"><i class="fa fa-dot-circle-o"></i> Today's Business Day </span>
                             <h3><?php echo $reports['today']['tips']; ?></h3>
 
                         </li>
@@ -111,7 +111,7 @@
                     <ul class="topstats clearfix">
                         <li class="arrow"></li>
                         <li class="col-xs-6 col-lg-3">
-                            <span class="title"><i class="fa fa-dot-circle-o"></i> Today </span>
+                            <span class="title"><i class="fa fa-dot-circle-o"></i> Today's Business Day </span>
                             <h3><?php echo $reports['today']['points']; ?></h3>
 
                         </li>
@@ -139,7 +139,7 @@
                     <ul class="topstats clearfix">
                         <li class="arrow"></li>
                         <li class="col-xs-6 col-lg-3">
-                            <span class="title"><i class="fa fa-dot-circle-o"></i> Today </span>
+                            <span class="title"><i class="fa fa-dot-circle-o"></i> Today's Business Day </span>
                             <h3><?php echo $reports['today']['rejected']; ?></h3>
 
                         </li>
@@ -167,7 +167,7 @@
                     <ul class="topstats clearfix">
                         <li class="arrow"></li>
                         <li class="col-xs-6 col-lg-3">
-                            <span class="title"><i class="fa fa-dot-circle-o"></i> Today </span>
+                            <span class="title"><i class="fa fa-dot-circle-o"></i> Today's Business Day </span>
                             <h3><?php echo $reports['today']['processing_fee']; ?></h3>
 
                         </li>
@@ -196,7 +196,7 @@
                     <ul class="topstats clearfix">
                         <li class="arrow"></li>
                         <li class="col-xs-6 col-lg-3">
-                            <span class="title"><i class="fa fa-dot-circle-o"></i> Today </span>
+                            <span class="title"><i class="fa fa-dot-circle-o"></i> Today's Business Day </span>
                             <h3><?php echo $reports['today']['refund']; ?></h3>
 
                         </li>

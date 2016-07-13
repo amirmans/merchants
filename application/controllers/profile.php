@@ -35,8 +35,7 @@ class Profile extends CI_Controller {
 //        $this->validation->is_parameter_blank('marketing_statement', $param['marketing_statement']);
         $this->validation->is_parameter_blank('short_name', $param['short_name']);
 //        $this->validation->is_parameter_blank('sms_no', $param['sms_no']);
-        $this->validation->is_parameter_blank('stripe_secret_key', $param['stripe_secret_key']);
-//        $this->validation->is_parameter_blank('process_time', $param['process_time']);
+        //        $this->validation->is_parameter_blank('process_time', $param['process_time']);
 
         if ($_FILES['image_upload_file']['tmp_name'] != "") {
             $image_url = $this->m_site->file_upload("image_upload_file", '../' . staging_directory() . '/customer_files/icons');
@@ -59,6 +58,24 @@ class Profile extends CI_Controller {
         $data = $this->m_site->update_business_opening_hours($param);
 
         echo json_encode($data);
+    }
+
+    function edit_stripe_key() {
+        is_login() ? '' : redirect('index.php/login');
+        $param = $_REQUEST;
+        $param['businessID'] = is_login();
+        $this->validation->is_parameter_blank('stripe_secret_key', $param['stripe_secret_key']);
+        $data = $this->m_site->edit_stripe_key($param);
+
+        echo json_encode($data);
+    }
+
+    function do_authenticate() {
+        $param = $_POST;
+        $this->validation->is_parameter_blank('username', $param['username']);
+        $this->validation->is_parameter_blank('password', $param['password']);
+        $reponse = $this->m_site->do_authenticate($param);
+        echo json_encode($reponse);
     }
 
 }

@@ -35,7 +35,7 @@ class Login extends CI_Controller {
         if ($reponse['status'] == 1) {
             redirect('index.php/site/orderlist');
         } else {
-            redirect('index.php/login');
+            redirect($param['business_url']);
         }
     }
 
@@ -43,7 +43,15 @@ class Login extends CI_Controller {
         !is_login() ? redirect("/") : '';
         $this->session->set_flashdata('success1', 'Successfully logged out.');
         $this->session->unset_userdata('businessID');
-        redirect("index.php/login");
+        $businessUrl = $this->session->userdata('business_url');
+        if ($businessUrl != '') {
+            $this->session->unset_userdata('business_url');
+            redirect($businessUrl);
+        } else {
+            redirect('index.php/login');
+        }
+        
+        
     }
 
 }

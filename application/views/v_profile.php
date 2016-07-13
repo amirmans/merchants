@@ -82,7 +82,7 @@
                         <div class="col-md-6 col-xs-6 padding-0 text-center">
                             <h4>Stripe Secret Key</h4>
                             <h2 id="stripe_secret_key_text"><?php echo $business_detail['stripe_secret_key']; ?></h2>
-                            <!--                            <a href="#" class=" btn btn-primary" data-toggle="modal" data-target="#stripeTokenModal">Edit</a>-->
+                            <a href="#" class=" btn btn-primary" data-toggle="modal" data-target="#loginModal">Edit Stripe Secret Key</a>
 
                         </div>
                         <div class="col-md-3 col-xs-3 padding-0 text-right">
@@ -154,10 +154,43 @@
             <?php $this->load->view('v_footer'); ?>
         </div>
 
-        <div class="modal fade" id="stripeTokenModal" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+        <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <form class="form-horizontal" id="form_stripe_secret_key" action="<?php echo base_url('index.php/profile/edit_profile'); ?>" method="post" >
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                        <h4 class="modal-title">Login</h4>
+                    </div>
+                    <div class="modal-body" style="background: #F5F5F5;">
+                        <div class="login-form" style="padding-top: 0px;">
+                            <form class="form-horizontal" id="formlogin" action="<?php echo base_url('index.php/profile/do_authenticate'); ?>" method="post" >
+                                <div class="form-area">
+                                    <div class="group">
+                                        <input type="text" class="form-control" placeholder="Username" name="username">
+                                        <i class="fa fa-user"></i>
+                                    </div>
+                                    <div class="group">
+                                        <input type="password" class="form-control" placeholder="Password" name="password">
+                                        <i class="fa fa-key"></i>
+                                    </div>
+                                </div>
+
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <label id="category_error_text" class="pull-left color10"></label>
+                        <button type="button" class="btn btn-white" data-dismiss="modal" >Close</button>
+                        <button type="submit" class="btn btn-default" >Authenticate</button>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form class="form-horizontal" id="form_edit_profile" action="<?php echo base_url('index.php/profile/edit_profile'); ?>" method="post" >
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
                             <h4 class="modal-title">Edit Profile</h4>
@@ -219,12 +252,12 @@
                                             <input type="text" class="form-control" id="sms_no" name="sms_no" >
                                         </div>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="category_name" class="col-sm-4 control-label form-label">Stripe Secret Key</label>
-                                        <div class="col-sm-8">
-                                            <input type="text" class="form-control" id="stripe_secret_key" name="stripe_secret_key" required>
-                                        </div>
-                                    </div>
+                                    <!--                                    <div class="form-group">
+                                                                            <label for="category_name" class="col-sm-4 control-label form-label">Stripe Secret Key</label>
+                                                                            <div class="col-sm-8">
+                                                                                <input type="text" class="form-control" id="stripe_secret_key" name="stripe_secret_key" required>
+                                                                            </div>
+                                                                        </div>-->
                                     <div class="form-group">
                                         <label class="col-sm-4 control-label form-label">Icon:</label>
                                         <div class="col-sm-8" id="imgArea">
@@ -233,6 +266,38 @@
                                                 <input type="file" accept="image/*" name="image_upload_file" id="image_upload_file">
                                             </div>
                                             <br>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                        </div>
+                        <div class="modal-footer">
+                            <label id="category_error_text" class="pull-left color10"></label>
+                            <button type="button" class="btn btn-white" data-dismiss="modal" >Close</button>
+                            <button type="submit" class="btn btn-default" >Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="editStripeKeyModal" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form class="form-horizontal" id="form_edit_stripekey" action="<?php echo base_url('index.php/profile/edit_stripe_key'); ?>" method="post" >
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                            <h4 class="modal-title">Edit Stripe Secret Key</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-12">
+
+
+                                    <div class="form-group">
+                                        <label for="category_name" class="col-sm-4 control-label form-label">Stripe Secret Key</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control" id="stripe_secret_key" name="stripe_secret_key" required>
                                         </div>
                                     </div>
                                 </div>
@@ -364,7 +429,16 @@
 
             $(document).ready(function() {
                 // bind 'myForm' and provide a simple callback function 
-                $('#form_stripe_secret_key').ajaxForm(options);
+                $('#form_edit_profile').ajaxForm(options);
+
+
+                $('#formlogin').ajaxForm({
+                    success: processLoginResponse
+                });
+
+                $('#form_edit_stripekey').ajaxForm({
+                    success: processEditStripeKeyResponse
+                });
                 $('#form_opening_hours').ajaxForm({
                     success: processEditOpeningHoursResponse
                 });
@@ -377,7 +451,7 @@
                 var data = JSON.parse(data);
                 if (data.status)
                 {
-                    $('#form_stripe_secret_key').trigger("reset");
+                    $('#form_edit_profile').trigger("reset");
                     $('#stripe_secret_key_text').text(data.stripe_secret_key);
                     $('#address_text').text(data.address);
                     $('#email_text').text(data.email);
@@ -388,19 +462,18 @@
                     $('#process_time_text').text(data.process_time);
                     $('#short_name_text').text(data.short_name);
                     $('#sms_no_text').text(data.sms_no);
-                    $('#stripeTokenModal').modal('toggle');
+                    $('#editProfileModal').modal('toggle');
                     swal('', "Profile updated successfully", 'success')
                     location.reload();
 
                 } else {
-                    $('#stripeTokenModal').modal('toggle');
+                    $('#editProfileModal').modal('toggle');
                     swal('', "Profile updated unsuccessfully", 'error')
                 }
             }
 
             function edit_profile() {
-                var stripe_secret_key_text = $('#stripe_secret_key_text').text();
-                $('#stripe_secret_key').val(stripe_secret_key_text);
+
                 var address = $('#address_text').text();
                 $('#address').val(address);
                 var email = $('#email_text').text();
@@ -426,7 +499,7 @@
                 document.getElementById("image").src = icon_url;
 
                 $('#stripe_secret_key').val(stripe_secret_key_text);
-                $('#stripeTokenModal').modal('show');
+                $('#editProfileModal').modal('show');
             }
             document.getElementById("image_upload_file").onchange = function() {
                 var reader = new FileReader();
@@ -442,7 +515,6 @@
 
             };
             function edit_opening_hours() {
-
                 $('#openingHoursModal').modal('show');
             }
 
@@ -463,6 +535,49 @@
 
                 }
             }
+
+            function processLoginResponse(data) {
+
+                var data = JSON.parse(data);
+                if (data.status)
+                {
+                    var loginbusinessId =<?php echo $this->session->userdata('businessID'); ?>;
+
+                    if (loginbusinessId == data.user.businessID)
+                    {
+                        var stripe_secret_key_text = $('#stripe_secret_key_text').text();
+                        $('#stripe_secret_key').val(stripe_secret_key_text);
+                        $('#loginModal').modal('toggle');
+                        $('#formlogin').trigger("reset");
+                        $('#editStripeKeyModal').modal('show');
+                    }
+                    else
+                    {
+                        swal('', "Invalid Login", 'error')
+                    }
+
+
+                } else {
+                    swal('', "Login unsuccessfully", 'error')
+                }
+            }
+
+            function processEditStripeKeyResponse(data) {
+
+                var data = JSON.parse(data);
+                if (data.status)
+                {
+                    $('#stripe_secret_key_text').text(data.stripe_secret_key);
+                    $('#editStripeKeyModal').modal('hide');
+                    swal('', data.msg, 'success')
+                } else {
+                    $('#openingHoursModal').modal('toggle');
+                    swal('', "Stripe Token Updated Successfully", 'error')
+
+                }
+            }
+
+
 
             $(document).ready(function() {
 

@@ -21,9 +21,32 @@ class M_site extends CI_Model {
         if (count($row) > 0) {
             $return = success_res("");
             $this->session->set_userdata($row[0]);
+            if($param['business_url']!='')
+            {
+                $this->session->set_userdata(array("business_url"=>$param['business_url']));
+            }
         } else {
             $return = error_res("Username or password incorrect");
             $this->session->set_flashdata('error1', 'Username or password incorrect');
+        }
+        return $return;
+    }
+
+    function do_authenticate($param) {
+        $this->db->select('businessID,name,username');
+        $this->db->from('business_customers');
+        $this->db->limit(1);
+        $this->db->where('username', $param['username']);
+        $this->db->where('password', md5($param['password']));
+        $this->db->where('active', 1);
+        $result = $this->db->get();
+        $row = $result->result_array();
+
+        if (count($row) > 0) {
+            $return = success_res("");
+            $return["user"] = $row[0];
+        } else {
+            $return = error_res("Username or password incorrect");
         }
         return $return;
     }
@@ -91,7 +114,6 @@ class M_site extends CI_Model {
 
     function update_business_profile($param) {
 
-        $data['stripe_secret_key'] = $param['stripe_secret_key'];
         $data['businessID'] = $param['businessID'];
         $data['address'] = $param['address'];
         $data['email'] = $param['email'];
@@ -110,7 +132,6 @@ class M_site extends CI_Model {
         $this->db->where('businessID', $param['businessID']);
         $this->db->update('business_customers', $data);
         $return = success_res("Stripe Token Updated Successfully");
-        $return['stripe_secret_key'] = $param['stripe_secret_key'];
         $return['address'] = $param['address'];
         $return['email'] = $param['email'];
         $return['website'] = $param['website'];
@@ -121,6 +142,16 @@ class M_site extends CI_Model {
         $return['process_time'] = $param['process_time'];
         $return['sms_no'] = $param['sms_no'];
 
+        return $return;
+    }
+
+    function edit_stripe_key($param) {
+
+        $data['stripe_secret_key'] = $param['stripe_secret_key'];
+        $this->db->where('businessID', $param['businessID']);
+        $this->db->update('business_customers', $data);
+        $return = success_res("Stripe Token Updated Successfully");
+        $return['stripe_secret_key'] = $param['stripe_secret_key'];
         return $return;
     }
 
@@ -940,7 +971,7 @@ class M_site extends CI_Model {
         $processingFeeresult = $this->db->get();
         $processingFeerow = $processingFeeresult->row_array();
         $return['today']['processing_fee'] = $processingFeerow['total_processingfee'];
-        
+
 
         $this->db->select('ifnull(sum(total),"0.00") as total_processingfee', FALSE);
         $this->db->from('order');
@@ -967,7 +998,7 @@ class M_site extends CI_Model {
         $processingFeeresult = $this->db->get();
         $processingFeerow = $processingFeeresult->row_array();
         $return['total']['processing_fee'] = $processingFeerow['total_processingfee'];
-        
+
         $this->db->select('ifnull(sum(ro.amount),"0.00") as total_refund', FALSE);
         $this->db->from('refund_order ro');
         $this->db->join('order o', 'o.order_id=ro.order_id', 'left');
@@ -976,8 +1007,8 @@ class M_site extends CI_Model {
         $refundresult = $this->db->get();
         $refundrow = $refundresult->row_array();
         $return['today']['refund'] = $refundrow['total_refund'];
-        
-        
+
+
 
         $this->db->select('ifnull(sum(ro.amount),"0.00") as total_refund', FALSE);
         $this->db->from('refund_order ro');
