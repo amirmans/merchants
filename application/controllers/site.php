@@ -328,43 +328,45 @@ class Site extends CI_Controller {
         $this->validation->is_parameter_blank('order_id', $param['order_id']);
         $order_id = decrypt_string($param['order_id']);
         $order_charge_detail = $this->m_site->get_order_charge_detail($order_id);
-
-        $refundamt = $order_charge_detail['amount'];
-        if ($param['refund_type'] == 2) {
-            if ($param['amount'] > $refundamt) {
-                $response = error_res("Invalid Amount");
-            } else {
-                $refundamt = $param['amount'];
+        if (count($order_charge_detail) > 0) {
+            $refundamt = $order_charge_detail['amount'];
+            if ($param['refund_type'] == 2) {
+                if ($param['amount'] > $refundamt) {
+                    $response = error_res("Invalid Amount");
+                } else {
+                    $refundamt = $param['amount'];
+                    $response = success_res("Order Refunded Successfully");
+                    $secret_key = $this->get_stripe_secret_key($business_id);
+                    $refund['charge'] = $order_charge_detail['stripe_charge_id'];
+                    $refund['amount'] = $refundamt * 100;
+                    try {
+                        \Stripe\Stripe::setApiKey($secret_key);
+                        $re = \Stripe\Refund::create($refund);
+                        $stripe_refund_id = $re->id;
+                        $this->m_site->update_order_charge_status($order_charge_detail['charge_id'], $order_id, $stripe_refund_id, $refundamt, $param['refund_type'],$order_charge_detail['consumer_id']);                        
+                    } catch (Exception $exc) {
+                        $response = error_res("Something went wrong");
+                    }
+                }
+            } else if ($param['refund_type'] == 1) {
                 $response = success_res("Order Refunded Successfully");
                 $secret_key = $this->get_stripe_secret_key($business_id);
                 $refund['charge'] = $order_charge_detail['stripe_charge_id'];
-                $refund['amount'] = $refundamt * 100;
+
                 try {
                     \Stripe\Stripe::setApiKey($secret_key);
                     $re = \Stripe\Refund::create($refund);
                     $stripe_refund_id = $re->id;
-                    $this->m_site->update_order_charge_status($order_charge_detail['charge_id'], $order_id, $stripe_refund_id, $refundamt, $param['refund_type']);
+                    $this->m_site->update_order_charge_status($order_charge_detail['charge_id'], $order_id, $stripe_refund_id, $refundamt, $param['refund_type'],$order_charge_detail['consumer_id']);
                 } catch (Exception $exc) {
                     $response = error_res("Something went wrong");
                 }
-            }
-        } else if ($param['refund_type'] == 1) {
-            $response = success_res("Order Refunded Successfully");
-            $secret_key = $this->get_stripe_secret_key($business_id);
-            $refund['charge'] = $order_charge_detail['stripe_charge_id'];
-
-            try {
-                \Stripe\Stripe::setApiKey($secret_key);
-                $re = \Stripe\Refund::create($refund);
-                $stripe_refund_id = $re->id;
-                $this->m_site->update_order_charge_status($order_charge_detail['charge_id'], $order_id, $stripe_refund_id, $refundamt, $param['refund_type']);
-            } catch (Exception $exc) {
+            } else {
                 $response = error_res("Something went wrong");
             }
         } else {
             $response = error_res("Something went wrong");
         }
-
         echo json_encode($response);
     }
 

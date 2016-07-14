@@ -21,9 +21,8 @@ class M_site extends CI_Model {
         if (count($row) > 0) {
             $return = success_res("");
             $this->session->set_userdata($row[0]);
-            if($param['business_url']!='')
-            {
-                $this->session->set_userdata(array("business_url"=>$param['business_url']));
+            if ($param['business_url'] != '') {
+                $this->session->set_userdata(array("business_url" => $param['business_url']));
             }
         } else {
             $return = error_res("Username or password incorrect");
@@ -36,8 +35,9 @@ class M_site extends CI_Model {
         $this->db->select('businessID,name,username');
         $this->db->from('business_customers');
         $this->db->limit(1);
-        $this->db->where('username', $param['username']);
-        $this->db->where('password', md5($param['password']));
+        $this->db->where('stripe_username', $param['username']);
+        $this->db->where('stripe_password', md5($param['password']));
+        $this->db->where('businessID', $param['businessID']);
         $this->db->where('active', 1);
         $result = $this->db->get();
         $row = $result->result_array();
@@ -383,6 +383,10 @@ class M_site extends CI_Model {
         $this->db->update('order', $data);
 
         $order_detail = $this->get_order_info($order_id);
+
+        $this->db->where('order_id', $order_id);
+        $this->db->where('consumer_id', $order_detail['consumer_id']);
+        $this->db->delete('points');
 
         $this->db->select('device_token');
         $this->db->from('consumer_profile');
@@ -1085,7 +1089,7 @@ class M_site extends CI_Model {
         return $row;
     }
 
-    function update_order_charge_status($charge_id, $order_id, $stripe_refund_id, $refundamt, $refund_type) {
+    function update_order_charge_status($charge_id, $order_id, $stripe_refund_id, $refundamt, $refund_type, $consumer_id) {
         $data['order_id'] = $order_id;
         $data['stripe_refund_id'] = $stripe_refund_id;
         $data['amount'] = $refundamt;
@@ -1096,6 +1100,10 @@ class M_site extends CI_Model {
         $data['is_refunded'] = '1';
         $this->db->where('charge_id', $charge_id);
         $this->db->update('order_charge', $data);
+
+        $this->db->where('order_id', $order_id);
+        $this->db->where('consumer_id', $consumer_id);
+        $this->db->delete('points');
     }
 
     function get_products_option($optionId) {

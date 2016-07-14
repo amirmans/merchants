@@ -72,8 +72,10 @@ class Profile extends CI_Controller {
 
     function do_authenticate() {
         $param = $_POST;
+        $param['businessID'] = is_login();
         $this->validation->is_parameter_blank('username', $param['username']);
         $this->validation->is_parameter_blank('password', $param['password']);
+        $this->validation->is_parameter_blank('businessID', $param['businessID']);
         $reponse = $this->m_site->do_authenticate($param);
         echo json_encode($reponse);
     }
