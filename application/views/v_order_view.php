@@ -255,27 +255,25 @@
 
                 <?php
             } elseif ($orderlist[0]['status'] == "3") {
-                if($orderlist[0]['is_refunded'] == "1")
-                {
+                if ($orderlist[0]['is_refunded'] == "1") {
                     ?>
-                <span id="refunded_label"><label class="label label-primary padding-10" style="font-weight: normal;font-size: 20px;"><i class="fa fa-check"></i>REFUNDED</label></span>
-                        <?php
-                }
-                else
-                {
+                    <span id="refunded_label"><label class="label label-primary padding-10" style="font-weight: normal;font-size: 20px;"><i class="fa fa-check"></i>REFUNDED</label></span>
+                    <?php
+                } else {
                     ?><a id="button_refund" href="#" class=" btn btn-primary " data-toggle="modal" data-target="#completeModal"    style=" font-size: 20px;">
-                    REFUND
-                </a>
-                <span id="refunded_label" style="display: none"><label class="label label-primary padding-10" style="font-weight: normal;font-size: 20px;"><i class="fa fa-check"></i>REFUNDED</label></span>
-                        <?php
+                        REFUND
+                    </a>
+                    <span id="refunded_label" style="display: none"><label class="label label-primary padding-10" style="font-weight: normal;font-size: 20px;"><i class="fa fa-check"></i>REFUNDED</label></span>
+                    <script>
+                        document.querySelector('#button_refund').onclick = function() {
+                            $("#refundModal").modal('show');
+                        };
+                    </script>
+                    <?php
                 }
                 ?>
-                
-                <script>
-                    document.querySelector('#button_refund').onclick = function() {
-                        $("#refundModal").modal('show');
-                    };
-                </script>
+
+
 
 
 
@@ -313,11 +311,15 @@
                                 Partial
                             </label>
                         </div>
-                        <br/>
-                        <div class="form-group" style="display: none" id="refund_amt">
-                            <div class="col-sm-8">
-                                <input type="number" class="form-control" id="rfd_amount" name="rfd_amount"  placeholder="Refund Amount" required>
+
+                        <div class="" style="display: none" id="refund_amt">
+
+                            <div class="input-group">
+                                <div class="input-group-addon"><i class="fa fa-usd"></i></div>
+                                <input type="number" class="form-control" id="rfd_amount" name="rfd_amount"  placeholder="Refund Amount" required min="0">
                             </div>
+                            <label class="margin-5">Ex. $3.25</label>
+
                         </div>
                     </div>
                     <div class="col-sm-3"></div>
@@ -413,14 +415,17 @@
         {
             var amount = $("#rfd_amount").val();
             var order_amount = $("#order_amount").val();
-            if (amount > order_amount)
+            console.log(amount)
+            console.log(order_amount)
+
+            if (amount < 0 || amount > order_amount)
             {
                 swal("", "Invalid  Amount", "error");
                 return false;
             }
             param.amount = amount;
         }
-        
+
         $.post("<?php echo base_url('index.php/site/refund_order_amount') ?>", param)
                 .done(function(data) {
                     data = jQuery.parseJSON(data);
@@ -430,7 +435,6 @@
                         $("#button_refund").remove();
                         $("#refunded_label").show();
                         swal("Refunded order", "", "success");
-                        
                     } else {
                         $('#refundModal').modal('toggle');
                         swal("Refunded order", data['msg'], "error");

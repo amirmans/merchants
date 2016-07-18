@@ -343,7 +343,7 @@ class Site extends CI_Controller {
                         \Stripe\Stripe::setApiKey($secret_key);
                         $re = \Stripe\Refund::create($refund);
                         $stripe_refund_id = $re->id;
-                        $this->m_site->update_order_charge_status($order_charge_detail['charge_id'], $order_id, $stripe_refund_id, $refundamt, $param['refund_type'],$order_charge_detail['consumer_id']);                        
+                        $this->m_site->update_order_charge_status($order_charge_detail['charge_id'], $order_id, $stripe_refund_id, $refundamt, $param['refund_type'], $order_charge_detail['consumer_id']);
                     } catch (Exception $exc) {
                         $response = error_res("Something went wrong");
                     }
@@ -357,7 +357,7 @@ class Site extends CI_Controller {
                     \Stripe\Stripe::setApiKey($secret_key);
                     $re = \Stripe\Refund::create($refund);
                     $stripe_refund_id = $re->id;
-                    $this->m_site->update_order_charge_status($order_charge_detail['charge_id'], $order_id, $stripe_refund_id, $refundamt, $param['refund_type'],$order_charge_detail['consumer_id']);
+                    $this->m_site->update_order_charge_status($order_charge_detail['charge_id'], $order_id, $stripe_refund_id, $refundamt, $param['refund_type'], $order_charge_detail['consumer_id']);
                 } catch (Exception $exc) {
                     $response = error_res("Something went wrong");
                 }
@@ -378,6 +378,6 @@ class Site extends CI_Controller {
         print_r($re);
     }
 
-}
+   }
 
 //////////// HERE DO NOT END PHP TAG  

@@ -239,6 +239,7 @@ class M_site extends CI_Model {
             $option_row = $option_result->result_array();
             $r['option_ids'] = $option_row;
         }
+        $row['sql']=  $this->db->last_query();
         return $row;
     }
 
@@ -974,7 +975,7 @@ class M_site extends CI_Model {
         $this->db->where('date > DATE_SUB(NOW(), INTERVAL 1 DAY)');
         $processingFeeresult = $this->db->get();
         $processingFeerow = $processingFeeresult->row_array();
-        $return['today']['processing_fee'] = $processingFeerow['total_processingfee'];
+        $return['today']['processing_fee'] = ($processingFeerow['total_processingfee']/100)*3;
 
 
         $this->db->select('ifnull(sum(total),"0.00") as total_processingfee', FALSE);
@@ -984,7 +985,7 @@ class M_site extends CI_Model {
         $this->db->where('date > DATE_SUB(NOW(), INTERVAL 1 WEEK)');
         $processingFeeresult = $this->db->get();
         $processingFeerow = $processingFeeresult->row_array();
-        $return['week']['processing_fee'] = $processingFeerow['total_processingfee'];
+        $return['week']['processing_fee'] = ($processingFeerow['total_processingfee']/100)*3;
 
         $this->db->select('ifnull(sum(total),"0.00") as total_processingfee', FALSE);
         $this->db->from('order');
@@ -993,7 +994,7 @@ class M_site extends CI_Model {
         $this->db->where('date > DATE_SUB(NOW(), INTERVAL 1 MONTH)');
         $processingFeeresult = $this->db->get();
         $processingFeerow = $processingFeeresult->row_array();
-        $return['month']['processing_fee'] = $processingFeerow['total_processingfee'];
+        $return['month']['processing_fee'] = ($processingFeerow['total_processingfee']/100)*3;
 
         $this->db->select('ifnull(sum(total),"0.00") as total_processingfee', FALSE);
         $this->db->from('order');
@@ -1001,7 +1002,7 @@ class M_site extends CI_Model {
         $this->db->where('status', 3);
         $processingFeeresult = $this->db->get();
         $processingFeerow = $processingFeeresult->row_array();
-        $return['total']['processing_fee'] = $processingFeerow['total_processingfee'];
+        $return['total']['processing_fee'] = ($processingFeerow['total_processingfee']/100)*3;
 
         $this->db->select('ifnull(sum(ro.amount),"0.00") as total_refund', FALSE);
         $this->db->from('refund_order ro');
@@ -1084,7 +1085,7 @@ class M_site extends CI_Model {
         $refundrow = $refundresult->row_array();
 
         $row['rejected_orders'] = $rejectedrow['rejected_orders'];
-        $row['total_processingfee'] = $processingFeerow['total_processingfee'];
+        $row['total_processingfee'] = ($processingFeerow['total_processingfee']/100)*3;
         $row['total_refund'] = $refundrow['total_refund'];
         return $row;
     }

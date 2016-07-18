@@ -54,7 +54,6 @@ class Product extends CI_Controller {
         $param = $_REQUEST;
         $param['businessID'] = is_login();
         $this->validation->is_parameter_blank('option_category_name', $param['option_category_name']);
-        $this->validation->is_parameter_blank('desc', $param['desc']);
         $data['product_option_category'] = $this->m_site->add_product_option_category($param);
         echo json_encode($data);
     }
