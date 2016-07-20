@@ -90,7 +90,7 @@
 
         </style>
         <script src="<?php echo base_url('assets/js/audiojs/audio.min.js'); ?>"></script>
-
+        
     </head>
     <body>
         <?php $this->load->view('v_header'); ?>
@@ -209,7 +209,7 @@
 
 
         <?php $this->load->view('v_script'); ?>
-        <audio></audio>
+        <audio></audio>        
         <script>
             $(function() {
                 // Setup the player to autoplay the next track
@@ -358,7 +358,6 @@
                 }, 1000);
             }
         </script>
-        <ol style="display: none;"><li id="audio1"><a href="#" data-src="<?php echo base_url('assets/audio/audio1.mp3'); ?>">s</a></li></ol>
-
+        <ol  style="display: none"><li id="audio1"><a href="#" data-src="<?php echo base_url('assets/audio/audio1.mp3'); ?>">s</a></li></ol>
     </body>
 </html>

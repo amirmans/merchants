@@ -79,7 +79,7 @@ class Site extends CI_Controller {
                 $amount = $order_payment_detail['total'] * 100;
                 $secret_key = $this->get_stripe_secret_key($business_id);
                 if ($secret_key == "") {
-                    $response = error_res("Something went wrong");
+                    $response = error_res("Please provide a stripe secret key first");
                 } else {
 
                     try {
@@ -160,7 +160,7 @@ class Site extends CI_Controller {
         if ($stripe_token != '') {
             return $stripe_token;
         } else {
-            return "sk_test_HLQ9NIFofiiRukm1AZnjCfOe";
+            return "";
         }
     }
 
@@ -193,7 +193,7 @@ class Site extends CI_Controller {
     }
 
     function test_notification() {
-        $device_token = 'a80f300f10a38125ec6d1375276084495a6434306c7aa136c67f02d2340b8775';
+        $device_token = '34d49fc6f1dc3ed60fefe16724bd9e54a92af37e685c2cc5442b25ba0ea4bd82';
         $message_body = array(
             'type' => 1,
             'alert' => "Distribution Notification Testing",
@@ -337,8 +337,29 @@ class Site extends CI_Controller {
                     $refundamt = $param['amount'];
                     $response = success_res("Order Refunded Successfully");
                     $secret_key = $this->get_stripe_secret_key($business_id);
-                    $refund['charge'] = $order_charge_detail['stripe_charge_id'];
-                    $refund['amount'] = $refundamt * 100;
+                    if ($secret_key == '') {
+                        $response = error_res("Please provide a stripe secret key first");
+                    } else {
+                        $refund['charge'] = $order_charge_detail['stripe_charge_id'];
+                        $refund['amount'] = $refundamt * 100;
+                        try {
+                            \Stripe\Stripe::setApiKey($secret_key);
+                            $re = \Stripe\Refund::create($refund);
+                            $stripe_refund_id = $re->id;
+                            $this->m_site->update_order_charge_status($order_charge_detail['charge_id'], $order_id, $stripe_refund_id, $refundamt, $param['refund_type'], $order_charge_detail['consumer_id']);
+                        } catch (Exception $exc) {
+                            $response = error_res("Something went wrong");
+                        }
+                    }
+                }
+            } else if ($param['refund_type'] == 1) {
+                $response = success_res("Order Refunded Successfully");
+                $secret_key = $this->get_stripe_secret_key($business_id);
+                $refund['charge'] = $order_charge_detail['stripe_charge_id'];
+
+                if ($secret_key == '') {
+                    $response = error_res("Please provide a stripe secret key first");
+                } else {
                     try {
                         \Stripe\Stripe::setApiKey($secret_key);
                         $re = \Stripe\Refund::create($refund);
@@ -347,19 +368,6 @@ class Site extends CI_Controller {
                     } catch (Exception $exc) {
                         $response = error_res("Something went wrong");
                     }
-                }
-            } else if ($param['refund_type'] == 1) {
-                $response = success_res("Order Refunded Successfully");
-                $secret_key = $this->get_stripe_secret_key($business_id);
-                $refund['charge'] = $order_charge_detail['stripe_charge_id'];
-
-                try {
-                    \Stripe\Stripe::setApiKey($secret_key);
-                    $re = \Stripe\Refund::create($refund);
-                    $stripe_refund_id = $re->id;
-                    $this->m_site->update_order_charge_status($order_charge_detail['charge_id'], $order_id, $stripe_refund_id, $refundamt, $param['refund_type'], $order_charge_detail['consumer_id']);
-                } catch (Exception $exc) {
-                    $response = error_res("Something went wrong");
                 }
             } else {
                 $response = error_res("Something went wrong");
@@ -378,6 +386,6 @@ class Site extends CI_Controller {
         print_r($re);
     }
 
-   }
+}
 
 //////////// HERE DO NOT END PHP TAG  

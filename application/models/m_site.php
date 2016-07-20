@@ -239,7 +239,7 @@ class M_site extends CI_Model {
             $option_row = $option_result->result_array();
             $r['option_ids'] = $option_row;
         }
-        $row['sql']=  $this->db->last_query();
+        
         return $row;
     }
 
