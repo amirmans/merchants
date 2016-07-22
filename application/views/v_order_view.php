@@ -28,9 +28,36 @@
                 </h4>
                 <h2>#<?php echo $orderlist[0]['order_id']; ?> <span class="lowlighter">For</span> <?php echo $orderlist[0]['nickname']; ?></h2>
                 <span class="time">Ordered <?php echo time_elapsed_string($orderlist[0]['seconds']); ?></span>
-
+                
                 <br>
                 <span class="note">Note: <?php echo $orderlist[0]['note']; ?></span>
+                <?php
+                
+                    if($consumer['is_first_order']==1)
+                    {
+                        if($orderlist[0]['nickname']!='')
+                        {
+                         ?>  <br><span class="firstorder"><?php echo ucfirst($orderlist[0]['nickname']); ?>'s First Order </span>
+                        <?php }
+                        else
+                        {
+                            echo '<br><span class="firstorder">Consumer\'s First Order </span>';
+                        }
+                        
+                    }
+                    if($consumer['is_birthday']==1)
+                    {
+                        if($orderlist[0]['nickname']!='')
+                        {
+                         ?>  <br><span class="birthday">Today is <?php echo ucfirst($orderlist[0]['nickname']); ?>'s Birthday </span>
+                        <?php }
+                        else
+                        {
+                            echo '<br><span class="birthday">Today is Consumer\'s Birthday </span>';
+                        }
+                    }
+                    
+                ?>
             </div>
             <div class="col-md-6  padding-0 text-right">
 
@@ -399,7 +426,7 @@
         document.body.appendChild(frame1);
         var frameDoc = frame1.contentWindow ? frame1.contentWindow : frame1.contentDocument.document ? frame1.contentDocument.document : frame1.contentDocument;
         frameDoc.document.open();
-        frameDoc.document.write('<html><style> @media print { @page {size: 3.5in;margin:0;}}@media print {  * { margin: 0 !important; padding: 4px !important;text-transform: uppercase;font-family:monospace; }}@media print   { .invoice .logo{ font-size:7pt;padding:0;text-align:center;}} @media print   { .time { font-size:8px;}} @media print   { .note { font-size:8px;}} @media print  {.invoice .line h2 { font-size:10px;line-height:0} } @media print  {.invoice .line h4 { font-size:7px} } @media print  { table { page-break-inside : auto;width:100%; }}@media print  { table tr th,td{ font-size: 10pt;text-align:left;letter-spacing:0}}@media print  { table .th_total { white-space: nowrap;}}@media print  { table .th_price { white-space: nowrap;}}@media print   {.invoice .table p { font-size:8pt;}}  @media print   { #grand_total { font-weight:bold}} @media print  { table .th_quantity { font-weight:bold;}}  </style><body onload="window.print()"><div class="invoice invoice-row"><div class="logo"><h1><?php echo $this->session->userdata('name'); ?></h1> </div>' + content + '</div></html>');
+        frameDoc.document.write('<html><style> @media print { @page {size: 3.5in;margin:0;}}@media print {  * { margin: 0 !important; padding: 4px !important;text-transform: uppercase;font-family:monospace; }}@media print   { .invoice .logo{ font-size:7pt;padding:0;text-align:center;}} @media print   { .time { font-size:8px;}} @media print   { .note { font-size:8px;} .birthday { font-size:8px;} .firstorder{ font-size:8px;}} @media print  {.invoice .line h2 { font-size:10px;line-height:0} } @media print  {.invoice .line h4 { font-size:7px} } @media print  { table { page-break-inside : auto;width:100%; }}@media print  { table tr th,td{ font-size: 10pt;text-align:left;letter-spacing:0}}@media print  { table .th_total { white-space: nowrap;}}@media print  { table .th_price { white-space: nowrap;}}@media print   {.invoice .table p { font-size:8pt;}}  @media print   { #grand_total { font-weight:bold}} @media print  { table .th_quantity { font-weight:bold;}}  </style><body onload="window.print()"><div class="invoice invoice-row"><div class="logo"><h1><?php echo $this->session->userdata('name'); ?></h1> </div>' + content + '</div></html>');
 
         frameDoc.document.close();
     }

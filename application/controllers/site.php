@@ -31,7 +31,8 @@ class Site extends CI_Controller {
         $data['orderlist'] = $this->m_site->get_business_order_list($param);
         $order_detail['order_detail'] = $this->m_site->get_order_detail($data['orderlist'][0]['order_id']);
         $order_detail['orderlist'] = $this->m_site->get_ordelist_order($data['orderlist'][0]['order_id']);
-
+        $order_detail['consumer'] = $this->m_site->check_birthday_first_order($data['orderlist'][0]['order_id']);
+        
         $data['order_view'] = $this->load->view('v_order_view', $order_detail, TRUE);
         $this->load->view('v_orderlist', $data);
     }
@@ -60,6 +61,7 @@ class Site extends CI_Controller {
         $order_id = $param['order_id'];
         $data['order_detail'] = $this->m_site->get_order_detail($order_id);
         $data['orderlist'] = $this->m_site->get_ordelist_order($order_id);
+        $data['consumer'] = $this->m_site->check_birthday_first_order($order_id);
         $return['order_view'] = $this->load->view('v_order_view', $data, TRUE);
         echo json_encode($return);
     }
@@ -342,7 +344,9 @@ class Site extends CI_Controller {
                     } else {
                         $refund['charge'] = $order_charge_detail['stripe_charge_id'];
                         $refund['amount'] = $refundamt * 100;
-                        if ($refund['amount'] != 0 && $refund['charge'] != 0) {
+
+                        if ($refund['amount'] != '0' && $refund['charge'] != '0') {
+
                             try {
                                 \Stripe\Stripe::setApiKey($secret_key);
                                 $re = \Stripe\Refund::create($refund);
@@ -351,7 +355,7 @@ class Site extends CI_Controller {
                                 $response = error_res("Something went wrong");
                             }
                         } else {
-                            $stripe_refund_id = 0;
+                            $stripe_refund_id = "0";
                         }
                         $this->m_site->update_order_charge_status($order_charge_detail['charge_id'], $order_id, $stripe_refund_id, $refundamt, $param['refund_type'], $order_charge_detail['consumer_id']);
                     }
@@ -364,16 +368,16 @@ class Site extends CI_Controller {
                 if ($secret_key == '') {
                     $response = error_res("Please provide a stripe secret key first");
                 } else {
-                    if ($refund['charge'] != 0) {
+                    if ($refund['charge'] != '0') {
                         try {
                             \Stripe\Stripe::setApiKey($secret_key);
                             $re = \Stripe\Refund::create($refund);
-                            $stripe_refund_id = $re->id;                            
+                            $stripe_refund_id = $re->id;
                         } catch (Exception $exc) {
                             $response = error_res("Something went wrong");
                         }
                     } else {
-                        $stripe_refund_id = 0;                            
+                        $stripe_refund_id = 0;
                     }
                     $this->m_site->update_order_charge_status($order_charge_detail['charge_id'], $order_id, $stripe_refund_id, $refundamt, $param['refund_type'], $order_charge_detail['consumer_id']);
                 }

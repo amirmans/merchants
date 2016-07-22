@@ -50,6 +50,16 @@
                 font-size: 15px;
 
             }
+            .birthday{
+                color: #9a80b9;
+                font-size: 15px;
+
+            }
+            .firstorder{
+                color: #4caf50;
+                font-size: 15px;
+
+            }
             .pending_order_color{
                 background: #FF7C7C;
             }

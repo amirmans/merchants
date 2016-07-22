@@ -182,6 +182,7 @@ class M_site extends CI_Model {
             $this->db->where('o.status', 3);
         } else {
             $this->db->where('o.status !=', 3);
+            $this->db->where('o.status !=', 4);
         }
         $this->db->where('o.business_id', $param['businessID']);
         $this->db->order_by("o.order_id", "desc");
@@ -239,8 +240,50 @@ class M_site extends CI_Model {
             $option_row = $option_result->result_array();
             $r['option_ids'] = $option_row;
         }
+
+        return $row;
+    }
+    
+    function check_birthday_first_order($order_id)
+    {
+        $this->db->select('consumer_id');
+        $this->db->from('order o');
+        $this->db->where('order_id', $order_id);
+        $consumer_result = $this->db->get();
+        $consumer_row = $consumer_result->row_array();
+        $consumerId = $consumer_row['consumer_id'];
+
+        $this->db->select('order_id');
+        $this->db->from('order');
+        $this->db->where('consumer_id', $consumerId);
+        $count_orders = $this->db->get();
+        $total_consumer_orders = $count_orders->num_rows();
+        if ($total_consumer_orders == 1) {
+            $row['is_first_order'] = "1";
+        }
+        else
+        {
+            $row['is_first_order'] = "0";
+        }
+        //SELECT * FROM consumer_profile  WHERE uid=1 AND MONTH(dob) = MONTH(NOW()) AND DAY(dob) = DAY(NOW()); 
+        $this->db->select('*');
+        $this->db->from('consumer_profile');
+        $this->db->where('uid', $consumerId);
+        $this->db->where('MONTH(dob) = MONTH(NOW()) AND DAY(dob) = DAY(NOW())', NULL);
+        $birthday_result = $this->db->get();
+        $birthday_row = $birthday_result->row_array();
+        
+        if(count($birthday_row)>0)
+        {
+            $row['is_birthday']="1";
+        }
+        else
+        {
+            $row['is_birthday']="0";
+        }
         
         return $row;
+        
     }
 
     function get_order_charge_detail($order_id) {
@@ -721,6 +764,7 @@ class M_site extends CI_Model {
         $this->db->join('consumer_profile as cp', 'o.consumer_id = cp.uid', 'left');
         $this->db->where('o.status !=', 0);
         $this->db->where('o.status !=', 3);
+        $this->db->where('o.status !=', 4);
         $this->db->where('o.order_id >', $param['latest_order_id']);
 
         $this->db->where('o.business_id', $param['businessID']);
@@ -888,17 +932,19 @@ class M_site extends CI_Model {
         $this->db->from('order');
         $this->db->where('business_id', $param['businessID']);
         $this->db->where('date > DATE_SUB(NOW(), INTERVAL 1 DAY)');
+        $this->db->where('(status=2 or status=3)', NULL);
         $result = $this->db->get();
         $row = $result->row_array();
         $return['today']['orders'] = $row['total_orders'];
         $return['today']['subtotals'] = $row['total_subtotal'];
         $return['today']['tips'] = $row['total_tip'];
-        $return['today']['points'] = $row['total_points'];
+        $return['sql'] = $this->db->last_query();
 
         $this->db->select('count(order_id) as total_orders,ifnull(sum(subtotal),"0.00") as total_subtotal,ifnull(sum(tip_amount),"0.00") as total_tip, ifnull(sum(points_dollar_amount),"0.00") as total_points', FALSE);
         $this->db->from('order');
         $this->db->where('business_id', $param['businessID']);
         $this->db->where('date > DATE_SUB(NOW(), INTERVAL 1 WEEK)');
+        $this->db->where('(status=2 or status=3)', NULL);
         $weekresult = $this->db->get();
         $weekrow = $weekresult->row_array();
         $return['week']['orders'] = $weekrow['total_orders'];
@@ -910,6 +956,7 @@ class M_site extends CI_Model {
         $this->db->from('order');
         $this->db->where('business_id', $param['businessID']);
         $this->db->where('date > DATE_SUB(NOW(), INTERVAL 1 MONTH)');
+        $this->db->where('(status=2 or status=3)', NULL);
         $monthresult = $this->db->get();
         $monthrow = $monthresult->row_array();
         $monthcount = $monthresult->num_rows();
@@ -921,6 +968,7 @@ class M_site extends CI_Model {
         $this->db->select('count(order_id) as total_orders,ifnull(sum(subtotal),"0.00") as total_subtotal,ifnull(sum(tip_amount),"0.00") as total_tip, ifnull(sum(points_dollar_amount),"0.00") as total_points', FALSE);
         $this->db->from('order');
         $this->db->where('business_id', $param['businessID']);
+        $this->db->where('(status=2 or status=3)', NULL);
         $totalresult = $this->db->get();
         $totalrow = $totalresult->row_array();
         $totalcount = $totalresult->num_rows();
@@ -975,7 +1023,7 @@ class M_site extends CI_Model {
         $this->db->where('date > DATE_SUB(NOW(), INTERVAL 1 DAY)');
         $processingFeeresult = $this->db->get();
         $processingFeerow = $processingFeeresult->row_array();
-        $return['today']['processing_fee'] = ($processingFeerow['total_processingfee']/100)*3;
+        $return['today']['processing_fee'] = ($processingFeerow['total_processingfee'] / 100) * 3;
 
 
         $this->db->select('ifnull(sum(total),"0.00") as total_processingfee', FALSE);
@@ -985,7 +1033,7 @@ class M_site extends CI_Model {
         $this->db->where('date > DATE_SUB(NOW(), INTERVAL 1 WEEK)');
         $processingFeeresult = $this->db->get();
         $processingFeerow = $processingFeeresult->row_array();
-        $return['week']['processing_fee'] = ($processingFeerow['total_processingfee']/100)*3;
+        $return['week']['processing_fee'] = ($processingFeerow['total_processingfee'] / 100) * 3;
 
         $this->db->select('ifnull(sum(total),"0.00") as total_processingfee', FALSE);
         $this->db->from('order');
@@ -994,7 +1042,7 @@ class M_site extends CI_Model {
         $this->db->where('date > DATE_SUB(NOW(), INTERVAL 1 MONTH)');
         $processingFeeresult = $this->db->get();
         $processingFeerow = $processingFeeresult->row_array();
-        $return['month']['processing_fee'] = ($processingFeerow['total_processingfee']/100)*3;
+        $return['month']['processing_fee'] = ($processingFeerow['total_processingfee'] / 100) * 3;
 
         $this->db->select('ifnull(sum(total),"0.00") as total_processingfee', FALSE);
         $this->db->from('order');
@@ -1002,7 +1050,7 @@ class M_site extends CI_Model {
         $this->db->where('status', 3);
         $processingFeeresult = $this->db->get();
         $processingFeerow = $processingFeeresult->row_array();
-        $return['total']['processing_fee'] = ($processingFeerow['total_processingfee']/100)*3;
+        $return['total']['processing_fee'] = ($processingFeerow['total_processingfee'] / 100) * 3;
 
         $this->db->select('ifnull(sum(ro.amount),"0.00") as total_refund', FALSE);
         $this->db->from('refund_order ro');
@@ -1053,6 +1101,7 @@ class M_site extends CI_Model {
         $this->db->where('business_id', $param['businessID']);
         $this->db->where('date >=', $start_date);
         $this->db->where('date <=', $end_date);
+        $this->db->where('(status=2 or status=3)', NULL);
         $result = $this->db->get();
         $row = $result->row_array();
 
@@ -1085,7 +1134,7 @@ class M_site extends CI_Model {
         $refundrow = $refundresult->row_array();
 
         $row['rejected_orders'] = $rejectedrow['rejected_orders'];
-        $row['total_processingfee'] = ($processingFeerow['total_processingfee']/100)*3;
+        $row['total_processingfee'] = ($processingFeerow['total_processingfee'] / 100) * 3;
         $row['total_refund'] = $refundrow['total_refund'];
         return $row;
     }
@@ -1101,6 +1150,11 @@ class M_site extends CI_Model {
         $data['is_refunded'] = '1';
         $this->db->where('charge_id', $charge_id);
         $this->db->update('order_charge', $data);
+
+        $data = array();
+        $data['status'] = '4';
+        $this->db->where('order_id', $order_id);
+        $this->db->update('order', $data);
 
         $this->db->where('order_id', $order_id);
         $this->db->where('consumer_id', $consumer_id);
