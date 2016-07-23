@@ -16,7 +16,7 @@ class Site extends CI_Controller {
     }
 
     function index() {
-///// DEFULT SITE CONTROLLER MEHOD CALL 
+///// DEFULT SITE CONTROLLER MEHOD CALL
         $data['business_list'] = $this->m_site->get_business_list();
         $this->load->view('v_home', $data);
     }
@@ -32,7 +32,7 @@ class Site extends CI_Controller {
         $order_detail['order_detail'] = $this->m_site->get_order_detail($data['orderlist'][0]['order_id']);
         $order_detail['orderlist'] = $this->m_site->get_ordelist_order($data['orderlist'][0]['order_id']);
         $order_detail['consumer'] = $this->m_site->check_birthday_first_order($data['orderlist'][0]['order_id']);
-        
+
         $data['order_view'] = $this->load->view('v_order_view', $order_detail, TRUE);
         $this->load->view('v_orderlist', $data);
     }
@@ -232,18 +232,18 @@ class Site extends CI_Controller {
     function email_configration() {
 
 
-        $email = "info@artdoost.com";
+        $email = "tap-in@tapforall.com";
         $this->load->library('email');
         $config['protocol'] = 'smtp';
         $config['smtp_host'] = 'mail.artdoost.com';
         $config['smtp_port'] = '26';
         $config['smtp_timeout'] = '7';
         $config['smtp_user'] = $email;
-        $config['smtp_pass'] = 'Ankit123!!';
+        $config['smtp_pass'] = 'b#Fq0w<ZAM#u<&';
         $config['charset'] = 'utf-8';
         $config['newline'] = "\r\n";
         $config['mailtype'] = 'html'; // or html
-        $config['validation'] = TRUE; // bool whether to validate email or not      
+        $config['validation'] = TRUE; // bool whether to validate email or not
         $this->email->initialize($config);
         $this->email->from($email, 'Tap-in');
     }
@@ -400,4 +400,4 @@ class Site extends CI_Controller {
 
 }
 
-//////////// HERE DO NOT END PHP TAG  
+//////////// HERE DO NOT END PHP TAG
