@@ -18,7 +18,7 @@
             a.menu_btn{
                 color: black;
                 border: 1px solid black;
-                padding: 5px;  
+                padding: 5px;
             }
 
             .th_price{
@@ -100,7 +100,7 @@
 
         </style>
         <script src="<?php echo base_url('assets/js/audiojs/audio.min.js'); ?>"></script>
-        
+
     </head>
     <body>
         <?php $this->load->view('v_header'); ?>
@@ -121,15 +121,15 @@
                     <div class="container-mailbox">
                         <div class="col-lg-3 col-md-4 padding-0">
                             <div class="row order-menu">
-                                <div class="col-md-2 float-l"><span class="order_text"><h5>&nbsp;&nbsp;&nbsp;ORDERS</h5></span></div> 
+                                <div class="col-md-2 float-l"><span class="order_text"><h5>&nbsp;&nbsp;&nbsp;ORDERS</h5></span></div>
                                 <div class="col-md-10 text-right">
 
                                     <select class="selectpicker" id="order_status" style="margin: 10px 24px;" onchange="change_order_status()" >
                                         <option value="neworder"  >New Order</option>
                                         <option value="completed" selected >Completed</option>
                                     </select>
-                                </div>    
-                            </div>    
+                                </div>
+                            </div>
 
                             <?php
                             if ($order_status == 'completed') {
@@ -140,7 +140,7 @@
                                             <input type="text" class="searchbox" name="keyword" id="keyword" placeholder="Search">
                                             &nbsp;<button type="submit" class="btn btn-rounded btn-option1" onclick="return search_order()">Go</button>
                                         </form>
-                                    </div> 
+                                    </div>
                                 </div>
                                 <?php
                             }
@@ -213,13 +213,13 @@
 
             <i class="fa fa-info"></i>
             <a href="#" class="closed">×</a>
-            <h4>You have new <span id="count_pending_order"></span> orders remaining for approval!</h4>
+            <h4>You have <span id="count_pending_order"></span> orders remaining for approval!</h4>
         </div>
 
 
 
         <?php $this->load->view('v_script'); ?>
-        <audio></audio>        
+        <audio></audio>
         <script>
             $(function() {
                 // Setup the player to autoplay the next track
@@ -315,7 +315,7 @@
                 $("#new_order_form").submit();
             }
             $(document).ready(function() {
-                // bind 'myForm' and provide a simple callback function 
+                // bind 'myForm' and provide a simple callback function
                 $('#new_order_form').ajaxForm({
                     success: displayneworder
                 });
