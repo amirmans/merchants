@@ -173,7 +173,7 @@ function limit_text($text, $limit) {
 
                             <tr style="line-height: 0">
                                 <td>
-                                    <p style="font-weight: bold;font-size: 21px;margin-left: 10px">Tax</p>
+                                    <p style="font-weight: bold;font-size: 20px;margin-left: 10px">Tax</p>
                                 </td>
                                 <td>
                                     <h1 style="text-align: right;margin-right: 10px">$<?php echo $tax_amount; ?></h1>
@@ -181,7 +181,7 @@ function limit_text($text, $limit) {
                             </tr>
                             <tr style="line-height: 0">
                                 <td>
-                                    <p style="font-weight: bold;font-size: 21px;margin-left: 10px">Tip</p>
+                                    <p style="font-weight: bold;font-size: 20px;margin-left: 10px">Tip</p>
                                 </td>
                                 <td>
                                     <h1 style="text-align: right;margin-right: 10px">$<?php echo $tip_amount; ?></h1>
@@ -189,7 +189,7 @@ function limit_text($text, $limit) {
                             </tr>
                             <tr style="line-height: 0">
                                 <td >
-                                    <p style="font-weight: bold;font-size: 21px;margin-left: 10px">Points</p>
+                                    <p style="font-weight: bold;font-size: 20px;margin-left: 10px">Points</p>
 
                                 </td>
                                 <td >
