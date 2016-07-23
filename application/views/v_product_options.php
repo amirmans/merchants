@@ -13,7 +13,7 @@
             .add_product_btn{
                 float: right;
                 color: white !important;
-            } 
+            }
         </style>
 
     </head>
@@ -32,7 +32,7 @@
                             <div class="panel panel-default">
 
                                 <div class="panel-title">
-                                     <?php echo $product_name; ?> : Prodcuts Options
+                                     <?php echo $product_name; ?> : Products Options
                                     <a  class="btn btn-success add_product_btn" onclick="save(<?php echo $product_id; ?>)"><i class="fa fa-save"></i>Save</a>
                                 </div>
 
@@ -116,16 +116,16 @@
                 checkedOptionId = checkedOptionId.join();
                 var param={checked:checkedOptionId,unchecked:uncheckedOptionId,product_id:product_id}
                 console.log(param)
-                
+
                 $.post("<?php echo base_url('index.php/product/insert_product_options') ?>", param)
                         .done(function(data) {
                             data = jQuery.parseJSON(data);
                             if (data['status'] == '1')
                             {
-                                
+
                                 swal("", data['msg'], "success");
                             } else {
-                                
+
                                 swal("",data['msg'], "error");
                             }
                         });

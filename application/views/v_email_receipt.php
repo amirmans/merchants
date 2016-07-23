@@ -112,14 +112,14 @@ function limit_text($text, $limit) {
                                         <table border="0" width="430">
                                             <tr style="">
 
-                                                <td rowspan="2"> 
+                                                <td rowspan="2">
                                                     <p style="font-weight: bold"><?php echo $order_detail[$i]['name']; ?></p>
                                                     <p style="color: #808080"><?php echo limit_text($order_detail[$i]['short_description'], 12); ?></p>
                                                     <?php if (count($order_detail[$i]['option_ids']) > 0) {
                                                         ?>
                                                         <ul style="list-style: none;color: #808080; padding-left:15px">
 
-                                                            
+
                                                             <?php foreach ($order_detail[$i]['option_ids'] as $option) {
                                                                 ?>
                                                                 <li>+ <?php echo $option['name']; ?></li>
@@ -141,7 +141,7 @@ function limit_text($text, $limit) {
                             </table>
 
 
-                        </td>   
+                        </td>
                     </tr>
                 <?php } ?>
 
@@ -220,7 +220,7 @@ function limit_text($text, $limit) {
                                     <p style="padding-left: 15px"><span style="color:#ABABAB">ORDER #</span><?php echo $order_id; ?></p>
                                     <p style="padding-left: 15px;color: #4DBEC7">ORDER IN PROCESS</p>
                                     <p style="padding-left: 15px"><span style="color:#ABABAB">AVERAGE WAITING TIME 20 MINS</span></p>
-                                </td> 
+                                </td>
                                 <td><span style="color: #ABABAB;font-weight: bold;font-size: 30px">$<?php echo $total; ?></span></td>
                             </tr>
 
@@ -228,14 +228,14 @@ function limit_text($text, $limit) {
                                 <td bgcolor="">
                                     <p style="padding-left: 15px"></p>
 
-                                </td> 
+                                </td>
                                 <td></td>
                             </tr>
                             <tr bgcolor="#EBEBEB" >
                                 <td bgcolor="#EBEBEB">
                                     <p style="padding-left: 15px"><span style="color:#4DBEC7">PAID</span> Visa XXXX XXXX XXXX <?php echo substr($cc_no, -4) . " " . $exp_month . "/" . $exp_year; ?></p>
 
-                                </td> 
+                                </td>
                                 <td></td>
                             </tr>
                         </table>
@@ -250,7 +250,7 @@ function limit_text($text, $limit) {
                                 <?php
                                 $earnPoints = round($total);
                                 ?>
-                                <td style="padding: 5px"><span style="color:#4DBEC7">Earn <?php echo $earnPoints; ?> Reward Points</span></td>
+                                <td style="padding: 5px"><span style="color:#4DBEC7">Earned <?php echo $earnPoints; ?> Reward Points</span></td>
                             </tr>
                             <tr>
                                 <td style="padding: 5px"><span style="color:#4DBEC7"><img src="<?php echo base_url('assets/email_templete/ic_rewards@3x.png'); ?>" width="30" height="30"></img></span></td>
