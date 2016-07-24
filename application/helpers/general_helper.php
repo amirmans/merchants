@@ -1,7 +1,7 @@
 <?php
 
 function error_res($msg) {
-    ///////////ERROR RESPONSE 
+    ///////////ERROR RESPONSE
     $msg = $msg == "" ? "Error" : $msg;
     return array("status" => 0, "msg" => $msg);
 }
@@ -14,7 +14,7 @@ function success_res($msg) {
 
 function is_login() {
     /////////// CHECK PARAMETER USER_ID SET IN CODEIGNTER SESSION
-    //////////// CODIGNATER SESSION IS NOT SESSTION OF PHP..CODEIGNATER USE COKIE FOR SESSTION 
+    //////////// CODIGNATER SESSION IS NOT SESSTION OF PHP..CODEIGNATER USE COKIE FOR SESSTION
     $CI = & get_instance();
     $user_id = $CI->session->userdata('businessID');
     return $user_id;
@@ -62,7 +62,7 @@ function time_elapsed_string($ptime) {
 //    $ptime = strtotime($ptime);
 //    date_default_timezone_set('America/Los_Angeles');
 //    $etime = time() - $ptime;
-        
+
         $etime = $ptime;
 
     if ($etime < 1) {
@@ -116,7 +116,7 @@ function push_notification_ios($device_token, $message_body) {
 //        );
 // Encode the payload as JSON
     $payload = json_encode($body);
-// Build the binary notification      
+// Build the binary notification
     $msg = chr(0) . pack('n', 32) . pack('H*', $deviceToken) . pack('n', strlen($payload)) . $payload;
 // Send it to the server
     $result = fwrite($fp, $msg, strlen($msg));
@@ -129,11 +129,11 @@ function push_notification_ios($device_token, $message_body) {
         $return = success_res("Success, notification sent");
         return $return;
     }
-    
-    
+
+
 }
 
 function staging_directory()
     {
-        return 'tapin-server-staging';
+        return 'tap-in';
     }
