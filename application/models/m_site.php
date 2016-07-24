@@ -243,7 +243,7 @@ class M_site extends CI_Model {
 
         return $row;
     }
-    
+
     function check_birthday_first_order($order_id)
     {
         $this->db->select('consumer_id');
@@ -265,14 +265,14 @@ class M_site extends CI_Model {
         {
             $row['is_first_order'] = "0";
         }
-        //SELECT * FROM consumer_profile  WHERE uid=1 AND MONTH(dob) = MONTH(NOW()) AND DAY(dob) = DAY(NOW()); 
+        //SELECT * FROM consumer_profile  WHERE uid=1 AND MONTH(dob) = MONTH(NOW()) AND DAY(dob) = DAY(NOW());
         $this->db->select('*');
         $this->db->from('consumer_profile');
         $this->db->where('uid', $consumerId);
         $this->db->where('MONTH(dob) = MONTH(NOW()) AND DAY(dob) = DAY(NOW())', NULL);
         $birthday_result = $this->db->get();
         $birthday_row = $birthday_result->row_array();
-        
+
         if(count($birthday_row)>0)
         {
             $row['is_birthday']="1";
@@ -281,9 +281,9 @@ class M_site extends CI_Model {
         {
             $row['is_birthday']="0";
         }
-        
+
         return $row;
-        
+
     }
 
     function get_order_charge_detail($order_id) {
@@ -444,7 +444,7 @@ class M_site extends CI_Model {
 
             $message_body = array(
                 'type' => "0",
-                'alert' => "Your order #" . $order_id . " is rejected ",
+                'alert' => "Your order #" . $order_id . " could not be fulfilled at this time ",
                 'badge' => 0,
                 'sound' => 'newMessage.wav'
             );
