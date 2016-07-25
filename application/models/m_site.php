@@ -441,17 +441,17 @@ class M_site extends CI_Model {
 
         if (count($row) > 0) {
             $device_token = $row[0]['device_token'];
-
+            $messageToConsumer = "Your order #" . $order_id . " could not be fulfilled at this time.";
             $message_body = array(
                 'type' => "0",
-                'alert' => "Your order #" . $order_id . " could not be fulfilled at this time ",
+                'alert' => $messageToConsumer,
                 'badge' => 0,
                 'sound' => 'newMessage.wav'
             );
             push_notification_ios($device_token, $message_body);
             $notification['consumer_id'] = $order_detail['consumer_id'];
             $notification['business_id'] = is_login();
-            $notification['message'] = "Your order #" . $order_id . " is rejected ";
+            $notification['message'] = $messageToConsumer;
             $notification['image'] = "";
             $notification['time_sent'] = date("Y-m-d H:i:s");
             $notification['notification_type_id'] = "4";
