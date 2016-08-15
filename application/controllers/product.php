@@ -181,5 +181,11 @@ class Product extends CI_Controller {
         $data = $this->m_site->update_product($param);
         redirect('index.php/product');
     }
+    
+    function delete($product_id) {
+        is_login() ? '' : redirect('index.php/login');
+        $data = $this->m_site->delete_product($product_id);
+        redirect('index.php/product');
+    }
 
 }

@@ -9,7 +9,12 @@
         <meta name="keywords" content="" />
         <title>Tap In </title>
         <?php $this->load->view('v_head'); ?>
-
+        <style>
+            .delete_product_btn{
+                float: right;
+                color: white !important;
+            } 
+        </style>
 
     </head>
     <body>
@@ -28,7 +33,7 @@
 
                                 <div class="panel-title">
                                     Edit Product
-
+                                    <a  class="btn btn-danger delete_product_btn" onclick="delete_product('<?php echo $product['product_id']; ?>')"><i class="fa fa-trash"></i>Delete Product</a>
                                 </div>
 
                                 <div class="panel-body">
@@ -260,6 +265,28 @@
                     console.log(data.product_category.message)
                     $('#category_error_text').html(data.product_category.message);
                 }
+            }
+
+            function delete_product(product_id)
+            {
+                swal({
+                    title: "Are you sure?",
+                    text: "You will not be able to recover this product!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Yes, delete it!",
+                    cancelButtonText: "No, cancel plz!",
+                    closeOnConfirm: false,
+                    closeOnCancel: false
+                },
+                function(isConfirm) {
+                    if (isConfirm) {
+                        location.href='<?php echo base_url('index.php/product/delete/'); ?>/'+product_id
+                    } else {
+                        swal("Cancelled", "Your product is safe :)", "error");
+                    }
+                });
             }
 
         </script>

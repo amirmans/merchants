@@ -244,8 +244,7 @@ class M_site extends CI_Model {
         return $row;
     }
 
-    function check_birthday_first_order($order_id)
-    {
+    function check_birthday_first_order($order_id) {
         $this->db->select('consumer_id');
         $this->db->from('order o');
         $this->db->where('order_id', $order_id);
@@ -260,9 +259,7 @@ class M_site extends CI_Model {
         $total_consumer_orders = $count_orders->num_rows();
         if ($total_consumer_orders == 1) {
             $row['is_first_order'] = "1";
-        }
-        else
-        {
+        } else {
             $row['is_first_order'] = "0";
         }
         //SELECT * FROM consumer_profile  WHERE uid=1 AND MONTH(dob) = MONTH(NOW()) AND DAY(dob) = DAY(NOW());
@@ -273,17 +270,13 @@ class M_site extends CI_Model {
         $birthday_result = $this->db->get();
         $birthday_row = $birthday_result->row_array();
 
-        if(count($birthday_row)>0)
-        {
-            $row['is_birthday']="1";
-        }
-        else
-        {
-            $row['is_birthday']="0";
+        if (count($birthday_row) > 0) {
+            $row['is_birthday'] = "1";
+        } else {
+            $row['is_birthday'] = "0";
         }
 
         return $row;
-
     }
 
     function get_order_charge_detail($order_id) {
@@ -1179,6 +1172,16 @@ class M_site extends CI_Model {
         $data['business_id'] = $param['businessID'];
         $this->db->where('option_id', $param['option_id']);
         $this->db->update('option', $data);
+    }
+
+    function delete_product($product_id) {
+        $this->db->where('product_id', $product_id);
+        $this->db->delete('product');
+    }
+
+    function delete_option($option_id) {
+        $this->db->where('option_id', $option_id);
+        $this->db->delete('option');
     }
 
 }

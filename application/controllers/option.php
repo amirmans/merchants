@@ -67,5 +67,11 @@ class Option extends CI_Controller {
         redirect('index.php/option');
       
     }
+    
+    function delete($option_id) {
+        is_login() ? '' : redirect('index.php/login');
+        $data = $this->m_site->delete_option($option_id);
+        redirect('index.php/option');
+    }
 
 }

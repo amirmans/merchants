@@ -13,8 +13,13 @@
             .back-button{
                 color: white !important; 
             }
+            
+            .delete_product_btn{
+                float: right;
+                color: white !important;
+            } 
         </style>
-
+        
     </head>
     <body>
         <?php $this->load->view('v_header'); ?>
@@ -30,6 +35,7 @@
 
                                 <div class="panel-title">
                                     Edit Option
+                                    <a  class="btn btn-danger delete_product_btn" onclick="delete_option('<?php echo $option['option_id']; ?>')"><i class="fa fa-trash"></i>Delete Option</a>
                                 </div>
                                 <div class="panel-body">
                                     <form id="edit_product_option_form" class="form-horizontal"  method="post" action="<?php echo base_url('index.php/option/edit_option'); ?>" >
@@ -173,6 +179,28 @@
                     console.log(data.product_option_category.message)
                     $('#category_error_text').html(data.product_option_category.message);
                 }
+            }
+            
+            function delete_option(option_id)
+            {
+                swal({
+                    title: "Are you sure?",
+                    text: "You will not be able to recover this option!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Yes, delete it!",
+                    cancelButtonText: "No, cancel plz!",
+                    closeOnConfirm: false,
+                    closeOnCancel: false
+                },
+                function(isConfirm) {
+                    if (isConfirm) {
+                        location.href='<?php echo base_url('index.php/option/delete/'); ?>/'+option_id
+                    } else {
+                        swal("Cancelled", "Your option is safe :)", "error");
+                    }
+                });
             }
             
         </script>
