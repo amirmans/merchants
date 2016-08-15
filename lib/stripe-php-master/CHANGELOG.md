@@ -1,3 +1,51 @@
+### 3.20.0 2016-08-08
+
+* Add `getDeclineCode` to card errors
+
+### 3.19.0 2016-07-29
+
+* Opt requests directly into TLS 1.2 where OpenSSL >= 1.0.1 (see #277 for context)
+
+### 3.18.0 2016-07-28
+
+* Add new `STATUS_` constants for subscriptions
+
+### 3.17.1 2016-07-28
+
+* Fix auto-paging iterator so that it plays nicely with `iterator_to_array`
+
+### 3.17.0 2016-07-14
+
+* Add field annotations to model classes for better editor hinting
+
+### 3.16.0 2016-07-12
+
+* Add `ThreeDSecure` model for 3-D secure payments
+
+### 3.15.0 2016-06-29
+
+* Add static `update` method to all resources that can be changed.
+
+### 3.14.3 2016-06-20
+
+* Make sure that cURL never sends `Expects: 100-continue`, even on large request bodies
+
+### 3.14.2 2016-06-03
+
+* Add `inventory` under `SKU` to list of keys that have nested data and can be updated
+
+### 3.14.1 2016-05-27
+
+* Fix some inconsistencies in PHPDoc
+
+### 3.14.0 2016-05-25
+
+* Add support for returning Relay orders
+
+### 3.13.0 2016-05-04
+
+* Add `list`, `create`, `update`, `retrieve`, and `delete` methods to the Subscription class
+
 ### 3.12.1 2016-04-07
 
 * Additional check on value arrays for some extra safety
