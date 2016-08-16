@@ -80,4 +80,78 @@ class Profile extends CI_Controller {
         echo json_encode($reponse);
     }
 
+    function add_business_images() {
+        is_login() ? '' : redirect('index.php/login');
+        $param = $_REQUEST;
+        $businessID = is_login();
+        $business = $this->m_site->get_business($businessID);
+        $pictures = explode(",", $business["business_detail"]["pictures"]);
+        foreach ($pictures as &$p) {
+//            $p='../../../' . staging_directory() . '/customer_files/'.$businessID.'/'.trim($p);
+            $p = trim($p);
+        }
+        $data["picutres"] = $pictures;
+
+        $this->load->view('v_add_business_images', $data);
+    }
+
+    function insert_business_image() {
+        $businessID = is_login();
+        if (!file_exists('../' . staging_directory() . '/customer_files/' . $businessID)) {
+            mkdir('../' . staging_directory() . '/customer_files/' . $businessID, 0777, true);
+        }
+
+        $param["businessId"] = $businessID;
+        $param["picture"] = $this->m_site->file_upload("picture", '../' . staging_directory() . '/customer_files/' . $businessID);
+        $data = $this->m_site->insert_business_image($param);
+
+        echo json_encode($data);
+    }
+
+    function delete_business_image($file_name) {
+
+        $businessID = is_login();
+        if (file_exists('../' . staging_directory() . '/customer_files/' . $businessID . "/" . $file_name)) {
+            unlink('../' . staging_directory() . '/customer_files/' . $businessID . "/" . $file_name);
+        }
+        $param["businessId"] = $businessID;
+        $param["picture"] = $file_name;
+        $data = $this->m_site->delete_business_image($param);
+        echo json_encode($data);
+    }
+
+    function replace_business_image() {
+
+        $businessID = is_login();
+        $param = $_REQUEST;
+        if (file_exists('../' . staging_directory() . '/customer_files/' . $businessID . "/" . $param["file_name"])) {
+            unlink('../' . staging_directory() . '/customer_files/' . $businessID . "/" . $param["file_name"]);
+        }
+        $picture = $this->move_to_upload($param["file_name"],"picture1", '../' . staging_directory() . '/customer_files/' . $businessID);
+        
+        $data=  success_res("Business Image replace successfully");
+        echo json_encode($data);
+    }
+
+    function move_to_upload($file_name, $file_key, $folder_path) {
+//////////////////// MOVE TO UPLOAD FILE TO FOLDER
+        //////////////$file_key=KEY NAME OF $_FILE
+        //////////////$folder_path=PATH OF DESITINAMTION FOLDER
+
+        if ($_FILES[$file_key]["name"] !== "") {
+            $temp = explode(".", $_FILES[$file_key]["name"]);
+            $extension = end($temp);
+
+            $file_path = $folder_path . "/" . $file_name;
+            if (move_uploaded_file($_FILES[$file_key]['tmp_name'], $file_path)) {
+                return $file_name;
+            } else {
+                return "";
+            }
+        } else {
+
+            return "";
+        }
+    }
+
 }

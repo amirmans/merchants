@@ -13,6 +13,12 @@
             .back-button{
                 color: white !important; 
             }
+            .edit_icon {
+                right: 0px; 
+            }
+            .invoice .logo img {
+                    margin-left: 260px;
+            }
         </style>
     </head>
     <body>
@@ -25,7 +31,8 @@
                 <!-- Start Invoice -->
                 <div class="invoice row" style="min-height: 870px">
                     <div class="invoicename">Business Profile</div>
-                    <div class="edit_icon"> <a class="btn btn-primary pointer " onclick="edit_profile()">Edit</a></div>
+                    <div class="edit_icon"> <a class="btn btn-primary pointer" onclick="edit_profile()">Edit</a><a href="<?php echo base_url('index.php/profile/add_business_images'); ?>" class="btn btn-primary pointer margin-l-10">Add Business Images</a></div>&nbsp;
+
                     <div class="logo">
                         <img id="icon_url" src="../../<?php echo staging_directory(); ?>/customer_files/icons/<?php echo $business_detail['icon'] ?>" alt="logo" width="150" ><br>
 

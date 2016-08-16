@@ -59,7 +59,7 @@ class M_site extends CI_Model {
     }
 
     function get_business($businessID) {
-        $this->db->select('businessID,name,username,email,website,businessTypes,phone,address,city,state,zipcode,stripe_secret_key,icon,marketing_statement,process_time,short_name,sms_no');
+        $this->db->select('businessID,name,username,email,website,businessTypes,phone,address,city,state,zipcode,stripe_secret_key,icon,marketing_statement,process_time,short_name,sms_no,pictures');
         $this->db->from('business_customers');
         $this->db->where('businessID', $businessID);
         $this->db->limit(1);
@@ -1182,6 +1182,58 @@ class M_site extends CI_Model {
     function delete_option($option_id) {
         $this->db->where('option_id', $option_id);
         $this->db->delete('option');
+    }
+
+    function insert_business_image($param) {
+        $this->db->select('pictures');
+        $this->db->from('business_customers');
+        $this->db->where('businessID', $param['businessId']);
+        $this->db->limit(1);
+        $result = $this->db->get();
+        $row = $result->row_array();
+
+        if ($row['pictures'] != '') {
+            $data["pictures"] = $row["pictures"] . "," . $param["picture"];
+        } else {
+            $data["pictures"] = $param["picture"];
+        }
+        $this->db->where("businessID", $param['businessId']);
+        $this->db->update("business_customers", $data);
+        $return = success_res("Business Picture added successfully");
+        return $return;
+    }
+    
+    function delete_business_image  ($param) {
+        
+        $this->db->select('pictures');
+        $this->db->from('business_customers');
+        $this->db->where('businessID', $param['businessId']);
+        $this->db->limit(1);
+        $result = $this->db->get();
+        $row = $result->row_array();
+
+        $pictures= explode(",",$row["pictures"]);
+        
+        for ($i=0;$i<count($pictures);$i++) {
+            if($pictures[$i]==$param['picture'])
+            {
+                unset($pictures[$i]);
+            }
+        }
+         
+        if(count($pictures) > 0)
+        {
+            $data["pictures"] = implode(",", $pictures);
+            
+        }
+        else
+        {
+            $data["pictures"] = "";
+        }
+        $this->db->where("businessID", $param['businessId']);
+        $this->db->update("business_customers", $data);
+        $return = success_res("Business Picture deleted successfully");
+        return $return;
     }
 
 }
