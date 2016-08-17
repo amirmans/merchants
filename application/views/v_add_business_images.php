@@ -51,7 +51,7 @@
                             <div class="panel-body status">
                                 <div class="image">
                                     <img id="icon_url" src="../../../<?php echo staging_directory(); ?>/customer_files/<?php echo $this->session->userdata('businessID'); ?>/<?php echo $p; ?>" alt="logo"  ><br>
-                                    <!--<img id="icon_url" src="../../<?php // echo staging_directory();             ?>/customer_files/1/koi.jpg" alt="logo" width="150" ><br>-->
+                                    <!--<img id="icon_url" src="../../<?php // echo staging_directory();                    ?>/customer_files/1/koi.jpg" alt="logo" width="150" ><br>-->
                                 </div>
                                 <ul class="links">
                                     <li><a href="#" class="" onclick="show_replace_image_modal('<?php echo $p; ?>')" ><i class="fa fa-edit"></i>Replace</a></li>
@@ -85,7 +85,7 @@
                                     <div class="form-group">
                                         <label class="col-sm-4 control-label form-label">Replace Picture:</label>
                                         <div class="col-sm-8" >
-                                            <input type="file" name="picture1" class="form-control" id="picture1">
+                                            <input type="file" name="picture1" class="form-control" id="picture1" onchange="validate_image('picture1')">
                                             <input type="hidden" name="file_name"  id="replace_picture">
                                             <br>
                                         </div>
@@ -97,7 +97,7 @@
                         <div class="modal-footer">
                             <label id="category_error_text" class="pull-left color10"></label>
                             <button type="button" class="btn btn-white" data-dismiss="modal" >Close</button>
-                            <button type="submit" class="btn btn-default" onclick="return validate_form()" >Save</button>
+                            <button type="submit" class="btn btn-default" onclick="return validate_form1()" >Save</button>
                         </div>
                     </form>
                 </div>
@@ -119,7 +119,7 @@
                                     <div class="form-group">
                                         <label class="col-sm-4 control-label form-label">Picture:</label>
                                         <div class="col-sm-8" >
-                                            <input type="file" name="picture" class="form-control" id="picture">
+                                            <input type="file" name="picture" class="form-control" id="picture" onchange="validate_image('picture')">
                                             <br>
                                         </div>
                                     </div>
@@ -141,7 +141,7 @@
         <script>
             window.history.forward(-1);
 
-            $(document).ready(function() {
+            $(document).ready(function () {
                 $('#add_image_form').ajaxForm({
                     success: processAddImageResponse
                 });
@@ -192,57 +192,77 @@
             function validate_form()
             {
 
-                var isImage = 1;
+                var isImage = $("#picture").val();
 
                 if (isImage)
                 {
-                    var fileUpload = document.getElementById("picture");
-                
-
-                    //Check whether the file is valid Image.
-                    var regex = new RegExp("([a-zA-Z0-9\s_\\.\-:])+(.jpg|.png|.gif)$");
-
-
-                    //Check whether HTML5 is supported.
-                    if (typeof (fileUpload.files) != "undefined") {
-                        //Initiate the FileReader object.
-                        var reader = new FileReader();
-                        //Read the contents of Image File.
-                            
-                        reader.readAsDataURL(fileUpload.files[0]);
-                        reader.onload = function(e) {
-                            //Initiate the JavaScript Image object.
-                            var image = new Image();
-
-                            //Set the Base64 string return from FileReader as source.
-                            image.src = e.target.result;
-
-                            //Validate the File Height and Width.
-                            image.onload = function() {
-                                var height = this.height;
-                                var width = this.width;
-                                if (height == 100 && width == 100) {
-                                    return true;
-                                } else {
-                                    alert("Height and Width must not exceed 100px.");
-                                    return false;
-                                }
-                                //alert("Uploaded image has valid Height and Width.");
-
-                            };
-
-                        }
-                    } else {
-                        alert("This browser does not support HTML5.");
-                        return false;
-                    }
-
-
+                    return true;
                 }
                 else
                 {
                     swal('', "Please Select Image", 'error')
                     return false
+                }
+            }
+            function validate_form1()
+            {
+
+                var isImage = $("#picture1").val();
+
+                if (isImage)
+                {
+                    return true;
+                }
+                else
+                {
+                    swal('', "Please Select Image", 'error')
+                    return false
+                }
+            }
+
+            function validate_image(elementId)
+            {
+                var fileUpload = document.getElementById(elementId);
+                var isImageValid = true;
+                //Check whether the file is valid Image.
+                var regex = new RegExp("([a-zA-Z0-9\s_\\.\-:])+(.jpg|.png|.gif)$");
+
+                //Check whether HTML5 is supported.
+                if (typeof (fileUpload.files) != "undefined") {
+                    //Initiate the FileReader object.
+                    var reader = new FileReader();
+                    //Read the contents of Image File.
+
+                    reader.readAsDataURL(fileUpload.files[0]);
+                    reader.onload = function (e) {
+                        //Initiate the JavaScript Image object.
+                        var image = new Image();
+
+                        //Set the Base64 string return from FileReader as source.
+                        image.src = e.target.result;
+
+                        //Validate the File Height and Width.
+                        image.onload = function () {
+
+                            var height = this.height;
+                            var width = this.width;
+
+                            if (height == 100 && width == 100) {
+                                return true;
+                            } else {
+                                swal("", "Height and Width must be 100px.", 'error');
+                                $("#" + elementId).val('');
+
+
+                            }
+                            //alert("Uploaded image has valid Height and Width.");
+                        };
+
+                    }
+
+                } else {
+                    swal('', "This browser does not support HTML5.", 'error');
+                    return false;
                 }
             }
 
@@ -259,11 +279,11 @@
                     closeOnConfirm: false,
                     closeOnCancel: false
                 },
-                function(isConfirm) {
+                function (isConfirm) {
                     if (isConfirm) {
                         var param = {}
                         $.get("<?php echo base_url('index.php/profile/delete_business_image') ?>" + "/" + filename, param)
-                                .done(function(data) {
+                                .done(function (data) {
                                     data = jQuery.parseJSON(data);
                                     if (data['status'] == '1')
                                     {

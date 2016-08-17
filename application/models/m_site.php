@@ -1202,9 +1202,10 @@ class M_site extends CI_Model {
         $return = success_res("Business Picture added successfully");
         return $return;
     }
-    
-    function delete_business_image  ($param) {
-        
+
+    function delete_business_image($param) {
+          
+
         $this->db->select('pictures');
         $this->db->from('business_customers');
         $this->db->where('businessID', $param['businessId']);
@@ -1212,24 +1213,23 @@ class M_site extends CI_Model {
         $result = $this->db->get();
         $row = $result->row_array();
 
-        $pictures= explode(",",$row["pictures"]);
-        
-        for ($i=0;$i<count($pictures);$i++) {
-            if($pictures[$i]==$param['picture'])
-            {
+        $pictures = explode(",", $row["pictures"]);
+
+        for ($i = 0; $i < count($pictures); $i++) {
+            $pictures[$i]=  trim($pictures[$i]);
+            
+            if ($pictures[$i] == $param['picture']) {
                 unset($pictures[$i]);
             }
         }
-         
-        if(count($pictures) > 0)
-        {
+   
+
+        if (count($pictures) > 0) {
             $data["pictures"] = implode(",", $pictures);
-            
-        }
-        else
-        {
+        } else {
             $data["pictures"] = "";
         }
+  
         $this->db->where("businessID", $param['businessId']);
         $this->db->update("business_customers", $data);
         $return = success_res("Business Picture deleted successfully");
