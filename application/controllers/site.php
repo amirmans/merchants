@@ -138,6 +138,17 @@ class Site extends CI_Controller {
         echo json_encode($response);
     }
 
+    function notifyMerchant() {
+        is_login() ? '' : redirect('index.php/login');
+        $message = "You Have a New Order!";
+        $returnVal = $this->m_site->notifyMerchant($message);
+        if ($returnVal > 0)
+            $response = success_res("Successfully notified merchant");
+        else
+            $response = success_res("Notifying Business for a new order failed!");
+        echo json_encode($response);
+    }
+
     function completedorder() {
         is_login() ? '' : redirect('index.php/login');
         $param = $_REQUEST;

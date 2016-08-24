@@ -333,6 +333,19 @@
                     $("#count_new_order").html(data['count_new_order']);
                     $("#alertbottom").show();
                     $('#audio1').click();
+//                    window.location = "<?php //echo base_url('index.php/site/notifyMerchant'); ?>//";
+
+                    $.get("<?php echo base_url('index.php/site/notifyMerchant') ?>")
+                        .done(function(data) {
+                            data = jQuery.parseJSON(data);
+                            if (data)
+                            {
+                                return true;
+//
+//                                $("#count_pending_order").html(data);
+//                                $("#alertPendingOrder").show();
+                            }
+                        });
                 }
 
 
@@ -346,7 +359,6 @@
                             data = jQuery.parseJSON(data);
                             if (data)
                             {
-
                                 $("#count_pending_order").html(data);
                                 $("#alertPendingOrder").show();
                             }

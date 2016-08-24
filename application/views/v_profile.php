@@ -102,7 +102,7 @@
 
                         </div>
                         <div class="col-md-6 col-xs-3 padding-0 text-right">
-                            <a class="btn btn-primary pointer " onclick="edit_opening_hours()">Edit Opening Hours</a>
+                            <a class="btn btn-primary pointer " onclick="edit_opening_hours()">Edit Business Hours</a>
                         </div>
 
                     </div>

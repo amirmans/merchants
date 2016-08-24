@@ -95,30 +95,28 @@ function time_elapsed_string($ptime) {
 
 function push_notification_ios($device_token, $message_body) {
     $deviceToken = "" . $device_token . "";
-    $passphrase = 'id0ntknow';
+
     $ctx = stream_context_create();
     stream_context_set_option($ctx, 'ssl', 'local_cert', 'ck.pem');
-    stream_context_set_option($ctx, 'ssl', 'passphrase', $passphrase);
+    stream_context_set_option($ctx, 'ssl', 'passphrase', 'id0ntknow');
+
 // Open a connection to the APNS server
-    $fp = stream_socket_client(
-            'ssl://gateway.sandbox.push.apple.com:2195', $err, $errstr, 60, STREAM_CLIENT_CONNECT | STREAM_CLIENT_PERSISTENT, $ctx);
-    if (!$fp)
+//$APNS = 'ssl://gateway.push.apple.com:2195'; // production server
+    $APNS = 'ssl://gateway.sandbox.push.apple.com:2195'; // development
+    $fp = stream_socket_client( $APNS, $err, $errstr, 60,
+        STREAM_CLIENT_CONNECT|STREAM_CLIENT_PERSISTENT, $ctx);
+    if (!$fp) {
         $error = "Failed to connect: $err $errstr" . PHP_EOL;
+        return $error;
+    }
 
     $body['aps'] = $message_body;
-    //echo 'Connected to APNS' . PHP_EOL;
-// Create the payload body
-//        $body['aps'] = array(
-//            'type' => $type,
-//            'alert' => $message,
-//            'badge' => $badge,
-//            'sound' => 'newMessage.wav'
-//        );
-// Encode the payload as JSON
+    // Encode the payload as JSON
     $payload = json_encode($body);
-// Build the binary notification
+    // Build the binary notification
     $msg = chr(0) . pack('n', 32) . pack('H*', $deviceToken) . pack('n', strlen($payload)) . $payload;
-// Send it to the server
+
+    // Send it to the server
     $result = fwrite($fp, $msg, strlen($msg));
     fclose($fp);
     if (!$result) {
@@ -129,8 +127,6 @@ function push_notification_ios($device_token, $message_body) {
         $return = success_res("Success, notification sent");
         return $return;
     }
-
-
 }
 
 function staging_directory()

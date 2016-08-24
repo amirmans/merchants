@@ -373,6 +373,54 @@ class M_site extends CI_Model {
 //        }
     }
 
+    function notifyMerchant($message) {
+        // first get the uuid for the device that the business has setup for notifications
+        $businessUUID = '';
+        $businessID = is_login();
+        $this->db->select('iDeviceNotificationUUID');
+        $this->db->from('business_customers');
+        $this->db->where('businessID', $businessID);
+        $this->db->limit(1);
+        $result = $this->db->get();
+        $row = $result->result_array();
+
+        if (empty($row[0]['iDeviceNotificationUUID']) ) {
+            return -1;
+        }
+        $businessUUID = $row[0]['iDeviceNotificationUUID'];
+
+        // now let's get the device token so we can send the notiication
+        $this->db->select('device_token');
+        $this->db->from('consumer_profile');
+        $this->db->where('uuid', $businessUUID);
+        $this->db->limit(1);
+        $result = $this->db->get();
+        $row = $result->result_array();
+
+        if (count($row) > 0) {
+            $device_token = $row[0]['device_token'];
+
+            $message_body = array(
+                'type' => "0",
+                'alert' => $message,
+                'badge' => 0,
+                'sound' => 'newMessage.wav'
+            );
+            push_notification_ios($device_token, $message_body);
+
+            // we are good
+            return 0;
+
+//            $notification['consumer_id'] = $order_detail['consumer_id'];
+//            $notification['business_id'] = is_login();
+//            $notification['message'] = $message;
+//            $notification['image'] = "";
+//            $notification['time_sent'] = date("Y-m-d H:i:s");
+//            $notification['notification_type_id'] = "6";
+//            $this->db->insert('notification', $notification);
+        }
+    }
+
     function completedorder($order_id) {
         $data = array();
         $data['status'] = '3';
