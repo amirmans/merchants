@@ -93,16 +93,16 @@ function time_elapsed_string($ptime) {
     }
 }
 
-function push_notification_ios($device_token, $message_body) {
-    $deviceToken = "" . $device_token . "";
+function push_notification_ios($arg_device_token, $message_body) {
+    $deviceToken = "" . $arg_device_token . "";
 
     $ctx = stream_context_create();
     stream_context_set_option($ctx, 'ssl', 'local_cert', 'ck.pem');
     stream_context_set_option($ctx, 'ssl', 'passphrase', 'id0ntknow');
 
 // Open a connection to the APNS server
-//$APNS = 'ssl://gateway.push.apple.com:2195'; // production server
-    $APNS = 'ssl://gateway.sandbox.push.apple.com:2195'; // development
+// $APNS = 'ssl://gateway.push.apple.com:2195'; // production server
+   $APNS = 'ssl://gateway.sandbox.push.apple.com:2195'; // development
     $fp = stream_socket_client( $APNS, $err, $errstr, 60,
         STREAM_CLIENT_CONNECT|STREAM_CLIENT_PERSISTENT, $ctx);
     if (!$fp) {

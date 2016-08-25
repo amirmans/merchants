@@ -385,6 +385,7 @@ class M_site extends CI_Model {
         $row = $result->result_array();
 
         if (empty($row[0]['iDeviceNotificationUUID']) ) {
+            log_message('error', "*****Could not find $businessID toke!");
             return -1;
         }
         $businessUUID = $row[0]['iDeviceNotificationUUID'];
@@ -396,7 +397,6 @@ class M_site extends CI_Model {
         $this->db->limit(1);
         $result = $this->db->get();
         $row = $result->result_array();
-
         if (count($row) > 0) {
             $device_token = $row[0]['device_token'];
 
@@ -406,7 +406,9 @@ class M_site extends CI_Model {
                 'badge' => 0,
                 'sound' => 'newMessage.wav'
             );
+
             push_notification_ios($device_token, $message_body);
+            log_message('info', "****Just notified $device_token that there is a new order!");
 
             // we are good
             return 0;
@@ -490,6 +492,9 @@ class M_site extends CI_Model {
                 'sound' => 'newMessage.wav'
             );
             push_notification_ios($device_token, $message_body);
+
+            log_message('info', "****Rejected  order: $order_id for $device_token");
+
             $notification['consumer_id'] = $order_detail['consumer_id'];
             $notification['business_id'] = is_login();
             $notification['message'] = $messageToConsumer;

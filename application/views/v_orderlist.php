@@ -206,7 +206,7 @@
 
             <i class="fa fa-info"></i>
             <a href="#" class="closed">×</a>
-            <h4>You have<span id="count_new_order"></span> new Order!</h4>
+            <h4>You have <span id="count_new_order"></span> new Order!</h4>
         </div>
 
         <div id="alertPendingOrder" class="kode-alert kode-alert-icon  kode-alert-top-right alert6-light" style="z-index: 99;" >

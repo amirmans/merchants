@@ -142,7 +142,7 @@ class Site extends CI_Controller {
         is_login() ? '' : redirect('index.php/login');
         $message = "You Have a New Order!";
         $returnVal = $this->m_site->notifyMerchant($message);
-        if ($returnVal > 0)
+        if ($returnVal >= 0)
             $response = success_res("Successfully notified merchant");
         else
             $response = success_res("Notifying Business for a new order failed!");
