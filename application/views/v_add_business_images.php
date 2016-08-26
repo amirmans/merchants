@@ -247,10 +247,13 @@
                             var height = this.height;
                             var width = this.width;
 
-                            if (height == 100 && width == 100) {
+                            if ((height/width) < 7/9) {
                                 return true;
                             } else {
-                                swal("", "Height and Width must be 100px.", 'error');
+                                message = "Wrong aspect ratio: " + String(Math.round(height / width).toFixed(1)) + ". Height: "
+                                        + height + "px, width: "+ width + "px.  We would like it in landscape format!";
+                                swal("", message, 'error');
+
                                 $("#" + elementId).val('');
 
 
