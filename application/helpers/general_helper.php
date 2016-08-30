@@ -96,15 +96,27 @@ function time_elapsed_string($ptime) {
 function push_notification_ios($arg_device_token, $message_body) {
     $deviceToken = "" . $arg_device_token . "";
 
+
+    $production = 0;
+    if ($production) {
+        $gateway = 'gateway.push.apple.com:2195';
+    } else {
+        $gateway = 'gateway.sandbox.push.apple.com:2195';
+    }
+
+// Create a Stream
     $ctx = stream_context_create();
+// Define the certificate to use
     stream_context_set_option($ctx, 'ssl', 'local_cert', 'ck.pem');
+// Passphrase to the certificate
     stream_context_set_option($ctx, 'ssl', 'passphrase', 'id0ntknow');
 
 // Open a connection to the APNS server
-// $APNS = 'ssl://gateway.push.apple.com:2195'; // production server
-   $APNS = 'ssl://gateway.sandbox.push.apple.com:2195'; // development
-    $fp = stream_socket_client( $APNS, $err, $errstr, 60,
-        STREAM_CLIENT_CONNECT|STREAM_CLIENT_PERSISTENT, $ctx);
+    $fp = stream_socket_client(
+        $gateway, $err,
+        $errstr, 60, STREAM_CLIENT_CONNECT|STREAM_CLIENT_PERSISTENT, $ctx);
+
+// Check that we've connected
     if (!$fp) {
         $error = "Failed to connect: $err $errstr" . PHP_EOL;
         return $error;
@@ -122,9 +134,11 @@ function push_notification_ios($arg_device_token, $message_body) {
     if (!$result) {
         //echo 'Error, notification not sent' . PHP_EOL;
         $return = error_res("Error, notification not sent");
+        log_message('error', "****Failed to notify $deviceToken");
         return $return;
     } else {
         $return = success_res("Success, notification sent");
+        log_message('info', "****Successfully notified $deviceToken");
         return $return;
     }
 }
