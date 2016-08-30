@@ -30,7 +30,7 @@ class Site extends CI_Controller {
         $data['order_status'] = $order_status;
         $data['orderlist'] = $this->m_site->get_business_order_list($param);
         $order_detail['order_detail'] = $this->m_site->get_order_detail($data['orderlist'][0]['order_id']);
-        $order_detail['orderlist'] = $this->m_site->get_ordelist_order($data['orderlist'][0]['order_id']);
+        $order_detail['orderlist'] = $this->m_site->get_ordelist_order($data['orderlist'][0]['order_id'],$param['businessID']);
         $order_detail['consumer'] = $this->m_site->check_birthday_first_order($data['orderlist'][0]['order_id']);
 
         $data['order_view'] = $this->load->view('v_order_view', $order_detail, TRUE);
@@ -48,7 +48,7 @@ class Site extends CI_Controller {
         $data['orderlist'] = $this->m_site->get_search_business_order_list($param);
 
         $order_detail['order_detail'] = $this->m_site->get_order_detail($data['orderlist'][0]['order_id']);
-        $order_detail['orderlist'] = $this->m_site->get_ordelist_order($data['orderlist'][0]['order_id']);
+        $order_detail['orderlist'] = $this->m_site->get_ordelist_order($data['orderlist'][0]['order_id'],$param['businessID']);
         $data['order_view'] = $this->load->view('v_order_view', $order_detail, TRUE);
 
         $this->load->view('v_orderlist', $data);
@@ -59,8 +59,9 @@ class Site extends CI_Controller {
         is_login() ? '' : redirect('index.php/login');
         $param = $_REQUEST;
         $order_id = $param['order_id'];
+        $param['businessID'] = is_login();
         $data['order_detail'] = $this->m_site->get_order_detail($order_id);
-        $data['orderlist'] = $this->m_site->get_ordelist_order($order_id);
+        $data['orderlist'] = $this->m_site->get_ordelist_order($order_id,$param['businessID']);
         $data['consumer'] = $this->m_site->check_birthday_first_order($order_id);
         $return['order_view'] = $this->load->view('v_order_view', $data, TRUE);
         echo json_encode($return);
@@ -102,7 +103,7 @@ class Site extends CI_Controller {
 
                         $this->m_site->update_order_status($order_id, $charge_id, $response['amount'], $order_payment_detail['consumer_id']);
 
-                        $order_info = $this->m_site->get_ordelist_order($order_id);
+                        $order_info = $this->m_site->get_ordelist_order($order_id,$business_id);
                         $email['order_detail'] = $this->m_site->get_order_detail($order_id);
                         $redeemed_points = $this->m_site->get_redeemed_points($order_id);
                         if (count($redeemed_points) > 0) {

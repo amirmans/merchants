@@ -13,7 +13,27 @@
             .delete_product_btn{
                 float: right;
                 color: white !important;
-            } 
+            }
+            #image {
+                display: inline-block;
+                float: left;
+                width: 100px;
+                height: 150px;
+                position: relative;
+            }
+            .del_picture {
+                position: absolute;
+                bottom: 40px;
+                left: 150px;
+                top: -13px;
+            }
+            .fa-item{
+
+                border-radius: 0px; 
+                border: 0px solid #fff; 
+            }
+
+
         </style>
 
     </head>
@@ -149,25 +169,44 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="input002" class="col-sm-2 control-label form-label">Product Image</label>
-                                            <div class="col-sm-10">
+                                            <!--                                            <div class="col-sm-10">
+                                            
+                                            
+                                                                                            <input type="file" class="form-control" id="pictures" name="pictures">
+                                                                                         
+                                                                                        </div>-->
+                                            <div class="col-sm-10" id="imgArea">
                                                 <?php if ($product['pictures'] != '') {
                                                     ?>
-                                                    <label for="" class="control-label form-label"><?php echo $product['pictures']; ?></label>
-                                                <?php }
+                                                    <img height="150" width="100" id="image" src="../../../../<?php echo staging_directory(); ?>/customer_files/<?php echo $this->session->userdata('businessID'); ?>/products/<?php echo $product['pictures']; ?>">
+                                                    <div id="imgChange"><span>Change Picture</span>
+                                                        <input type="file" accept="image/*" name="pictures" id="pictures">
+                                                    </div>
+                                                    <a href="#" class="del_picture " id="del_picture"><i class="fa fa-times-circle" style="font-size: 20px;" onclick="delete_picture()"></i></a>
+                                                    
+                                                <?php } else {
+                                                    ?>  
+                                                    <img height="150" width="100" id="image" src="">
+                                                    <div id="imgChange"><span>Add Picture</span>
+                                                        <input type="file" accept="image/*" name="pictures" id="pictures">
+                                                    </div>
+                                                    <a style="display:  none" href="#" class="del_picture " id="del_picture"><i class="fa fa-times-circle" style="font-size: 20px;" onclick="delete_picture()"></i></a>
+                                                    <?php
+                                                }
                                                 ?>
-
-                                                <input type="file" class="form-control" id="pictures" name="pictures">
+                                                <input type="hidden" class="form-control" id="is_picture_deleted" name="is_picture_deleted" value="0">
+                                                
                                                 <input type="hidden" class="form-control" id="old_pictures" name="old_pictures" value="<?php echo $product['pictures']; ?>">
                                                 <input type="hidden" class="form-control" id="product_id" name="product_id" value="<?php echo $product['product_id']; ?>">
+
+                                                <br>
                                             </div>
                                         </div>
-
                                         <div class="form-group">
                                             <div class="col-sm-offset-2 col-sm-10">
                                                 <button type="submit" class="btn btn-default">Submit</button>
                                             </div>
                                         </div>
-
                                     </form> 
 
                                 </div>
@@ -236,6 +275,21 @@
 
         <script>
 
+            document.getElementById("pictures").onchange = function() {
+                var reader = new FileReader();
+
+                reader.onload = function(e) {
+                    // get loaded data and render thumbnail.
+                    document.getElementById("image").src = e.target.result;
+                    $("#del_picture").show();
+                    $("#is_picture_deleted").val('0');
+                    $("#imgChange span").text('Change Picture');
+
+                };
+                // read the image file as a data URL.
+                reader.readAsDataURL(this.files[0]);
+            };
+
             var options = {
                 success: processAddCategoryResponse
             }
@@ -282,7 +336,34 @@
                 },
                 function(isConfirm) {
                     if (isConfirm) {
-                        location.href='<?php echo base_url('index.php/product/delete/'); ?>/'+product_id
+                        location.href = '<?php echo base_url('index.php/product/delete/'); ?>/' + product_id
+                    } else {
+                        swal("Cancelled", "Your product is safe :)", "error");
+                    }
+                });
+            }
+            function delete_picture()
+            {
+                swal({
+                    title: "Are you sure?",
+                    text: "You will not be able to recover this picture!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Yes, delete picture!",
+                    cancelButtonText: "No, cancel plz!",
+                    closeOnConfirm: true,
+                    closeOnCancel: false
+                },
+                function(isConfirm) {
+                    if (isConfirm) {
+                        document.getElementById("image").src = "";
+                        $("#del_picture").hide();
+                        $("#is_picture_deleted").val('1');
+                        $("#pictures").val('');
+                        $("#imgChange span").text('Add Picture');
+                        
+
                     } else {
                         swal("Cancelled", "Your product is safe :)", "error");
                     }

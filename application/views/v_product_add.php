@@ -9,7 +9,14 @@
         <meta name="keywords" content="" />
         <title>Tap In </title>
         <?php $this->load->view('v_head'); ?>
-
+        <style>
+            .del_picture {
+                position: absolute;
+                bottom: 40px;
+                left: 150px;
+                top: -13px;
+            }
+        </style>
 
     </head>
     <body>
@@ -136,7 +143,17 @@
                                         <div class="form-group">
                                             <label for="input002" class="col-sm-2 control-label form-label">Product Image</label>
                                             <div class="col-sm-10">
-                                                <input type="file" class="form-control" id="pictures" name="pictures">
+                                                <!--<input type="file" class="form-control" id="pictures" name="pictures">-->
+                                                <div class="col-sm-10" id="imgArea">
+
+                                                    <img height="150" width="100" id="image" src="">
+                                                    <div id="imgChange"><span>Add Picture</span>
+                                                        <input type="file" accept="image/*" name="pictures" id="pictures">
+                                                    </div>
+                                                    <a style="display:  none" href="#" class="del_picture " id="del_picture"><i class="fa fa-times-circle" style="font-size: 20px;" onclick="delete_picture()"></i></a>
+
+
+                                                </div>
                                             </div>
                                         </div>
 
@@ -214,6 +231,20 @@
 
         <script>
 
+            document.getElementById("pictures").onchange = function() {
+                var reader = new FileReader();
+
+                reader.onload = function(e) {
+                    // get loaded data and render thumbnail.
+                    document.getElementById("image").src = e.target.result;
+                    $("#del_picture").show();
+                    $("#imgChange span").text('Change Picture');
+
+                };
+                // read the image file as a data URL.
+                reader.readAsDataURL(this.files[0]);
+            };
+
             var options = {
                 success: processAddCategoryResponse
             }
@@ -254,11 +285,26 @@
                 {
                     swal('', data.msg)
 //                    $('#product_form').trigger("reset");
-$('#name,#SKU,#short_description,#long_description,#price,#detail_information,#runtime_fields,#runtime_fields_detail,#sales_price,#has_option,#bought_with_rewards,#more_information,#pictures').val('');
+                    $('#name,#SKU,#short_description,#long_description,#price,#detail_information,#runtime_fields,#runtime_fields_detail,#sales_price,#has_option,#bought_with_rewards,#more_information,#pictures').val('');
+                    document.getElementById("image").src = "";
+                    $("#del_picture").hide();
+                    $("#pictures").val('');
+                    $("#imgChange span").text('Add Picture');
                 } else {
                     console.log(data.msg)
                     swal('', data.msg)
                 }
+            }
+
+            function delete_picture()
+            {
+
+                document.getElementById("image").src = "";
+                $("#del_picture").hide();
+                $("#pictures").val('');
+                $("#imgChange span").text('Add Picture');
+
+
             }
         </script>
 

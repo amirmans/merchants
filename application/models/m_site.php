@@ -208,13 +208,13 @@ class M_site extends CI_Model {
         return $row;
     }
 
-    function get_ordelist_order($order_id) {
+    function get_ordelist_order($order_id, $businessId) {
         $this->db->select('o.order_id,o.payment_id,o.total,o.date,cp.nickname,o.status,o.note,o.subtotal,o.tip_amount,o.tax_amount,o.points_dollar_amount,TIMESTAMPDIFF(SECOND,o.date,now()) as seconds,oc.is_refunded');
         $this->db->from('order as o');
         $this->db->join('consumer_profile as cp', 'o.consumer_id = cp.uid', 'left');
         $this->db->join('order_charge as oc', 'oc.order_id = o.order_id', 'left');
         $this->db->where('o.order_id', $order_id);
-        $this->db->where('o.business_id', is_login());
+        $this->db->where('o.business_id', $businessId);
         $this->db->limit(1);
         $result = $this->db->get();
         $row = $result->result_array();
@@ -384,7 +384,7 @@ class M_site extends CI_Model {
         $result = $this->db->get();
         $row = $result->result_array();
 
-        if (empty($row[0]['iDeviceNotificationUUID']) ) {
+        if (empty($row[0]['iDeviceNotificationUUID'])) {
             log_message('error', "*****Could not find $businessID toke!");
             return -1;
         }
@@ -870,10 +870,8 @@ class M_site extends CI_Model {
         $data['has_option'] = $param['has_option'];
         $data['bought_with_rewards'] = $param['bought_with_rewards'];
         $data['more_information'] = $param['more_information'];
+        $data['pictures'] = $param['pictures'];
 
-        if ($param['pictures'] != '') {
-            $data['pictures'] = $param['pictures'];
-        }
         $this->db->where('product_id', $param['product_id']);
         $this->db->update('product', $data);
 
@@ -1257,7 +1255,7 @@ class M_site extends CI_Model {
     }
 
     function delete_business_image($param) {
-          
+
 
         $this->db->select('pictures');
         $this->db->from('business_customers');
@@ -1269,20 +1267,20 @@ class M_site extends CI_Model {
         $pictures = explode(",", $row["pictures"]);
 
         for ($i = 0; $i < count($pictures); $i++) {
-            $pictures[$i]=  trim($pictures[$i]);
-            
+            $pictures[$i] = trim($pictures[$i]);
+
             if ($pictures[$i] == $param['picture']) {
                 unset($pictures[$i]);
             }
         }
-   
+
 
         if (count($pictures) > 0) {
             $data["pictures"] = implode(",", $pictures);
         } else {
             $data["pictures"] = "";
         }
-  
+
         $this->db->where("businessID", $param['businessId']);
         $this->db->update("business_customers", $data);
         $return = success_res("Business Picture deleted successfully");

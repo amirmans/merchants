@@ -154,6 +154,10 @@ class Product extends CI_Controller {
         is_login() ? '' : redirect('index.php/login');
         $param = $_REQUEST;
 
+//        echo '<pre>';
+//        print_r($param);
+//        print_r($_FILES);
+//        die;
 
         $param['businessID'] = is_login();
         $this->validation->is_parameter_blank('businessID', $param['businessID']);
@@ -178,10 +182,19 @@ class Product extends CI_Controller {
                 unlink($oldfilepath);
             }
         }
+        if ($param['is_picture_deleted'] == '1') {
+            $oldfilepath = '../' . staging_directory() . '/customer_files/' . $param['businessID'] . '/products/' . $param['old_pictures'];
+            if (file_exists($oldfilepath)) {
+                unlink($oldfilepath);
+            }
+        }
+        if ($param['is_picture_deleted'] == '0' && $param['pictures'] == '') {
+            $param['pictures'] = $param['old_pictures'];
+        }
         $data = $this->m_site->update_product($param);
         redirect('index.php/product');
     }
-    
+
     function delete($product_id) {
         is_login() ? '' : redirect('index.php/login');
         $data = $this->m_site->delete_product($product_id);
