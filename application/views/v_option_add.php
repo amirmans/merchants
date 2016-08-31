@@ -13,6 +13,45 @@
             .back-button{
                 color: white !important; 
             }
+            .modal-dialog {
+                position: relative;
+                width: auto;
+                max-width: 600px;
+                margin: 10px;
+            }
+            .modal-sm {
+                max-width: 300px;
+            }
+            .modal-lg {
+                max-width: 900px;
+            }
+            @media (min-width: 768px) {
+                .modal-dialog {
+                    margin: 30px auto;
+                }
+            }
+            @media (min-width: 320px) {
+                .modal-sm {
+                    margin-right: auto;
+                    margin-left: auto;
+                }
+            }
+            @media (min-width: 620px) {
+                .modal-dialog {
+                    margin-right: auto;
+                    margin-left: auto;
+                }
+                .modal-lg {
+                    margin-right: 10px;
+                    margin-left: 10px;
+                }
+            }
+            @media (min-width: 920px) {
+                .modal-lg {
+                    margin-right: auto;
+                    margin-left: auto;
+                }
+            }
         </style>
 
     </head>
@@ -47,7 +86,7 @@
 
                                                 </select>
                                                 <a href="#" class=" btn btn-primary" data-toggle="modal" data-target="#addoptioncategoryModal"  ><i class="fa fa-plus"></i>Add</a>
-
+                                                <a href="#" class=" btn btn-primary" data-toggle="modal" data-target="#manageoptioncategoryModal"  ></i>Manage</a>
 
                                             </div>
                                         </div>
@@ -129,7 +168,96 @@
                 </div>
             </div>
         </div>
+        
+         <div class="modal fade" id="updateoptioncategoryModal" tabindex="-1" role="dialog"  style="display: none;">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form class="form-horizontal" id="form_edit_option_category" action="<?php echo base_url('index.php/product/edit_option_category'); ?>" method="post" >
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                            <h4 class="modal-title">Update Option Category</h4>
+                        </div>
+                        <div class="modal-body">
 
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="edit_option_category_name" class="col-sm-4 control-label form-label">Option Category Name</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control" id="edit_option_category_name" name="edit_option_category_name" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="edit_desc" class="col-sm-4 control-label form-label">Option Category Description</label>
+                                        <div class="col-sm-8">
+                                            <textarea  class="form-control" id="edit_desc" name="edit_desc"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <input type="hidden" id="product_option_category_id" name="product_option_category_id" value="" >
+                            <label id="edit_category_error_text" class="pull-left color10"></label>
+                            <button type="button" class="btn btn-white" data-dismiss="modal" >Close</button>
+                            <button type="submit" class="btn btn-default" >Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="manageoptioncategoryModal" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+            <div class="modal-dialog" >
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                        <h4 class="modal-title">Manage Option Category</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="panel panel-default">
+
+                            <div class="panel-body table-responsive">
+
+                                <table class="table table-striped table-bordered" id="option_category_table">
+                                    <thead>
+                                        <tr>
+                                            <td>Option Category Name</td>
+                                            <td>Option Category Description </td>
+                                            <td>Edit</td>
+                                            <td>Delete</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php for ($i = 0; $i < count($product_option_category); $i++) {
+                                            ?>
+                                            <tr id="row_<?php echo $product_option_category[$i]['product_option_category_id']; ?>">
+                                                <td id="categoryname_<?php echo $product_option_category[$i]['product_option_category_id']; ?>"><?php echo $product_option_category[$i]['name']; ?></td>
+                                                <td id="categorydesc_<?php echo $product_option_category[$i]['product_option_category_id']; ?>"><?php echo $product_option_category[$i]['desc']; ?></td>
+                                                <td><a  class="btn btn-info add_product_btn" onclick="show_edit_category_modal(<?php echo $product_option_category[$i]['product_option_category_id']; ?>)"><i class="fa fa-edit"></i>Edit</a></td>
+                                                <td><a  class="btn btn-danger add_product_btn" onclick="delete_option_category(<?php echo $product_option_category[$i]['product_option_category_id']; ?>)"><i class="fa fa-trash"></i>Delete</a></td></tr>
+                                        <?php } ?>
+
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
 
 
 
@@ -147,10 +275,12 @@
             $(document).ready(function() {
                 // bind 'myForm' and provide a simple callback function 
                 $('#form_product_option_category').ajaxForm(options);
+                $('#form_edit_option_category').ajaxForm({success: processEditOptionCategoryResponse});
 
                 $('#product_option_form').ajaxForm({
                     success: processAddProductOptionResponse
                 });
+                
             });
 
             function processAddOptionCategoryResponse(data) {
@@ -159,8 +289,16 @@
                 console.log(data)
                 if (data.product_option_category.status)
                 {
+                    var product_option_category_id=data.product_option_category.option_category.product_option_category_id;
                     var newOption = $('<option value="' + data.product_option_category.option_category.product_option_category_id + '">' + data.product_option_category.option_category.name + '</option>');
                     $('#product_option_category').append(newOption);
+                    
+                     var row = '<tr id="row_' + product_option_category_id + '"><td id="categoryname_' + product_option_category_id + '">'+data.product_option_category.option_category.name+'</td>' +
+                            '<td id="categorydesc_' + product_option_category_id + '">'+data.product_option_category.option_category.desc+'</td>' +
+                            '<td><a class="btn btn-info add_product_btn" onclick="show_edit_category_modal(' + product_option_category_id + ')"><i class="fa fa-edit"></i>Edit</a></td>'+
+                    '<td><a  class="btn btn-danger add_product_btn" onclick="delete_option_category('+product_option_category_id+')"><i class="fa fa-trash"></i>Delete</a></td><tr>';
+                    
+                    $('#option_category_table').append(row)
                     $('#form_product_option_category').trigger("reset");
                     $('#category_error_text').html('');
                     $('#addoptioncategoryModal').modal('toggle');
@@ -183,6 +321,75 @@
                     swal('', data.msg)
                 }
             }
+            function processEditOptionCategoryResponse(data) {
+
+                var data = JSON.parse(data);
+                console.log(data)
+                if (data.product_option_category.status)
+                {
+                    var product_option_category_id = data.product_option_category.option_category.product_option_category_id;
+                    $("#categoryname_" + product_option_category_id).text(data.product_option_category.option_category.name)
+                    $("#categorydesc_" + product_option_category_id).text(data.product_option_category.option_category.desc)
+                    $('#product_option_category option[value="' + product_option_category_id + '"]').text(data.product_option_category.option_category.name)
+                    $('#form_edit_option_category').trigger("reset");
+                    $('#edit_category_error_text').html('');
+                    $('#updateoptioncategoryModal').modal('toggle');
+                    $('#manageoptioncategoryModal').modal('show');
+
+                } else {
+                    console.log(data.product_option_category.message)
+                    $('#edit_category_error_text').html(data.product_option_category.message);
+                }
+            }
+            
+            function show_edit_category_modal(product_option_category_id) {
+
+                $("#edit_option_category_name").val($("#categoryname_" + product_option_category_id).text())
+                $("#edit_desc").val($("#categorydesc_" + product_option_category_id).text())
+                $("#product_option_category_id").val(product_option_category_id)
+                $('#manageoptioncategoryModal').modal('toggle');
+                $('#updateoptioncategoryModal').modal('show');
+            }
+
+            function delete_option_category(product_option_category_id) {
+                
+                swal({
+                    title: "Are you sure?",
+                    text: "You will not be able to recover this product category!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Yes, delete it!",
+                    cancelButtonText: "No, cancel plz!",
+                    closeOnConfirm: false,
+                    closeOnCancel: false
+                },
+                function(isConfirm) {
+                    if (isConfirm) {
+                        var param = {product_option_category_id: product_option_category_id}
+                        
+                        $.post("<?php echo base_url('index.php/product/delete_option_category') ?>", param)
+                                .done(function(data) {
+                                    data = jQuery.parseJSON(data);
+                                    if (data['option_category']['status'] == '1')
+                                    {
+                                        $('#product_option_category option[value="' + product_option_category_id + '"]').remove();
+                                        $('#option_category_table #row_' + product_option_category_id).remove();
+                                        swal("", data['option_category']['msg'], "success");
+                                    } else {
+                                        swal("", "Delete product category failed", "error");
+                                    }
+                                });
+                    } else {
+                        swal("Cancelled", "Your option category is safe :)", "error");
+                    }
+                });
+            }
+
+            $('#updateoptioncategoryModal').on('hidden.bs.modal', function() {
+                $('#manageoptioncategoryModal').modal('show');
+            })
+
         </script>
 
 

@@ -48,6 +48,24 @@ class Product extends CI_Controller {
         $data['product_category'] = $this->m_site->add_product_category($param);
         echo json_encode($data);
     }
+    
+    function update_category() {
+        is_login() ? '' : redirect('index.php/login');
+        $param = $_REQUEST;
+        $param['businessID'] = is_login();
+        $this->validation->is_parameter_blank('businessID', $param['businessID']);
+        $data['product_category'] = $this->m_site->update_product_category($param);
+        echo json_encode($data);
+    }
+    
+    function delete_category() {
+        is_login() ? '' : redirect('index.php/login');
+        $param = $_REQUEST;
+        $param['businessID'] = is_login();
+        $this->validation->is_parameter_blank('businessID', $param['businessID']);
+        $data['product_category'] = $this->m_site->delete_product_category($param);
+        echo json_encode($data);
+    }
 
     function add_option_category() {
         is_login() ? '' : redirect('index.php/login');
@@ -55,6 +73,24 @@ class Product extends CI_Controller {
         $param['businessID'] = is_login();
         $this->validation->is_parameter_blank('option_category_name', $param['option_category_name']);
         $data['product_option_category'] = $this->m_site->add_product_option_category($param);
+        echo json_encode($data);
+    }
+    
+    function edit_option_category() {
+        is_login() ? '' : redirect('index.php/login');
+        $param = $_REQUEST;
+        $param['businessID'] = is_login();
+        $this->validation->is_parameter_blank('edit_option_category_name', $param['edit_option_category_name']);
+        $data['product_option_category'] = $this->m_site->edit_product_option_category($param);
+        echo json_encode($data);
+    }
+    
+    function delete_option_category() {
+        is_login() ? '' : redirect('index.php/login');
+        $param = $_REQUEST;
+        $param['businessID'] = is_login();
+        $this->validation->is_parameter_blank('businessID', $param['businessID']);
+        $data['option_category'] = $this->m_site->delete_product_option_category($param);
         echo json_encode($data);
     }
 

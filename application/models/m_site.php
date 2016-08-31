@@ -568,6 +568,47 @@ class M_site extends CI_Model {
         return $return;
     }
 
+    function update_product_category($param) {
+
+        $this->db->select('*');
+        $this->db->from('product_category');
+        $this->db->where('category_name', $param['edit_category_name']);
+        $this->db->where('table_id !=', $param['table_id']);
+        $this->db->where('business_id', $param['businessID']);
+        $category_result = $this->db->get();
+        $category_row = $category_result->row_array();
+        if (count($category_row) == 0) {
+            $data['category_name'] = $param['edit_category_name'];
+            $data['desc'] = $param['edit_desc'];
+            $data['business_id'] = $param['businessID'];
+            $this->db->where('table_id', $param['table_id']);
+            $this->db->update('product_category', $data);
+
+            $this->db->select('*');
+            $this->db->from('product_category');
+            $this->db->where('table_id', $param['table_id']);
+            $result = $this->db->get();
+            $row = $result->row_array();
+            $return['status'] = 1;
+            $return['category'] = $row;
+        } else {
+            $return['status'] = 0;
+            $return['message'] = 'Category already exist';
+        }
+        return $return;
+    }
+
+    function delete_product_category($param) {
+
+        $this->db->where('business_id', $param['businessID']);
+        $this->db->where('table_id', $param['table_id']);
+        $this->db->delete('product_category');
+
+        $return['status'] = 1;
+        $return['msg'] = "Category Deleted Successfully";
+        return $return;
+    }
+
     function add_product_option_category($param) {
 
         $this->db->select('*');
@@ -594,6 +635,46 @@ class M_site extends CI_Model {
             $return['status'] = 0;
             $return['message'] = 'Option Category already exist';
         }
+        return $return;
+    }
+    function edit_product_option_category($param) {
+
+        $this->db->select('*');
+        $this->db->from('product_option_category');
+        $this->db->where('name', $param['edit_option_category_name']);
+        $this->db->where('product_option_category_id !=', $param['product_option_category_id']);
+        $this->db->where('business_id', $param['businessID']);
+        $category_result = $this->db->get();
+        $category_row = $category_result->row_array();
+        if (count($category_row) == 0) {
+            $data['name'] = $param['edit_option_category_name'];
+            $data['desc'] = $param['edit_desc'];
+            $data['business_id'] = $param['businessID'];
+            $this->db->where('product_option_category_id ', $param['product_option_category_id']);
+            $this->db->update('product_option_category', $data);
+        
+            $this->db->select('*');
+            $this->db->from('product_option_category');
+            $this->db->where('product_option_category_id', $param['product_option_category_id']);
+            $result = $this->db->get();
+            $row = $result->row_array();
+            $return['status'] = 1;
+            $return['option_category'] = $row;
+        } else {
+            $return['status'] = 0;
+            $return['message'] = 'Option Category already exist';
+        }
+        return $return;
+    }
+    
+    function delete_product_option_category($param) {
+
+        $this->db->where('business_id', $param['businessID']);
+        $this->db->where('product_option_category_id', $param['product_option_category_id']);
+        $this->db->delete('product_option_category');
+
+        $return['status'] = 1;
+        $return['msg'] = "Option Category Deleted Successfully";
         return $return;
     }
 

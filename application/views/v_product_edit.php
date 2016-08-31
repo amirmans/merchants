@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -32,6 +33,46 @@
                 border-radius: 0px; 
                 border: 0px solid #fff; 
             }
+            
+            .modal-dialog {
+                position: relative;
+                width: auto;
+                max-width: 600px;
+                margin: 10px;
+            }
+            .modal-sm {
+                max-width: 300px;
+            }
+            .modal-lg {
+                max-width: 900px;
+            }
+            @media (min-width: 768px) {
+                .modal-dialog {
+                    margin: 30px auto;
+                }
+            }
+            @media (min-width: 320px) {
+                .modal-sm {
+                    margin-right: auto;
+                    margin-left: auto;
+                }
+            }
+            @media (min-width: 620px) {
+                .modal-dialog {
+                    margin-right: auto;
+                    margin-left: auto;
+                }
+                .modal-lg {
+                    margin-right: 10px;
+                    margin-left: 10px;
+                }
+            }
+            @media (min-width: 920px) {
+                .modal-lg {
+                    margin-right: auto;
+                    margin-left: auto;
+                }
+            }
 
 
         </style>
@@ -61,7 +102,7 @@
                                         <div class="form-group">
                                             <label for="input002" class="col-sm-2 control-label form-label">Product Category</label>
                                             <div class="col-sm-10">
-                                                <select class="selectpicker" id="order_status" style="margin: 10px 24px;" onchange="change_order_status()" name="product_category_id" >
+                                                <select class="selectpicker" id="product_category_id" style="margin: 10px 24px;" onchange="change_order_status()" name="product_category_id" >
                                                     <?php
                                                     for ($i = 0; $i < count($product_category); $i++) {
 
@@ -79,7 +120,7 @@
 
                                                 </select>
                                                 <a href="#" class=" btn btn-primary" data-toggle="modal" data-target="#addcategoryModal"  ><i class="fa fa-plus"></i>Add</a>
-
+                                                <a href="#" class=" btn btn-primary" data-toggle="modal" data-target="#managecategoryModal"  ></i>Manage</a>
 
                                             </div>
                                         </div>
@@ -266,6 +307,95 @@
                 </div>
             </div>
         </div>
+         <div class="modal fade" id="updatecategoryModal" tabindex="-1" role="dialog"  style="display: none;">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form class="form-horizontal" id="form_edit_product_category" action="<?php echo base_url('index.php/product/update_category'); ?>" method="post" >
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                            <h4 class="modal-title">Update Product Category</h4>
+                        </div>
+                        <div class="modal-body">
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="edit_category_name" class="col-sm-4 control-label form-label">Category Name</label>
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control" id="edit_category_name" name="edit_category_name" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="edit_category_desc" class="col-sm-4 control-label form-label">Category Description</label>
+                                        <div class="col-sm-8">
+                                            <textarea  class="form-control" id="edit_category_desc" name="edit_desc"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <input type="hidden" id="table_id" name="table_id" value="" >
+                            <label id="edit_category_error_text" class="pull-left color10"></label>
+                            <button type="button" class="btn btn-white" data-dismiss="modal" >Close</button>
+                            <button type="submit" class="btn btn-default" >Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="managecategoryModal" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+            <div class="modal-dialog" >
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                        <h4 class="modal-title">Manage Category</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="panel panel-default">
+
+                            <div class="panel-body table-responsive">
+
+                                <table class="table table-striped table-bordered" id="product_category_table">
+                                    <thead>
+                                        <tr>
+                                            <td>Category Name</td>
+                                            <td>Category Description </td>
+                                            <td>Edit</td>
+                                            <td>Delete</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php for ($i = 0; $i < count($product_category); $i++) {
+                                            ?>
+                                            <tr id="row_<?php echo $product_category[$i]['table_id']; ?>">
+                                                <td id="categoryname_<?php echo $product_category[$i]['table_id']; ?>"><?php echo $product_category[$i]['category_name']; ?></td>
+                                                <td id="categorydesc_<?php echo $product_category[$i]['table_id']; ?>"><?php echo $product_category[$i]['desc']; ?></td>
+                                                <td><a  class="btn btn-info add_product_btn" onclick="show_edit_category_modal(<?php echo $product_category[$i]['table_id']; ?>)"><i class="fa fa-edit"></i>Edit</a></td>
+                                                <td><a  class="btn btn-danger add_product_btn" onclick="delete_product_category(<?php echo $product_category[$i]['table_id']; ?>)"><i class="fa fa-trash"></i>Delete</a></td>                                            </tr>
+                                        <?php } ?>
+
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
 
 
 
@@ -300,17 +430,23 @@
                 // bind 'myForm' and provide a simple callback function 
                 $('#form_product_category').ajaxForm(options);
 
-
+                $('#form_edit_product_category').ajaxForm({success: processEditCategoryResponse});
             });
 
-            function processAddCategoryResponse(data) {
+           function processAddCategoryResponse(data) {
 
                 var data = JSON.parse(data);
-                console.log(data)
                 if (data.product_category.status)
                 {
+                    var tableid = data.product_category.category.table_id;
                     var newOption = $('<option value="' + data.product_category.category.table_id + '">' + data.product_category.category.category_name + '</option>');
-                    $('#order_status').append(newOption);
+                    $('#product_category_id').append(newOption);
+                    var row = '<tr id="row_' + tableid + '"><td id="categoryname_' + tableid + '">'+data.product_category.category.category_name+'</td>' +
+                            '<td id="categorydesc_' + tableid + '">'+data.product_category.category.desc+'</td>' +
+                            '<td><a class="btn btn-info add_product_btn" onclick="show_edit_category_modal(' + tableid + ')"><i class="fa fa-edit"></i>Edit</a></td>'+
+                    '<td><a href="" class="btn btn-danger add_product_btn" onclick="delete_product_category(' + tableid + ')"><i class="fa fa-trash"></i>Delete</a></td><tr>';
+                    
+                    $('#product_category_table').append(row)
                     $('#form_product_category').trigger("reset");
                     $('#category_error_text').html('');
                     $('#addcategoryModal').modal('toggle');
@@ -318,6 +454,26 @@
                 } else {
                     console.log(data.product_category.message)
                     $('#category_error_text').html(data.product_category.message);
+                }
+            }
+            function processEditCategoryResponse(data) {
+
+                var data = JSON.parse(data);
+                console.log(data)
+                if (data.product_category.status)
+                {
+                    var tableid = data.product_category.category.table_id;
+                    $("#categoryname_" + tableid).text(data.product_category.category.category_name)
+                    $("#categorydesc_" + tableid).text(data.product_category.category.desc)
+                    $('#product_category_id option[value="' + tableid + '"]').text(data.product_category.category.category_name)
+                    $('#form_edit_product_category').trigger("reset");
+                    $('#edit_category_error_text').html('');
+                    $('#updatecategoryModal').modal('toggle');
+                    $('#managecategoryModal').modal('show');
+
+                } else {
+                    console.log(data.product_category.message)
+                    $('#edit_category_error_text').html(data.product_category.message);
                 }
             }
 
@@ -369,6 +525,56 @@
                     }
                 });
             }
+            
+            function show_edit_category_modal(tableid) {
+
+                $("#edit_category_name").val($("#categoryname_" + tableid).text())
+                $("#edit_category_desc").val($("#categorydesc_" + tableid).text())
+                $("#table_id").val(tableid)
+                $('#managecategoryModal').modal('toggle');
+                $('#updatecategoryModal').modal('show');
+            }
+
+            function delete_product_category(tableid) {
+                console.log(tableid)
+
+                swal({
+                    title: "Are you sure?",
+                    text: "You will not be able to recover this product category!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Yes, delete it!",
+                    cancelButtonText: "No, cancel plz!",
+                    closeOnConfirm: false,
+                    closeOnCancel: false
+                },
+                function(isConfirm) {
+                    if (isConfirm) {
+                        var param = {table_id: tableid}
+                        console.log(param)
+
+                        $.post("<?php echo base_url('index.php/product/delete_category') ?>", param)
+                                .done(function(data) {
+                                    data = jQuery.parseJSON(data);
+                                    if (data['product_category']['status'] == '1')
+                                    {
+                                        $('#product_category_id option[value="' + tableid + '"]').remove();
+                                        $('#product_category_table #row_' + tableid).remove();
+                                        swal("", data['product_category']['msg'], "success");
+                                    } else {
+                                        swal("", "Delete product category failed", "error");
+                                    }
+                                });
+                    } else {
+                        swal("Cancelled", "Your product category is safe :)", "error");
+                    }
+                });
+            }
+
+            $('#updatecategoryModal').on('hidden.bs.modal', function() {
+                $('#managecategoryModal').modal('show');
+            })
 
         </script>
 
