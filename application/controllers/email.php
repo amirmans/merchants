@@ -65,6 +65,7 @@ class Email extends CI_Controller {
         $email['subtotal'] = $order_info[0]['subtotal'];
         $email['tip_amount'] = $order_info[0]['tip_amount'];
         $email['tax_amount'] = $order_info[0]['tax_amount'];
+        $email['points_dollar_amount'] = $order_info[0]['points_dollar_amount'];
         $email['business_id'] = $business_id;
         $email['business_name'] = $business["name"];
 
