@@ -3,8 +3,22 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/xampp/htdocs/adminpanel/application/views/v_orderlist.php</file>
-            <file>file:/C:/xampp/htdocs/adminpanel/application/views/v_script.php</file>
+            <file>file:/C:/xampp/htdocs/projects/tapin/adminpanel/application/controllers/product.php</file>
+            <file>file:/C:/xampp/htdocs/projects/tapin/adminpanel/application/views/v_product_add.php</file>
+            <file>file:/C:/xampp/htdocs/projects/tapin/adminpanel/application/models/m_site.php</file>
+            <file>file:/C:/xampp/htdocs/projects/tapin/adminpanel/application/views/v_product_options.php</file>
+            <file>file:/C:/xampp/htdocs/projects/tapin/adminpanel/application/views/v_product_edit.php</file>
+            <file>file:/C:/xampp/htdocs/projects/tapin/adminpanel/application/controllers/option.php</file>
+            <file>file:/C:/xampp/htdocs/projects/tapin/adminpanel/application/views/v_option.php</file>
+            <file>file:/C:/xampp/htdocs/projects/tapin/adminpanel/application/views/v_option_edit.php</file>
+            <file>file:/C:/xampp/htdocs/projects/tapin/adminpanel/application/controllers/email.php</file>
+            <file>file:/C:/xampp/htdocs/projects/tapin/adminpanel/application/views/v_email_new_order.php</file>
+            <file>file:/C:/xampp/htdocs/projects/tapin/adminpanel/application/controllers/site.php</file>
+            <file>file:/C:/xampp/htdocs/projects/tapin/adminpanel/application/config/database.php</file>
+            <file>file:/C:/xampp/htdocs/projects/tapin/adminpanel/application/config/autoload.php</file>
+            <file>file:/C:/xampp/htdocs/projects/tapin/adminpanel/application/config/config.php</file>
+            <file>file:/C:/xampp/htdocs/projects/tapin/adminpanel/application/config/routes.php</file>
+            <file>file:/C:/xampp/htdocs/projects/tapin/adminpanel/application/helpers/general_helper.php</file>
         </group>
     </open-files>
 </project-private>

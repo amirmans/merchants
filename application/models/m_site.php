@@ -1063,6 +1063,7 @@ class M_site extends CI_Model {
         $return['today']['orders'] = $row['total_orders'];
         $return['today']['subtotals'] = $row['total_subtotal'];
         $return['today']['tips'] = $row['total_tip'];
+        $return['today']['points'] = $row['total_points'];
         $return['sql'] = $this->db->last_query();
 
         $this->db->select('count(order_id) as total_orders,ifnull(sum(subtotal),"0.00") as total_subtotal,ifnull(sum(tip_amount),"0.00") as total_tip, ifnull(sum(points_dollar_amount),"0.00") as total_points', FALSE);
