@@ -48,7 +48,7 @@ class Product extends CI_Controller {
         $data['product_category'] = $this->m_site->add_product_category($param);
         echo json_encode($data);
     }
-    
+
     function update_category() {
         is_login() ? '' : redirect('index.php/login');
         $param = $_REQUEST;
@@ -57,7 +57,7 @@ class Product extends CI_Controller {
         $data['product_category'] = $this->m_site->update_product_category($param);
         echo json_encode($data);
     }
-    
+
     function delete_category() {
         is_login() ? '' : redirect('index.php/login');
         $param = $_REQUEST;
@@ -75,7 +75,7 @@ class Product extends CI_Controller {
         $data['product_option_category'] = $this->m_site->add_product_option_category($param);
         echo json_encode($data);
     }
-    
+
     function edit_option_category() {
         is_login() ? '' : redirect('index.php/login');
         $param = $_REQUEST;
@@ -84,7 +84,7 @@ class Product extends CI_Controller {
         $data['product_option_category'] = $this->m_site->edit_product_option_category($param);
         echo json_encode($data);
     }
-    
+
     function delete_option_category() {
         is_login() ? '' : redirect('index.php/login');
         $param = $_REQUEST;
@@ -211,6 +211,12 @@ class Product extends CI_Controller {
         $param['has_option'] = $this->validation->set_blank_parameter($param['has_option']);
         $param['bought_with_rewards'] = $this->validation->set_blank_parameter($param['bought_with_rewards']);
         $param['more_information'] = $this->validation->set_blank_parameter($param['more_information']);
+        if (!file_exists('../' . staging_directory() . '/customer_files/' . $param['businessID'])) {
+            mkdir('../' . staging_directory() . '/customer_files/' . $param['businessID'], 0777, true);
+        }
+        if (!file_exists('../' . staging_directory() . '/customer_files/' . $param['businessID'] . '/products')) {
+            mkdir('../' . staging_directory() . '/customer_files/' . $param['businessID'] . '/products', 0777, true);
+        }
         $param['pictures'] = $this->validation->file_upload("pictures", '../' . staging_directory() . '/customer_files/' . $param['businessID'] . '/products');
         if ($param['pictures'] != '') {
             $oldfilepath = '../' . staging_directory() . '/customer_files/' . $param['businessID'] . '/products/' . $param['old_pictures'];
