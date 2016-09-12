@@ -15,6 +15,7 @@ class M_site extends CI_Model {
         $this->db->where('username', $param['username']);
         $this->db->where('password', md5($param['password']));
         $this->db->where('active', 1);
+        $this->db->or_where('beta', 1);
         $result = $this->db->get();
         $row = $result->result_array();
 
@@ -39,6 +40,7 @@ class M_site extends CI_Model {
         $this->db->where('stripe_password', md5($param['password']));
         $this->db->where('businessID', $param['businessID']);
         $this->db->where('active', 1);
+        $this->db->or_where('beta', 1);
         $result = $this->db->get();
         $row = $result->result_array();
 
@@ -89,6 +91,7 @@ class M_site extends CI_Model {
         $this->db->select('businessID,name');
         $this->db->from('business_customers');
         $this->db->where('active', 1);
+        $this->db->or_where('beta', 1);
         $this->db->order_by("businessID", "asc");
         $result = $this->db->get();
         $row = $result->result_array();
@@ -503,6 +506,15 @@ class M_site extends CI_Model {
             $notification['notification_type_id'] = "4";
             $this->db->insert('notification', $notification);
         }
+    }
+
+    function get_business_internal_alerts($businessID) {
+        $this->db->select('*');
+        $this->db->from('business_internal_alert');
+        $this->db->where('business_id', $businessID);
+        $result = $this->db->get();
+        $row = $result->result_array();
+        return $row;
     }
 
     function get_business_products($param) {
