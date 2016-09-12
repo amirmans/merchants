@@ -99,17 +99,17 @@ function push_notification_ios($arg_device_token, $message_body) {
 
     $production = 0;
     if ($production) {
-        $gateway = 'gateway.push.apple.com:2195';
+        $gateway = 'ssl://gateway.push.apple.com:2195';
     } else {
-        $gateway = 'gateway.sandbox.push.apple.com:2195';
+        $gateway = 'ssl://gateway.sandbox.push.apple.com:2195';
     }
 
 // Create a Stream
     $ctx = stream_context_create();
 // Define the certificate to use
-    stream_context_set_option($ctx, 'ssl', 'local_cert', 'ck.pem');
+    stream_context_set_option($ctx, 'ssl', 'local_cert', 'ck_prod2.pem');
 // Passphrase to the certificate
-    stream_context_set_option($ctx, 'ssl', 'passphrase', 'id0ntknow');
+    stream_context_set_option($ctx, 'ssl', 'passphrase', 'tapinpush');
 
 // Open a connection to the APNS server
     $fp = stream_socket_client(

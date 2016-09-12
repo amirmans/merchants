@@ -207,7 +207,7 @@ class Site extends CI_Controller {
     }
 
     function test_notification() {
-        $device_token = '34d49fc6f1dc3ed60fefe16724bd9e54a92af37e685c2cc5442b25ba0ea4bd82';
+        $device_token = '85acb18a66913db73fdc48f1df48a8f681b42d7031cee302108950bc53c77a0d';
         $message_body = array(
             'type' => 1,
             'alert' => "Distribution Notification Testing",
