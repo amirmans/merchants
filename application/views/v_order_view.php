@@ -440,12 +440,9 @@
         var param = {order_id: order_id, refund_type: refund_type};
         if (refund_type == 2)
         {
-            var amount = $("#rfd_amount").val();
-            var order_amount = $("#order_amount").val();
-            console.log(amount)
-            console.log(order_amount)
-
-            if (amount < 0 || amount > order_amount)
+            var amount = parseFloat($("#rfd_amount").val());;
+            var order_amount = parseFloat($("#order_amount").val());
+            if ((amount < 0) || (amount > order_amount))
             {
                 swal("", "Invalid  Amount", "error");
                 return false;
