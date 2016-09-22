@@ -60,6 +60,14 @@ class Profile extends CI_Controller {
         echo json_encode($data);
     }
 
+        function edit_internal_info() {
+        is_login() ? '' : redirect('index.php/login');
+        $param = $_REQUEST;
+        $param['businessID'] = is_login();
+        $data = $this->m_site->edit_internal_info($param);
+        echo json_encode($data);
+    }
+
     function edit_stripe_key() {
         is_login() ? '' : redirect('index.php/login');
         $param = $_REQUEST;
@@ -127,9 +135,9 @@ class Profile extends CI_Controller {
         if (file_exists('../' . staging_directory() . '/customer_files/' . $businessID . "/" . $param["file_name"])) {
             unlink('../' . staging_directory() . '/customer_files/' . $businessID . "/" . $param["file_name"]);
         }
-        $picture = $this->move_to_upload($param["file_name"],"picture1", '../' . staging_directory() . '/customer_files/' . $businessID);
-        
-        $data=  success_res("Business Image replace successfully");
+        $picture = $this->move_to_upload($param["file_name"], "picture1", '../' . staging_directory() . '/customer_files/' . $businessID);
+
+        $data = success_res("Business Image replace successfully");
         echo json_encode($data);
     }
 

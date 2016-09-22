@@ -77,12 +77,27 @@ class M_site extends CI_Model {
         $hours = $openinghours_result->result_array();
         $row[0]['hours'] = $hours;
 
+
+        $this->db->select('email,sms_no');
+        $this->db->from('business_internal_alert');
+        $this->db->where('business_id', $businessID);
+        $this->db->limit(1);
+        $result_interal = $this->db->get();
+        $row_interal = $result_interal->result_array();
+        if (count($row_interal) > 0) {
+            $internal = $row_interal[0];
+        } else {
+            $internal = array();
+        }
+
         if (count($row) > 0) {
             $return = success_res("Business is available");
             $return['business_detail'] = $row[0];
+            $return['internal'] = $internal;
         } else {
             $return = error_res("Business is not available");
             $return['business_detail'] = array();
+            $return['business_detail'] = $internal;
         }
         return $return;
     }
@@ -155,6 +170,27 @@ class M_site extends CI_Model {
         $this->db->update('business_customers', $data);
         $return = success_res("Stripe Token Updated Successfully");
         $return['stripe_secret_key'] = $param['stripe_secret_key'];
+        return $return;
+    }
+
+    function edit_internal_info($param) {
+        $this->db->select('interal_business_alert_id');
+        $this->db->from('business_internal_alert');
+        $this->db->where('business_id', $param['businessID']);
+        $this->db->limit(1);
+        $result_interal = $this->db->get();
+        $row_interal = $result_interal->result_array();
+        $data = array();
+        $data['email'] = $param['internal_email'];
+        $data['sms_no'] = $param['internal_sms_no'];
+        if (count($row_interal) > 0) {
+            $this->db->where('business_id', $param['businessID']);
+            $this->db->update('business_internal_alert', $data);
+        } else {
+            $data['business_id'] = $param['businessID'];
+            $this->db->insert('business_internal_alert', $data);
+        }
+        $return = success_res("Successfully updated intrnal info");
         return $return;
     }
 
@@ -631,6 +667,7 @@ class M_site extends CI_Model {
         $category_row = $category_result->row_array();
         if (count($category_row) == 0) {
             $data['name'] = $param['option_category_name'];
+            $data['only_choose_one'] = $param['only_choose_one'];
             $data['desc'] = $param['desc'];
             $data['business_id'] = $param['businessID'];
             $this->db->insert('product_option_category', $data);
@@ -649,6 +686,7 @@ class M_site extends CI_Model {
         }
         return $return;
     }
+
     function edit_product_option_category($param) {
 
         $this->db->select('*');
@@ -661,10 +699,11 @@ class M_site extends CI_Model {
         if (count($category_row) == 0) {
             $data['name'] = $param['edit_option_category_name'];
             $data['desc'] = $param['edit_desc'];
+            $data['only_choose_one'] = $param['edit_only_choose_one'];
             $data['business_id'] = $param['businessID'];
             $this->db->where('product_option_category_id ', $param['product_option_category_id']);
             $this->db->update('product_option_category', $data);
-        
+
             $this->db->select('*');
             $this->db->from('product_option_category');
             $this->db->where('product_option_category_id', $param['product_option_category_id']);
@@ -678,7 +717,7 @@ class M_site extends CI_Model {
         }
         return $return;
     }
-    
+
     function delete_product_option_category($param) {
 
         $this->db->where('business_id', $param['businessID']);

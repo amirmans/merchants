@@ -17,7 +17,7 @@
                 right: 0px; 
             }
             .invoice .logo img {
-                    margin-left: 260px;
+                margin-left: 260px;
             }
         </style>
     </head>
@@ -96,6 +96,29 @@
 
                         </div>
                     </div>
+                    <div class="line row">
+                        <div class="col-md-6 col-xs-6 padding-0 text-left">
+                            <h4>Internal Info</h4>
+
+                        </div>
+                        <div class="col-md-6 col-xs-3 padding-0 text-right">
+                            <a class="btn btn-primary pointer " onclick="edit_interinfo()">Edit Internal info</a>
+                        </div>
+
+
+                    </div>
+                    <div class="line row">
+                        <div class="col-md-6 col-xs-6 padding-0 text-left">
+                            <h4>Internal Email</h4>
+                            <h2 id="email_text"><?php echo $internal['email']; ?></h2>
+                        </div>
+                        <div class="col-md-6 col-xs-6 padding-0 text-right">
+                            <h4>Internal SMS NO</h4>
+                            <h2 id="website_text"><?php echo $internal['sms_no']; ?></h2>
+                        </div>
+                    </div>
+
+
                     <div class="line row">
                         <div class="col-md-6 col-xs-6 padding-0 text-left">
                             <h4>Opening Hours</h4>
@@ -320,6 +343,38 @@
                 </div>
             </div>
         </div>
+        <div class="modal fade" id="interinfoModal" tabindex="-1" role="dialog" aria-hidden="true" >
+            <div class="modal-dialog ">
+                <div class="modal-content">
+                    <form class="form-horizontal" id="form_internal_info"  action="<?php echo base_url('index.php/profile/edit_internal_info'); ?>" method="post" >
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                            <h4 class="modal-title">Edit Internal Info</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="internal_email" class="col-sm-4 control-label form-label">Internal email</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control user-success" id="internal_email" name="internal_email" value="<?php echo $internal['email']; ?>" required="">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="internal_sms_no" class="col-sm-4 control-label form-label">Internal SMS no</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="form-control user-success" id="internal_sms_no" name="internal_sms_no" value="<?php echo $internal['sms_no']; ?>" required="">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+
+                            <button type="button" class="btn btn-white" data-dismiss="modal" >Close</button>
+                            <button type="submit" class="btn btn-default" >Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
 
         <div class="modal fade" id="openingHoursModal" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
             <div class="modal-dialog modal-lg">
@@ -432,9 +487,9 @@
             var options = {
                 success: processEditProfileResponse
             }
-            window.history.forward(-1);
 
-            $(document).ready(function() {
+
+            $(document).ready(function () {
                 // bind 'myForm' and provide a simple callback function 
                 $('#form_edit_profile').ajaxForm(options);
 
@@ -449,6 +504,12 @@
                 $('#form_opening_hours').ajaxForm({
                     success: processEditOpeningHoursResponse
                 });
+
+                $('#form_internal_info').ajaxForm({
+                    success: processinternalResponse
+                });
+
+
 
             });
 
@@ -508,10 +569,10 @@
                 $('#stripe_secret_key').val(stripe_secret_key_text);
                 $('#editProfileModal').modal('show');
             }
-            document.getElementById("image_upload_file").onchange = function() {
+            document.getElementById("image_upload_file").onchange = function () {
                 var reader = new FileReader();
 
-                reader.onload = function(e) {
+                reader.onload = function (e) {
                     // get loaded data and render thumbnail.
                     document.getElementById("image").src = e.target.result;
                 };
@@ -523,6 +584,11 @@
             };
             function edit_opening_hours() {
                 $('#openingHoursModal').modal('show');
+            }
+
+            function edit_interinfo()
+            {
+                $('#interinfoModal').modal('show');
             }
 
             function processEditOpeningHoursResponse(data) {
@@ -540,6 +606,17 @@
                     $('#openingHoursModal').modal('toggle');
                     swal('', "Profile updated unsuccessfully", 'error')
 
+                }
+            }
+
+            function processinternalResponse(data)
+            {
+                var data = JSON.parse(data);
+                if (data.status)
+                {
+                    $('#interinfoModal').modal('toggle');
+                    swal('', "Profile updated successfully", 'success')
+                    location.reload();
                 }
             }
 
@@ -586,7 +663,7 @@
 
 
 
-            $(document).ready(function() {
+            $(document).ready(function () {
 
                 for (var i = 0; i < hours.length; i++)
                 {
