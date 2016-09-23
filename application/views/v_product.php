@@ -52,6 +52,7 @@
                                                 <td>Name</td>
                                                 <td>Price</td>
                                                 <td>Product Description </td>
+                                                <td>Category</td>
                                                 <td>Availability Status</td>
                                                <td>Option</td>
                                                 <td>Edit</td>
@@ -66,6 +67,7 @@
                                                     <td><?php echo $products[$i]['name']; ?></td>
                                                     <td>$ <?php echo $products[$i]['price']; ?></td>
                                                     <td><?php echo $products[$i]['short_description']; ?></td>
+                                                    <td><?php echo $products[$i]['category_name']; ?></td>
                                                     <td>
                                                         <?php
                                                         $checked = '';

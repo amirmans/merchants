@@ -554,20 +554,22 @@ class M_site extends CI_Model {
     }
 
     function get_business_products($param) {
-        $this->db->select('*');
-        $this->db->from('product');
-        $this->db->where('businessID', $param['businessID']);
-        $this->db->order_by("product_id", "desc");
+        $this->db->select('p.*,pc.category_name');
+        $this->db->from('product as p');
+        $this->db->join('product_category as  pc', 'p.product_category_id = pc.product_category_id', 'left');
+        $this->db->where('p.businessID', $param['businessID']);
+        $this->db->order_by("p.product_id", "desc");
         $result = $this->db->get();
         $row = $result->result_array();
         return $row;
     }
 
     function get_business_options($param) {
-        $this->db->select('*');
-        $this->db->from('option');
-        $this->db->where('business_id', $param['businessID']);
-        $this->db->order_by("option_id", "desc");
+        $this->db->select('o.*,poc.name as product_option_category_name');
+        $this->db->from('option as o');
+          $this->db->join('product_option_category as poc', 'o.product_option_category_id = poc.product_option_category_id', 'left');
+        $this->db->where('o.business_id', $param['businessID']);
+        $this->db->order_by("o.option_id", "desc");
         $result = $this->db->get();
         $row = $result->result_array();
         return $row;
