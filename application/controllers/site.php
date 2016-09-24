@@ -251,7 +251,7 @@ class Site extends CI_Controller {
         $config['smtp_port'] = '26';
         $config['smtp_timeout'] = '7';
         $config['smtp_user'] = $email;
-        $config['smtp_pass'] = 'b#Fq0w<ZAM#u<&';
+        $config['smtp_pass'] = 'TigM0m!!';
         $config['charset'] = 'utf-8';
         $config['newline'] = "\r\n";
         $config['mailtype'] = 'html'; // or html
