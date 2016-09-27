@@ -207,7 +207,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label for="only_choose_one" class="col-sm-4 control-label form-label">Type</label>
+                                        <label for="edit_only_choose_one" class="col-sm-4 control-label form-label">Type</label>
                                         <div class="col-sm-8">
                                             <select class="selectpicker" id="edit_only_choose_one"  name="edit_only_choose_one"  >
                                                 <option value="0">Multiple</option>
@@ -325,9 +325,9 @@
                     $('#product_option_category').append(newOption);
 
                     var row = '<tr id="row_' + product_option_category_id + '"><td id="categoryname_' + product_option_category_id + '">' + data.product_option_category.option_category.name + '</td>' +
-                            '<td id="categorydesc_' + product_option_category_id + '">' + data.product_option_category.option_category.desc + '</td>' +
-                            '<td><a class="btn btn-info add_product_btn" onclick="show_edit_category_modal(' + product_option_category_id + ')"><i class="fa fa-edit"></i>Edit</a></td>' +
-                            '<td><a  class="btn btn-danger add_product_btn" onclick="delete_option_category(' + product_option_category_id + ')"><i class="fa fa-trash"></i>Delete</a></td><tr>';
+                            '<td id="only_choose_one_' + product_option_category_id + '">' + data.product_option_category.option_category.only_choose_one + '</td><td id="categorydesc_' + product_option_category_id + '">' + data.product_option_category.option_category.desc + '</td>' +
+                            '<td><a class="btn btn-info add_product_btn" onclick="show_edit_category_modal(' + product_option_category_id + ')"><i class="fa fa-edit"></i></a></td>' +
+                            '<td><a  class="btn btn-danger add_product_btn" onclick="delete_option_category(' + product_option_category_id + ')"><i class="fa fa-trash"></i></a></td><tr>';
 
                     $('#option_category_table').append(row)
                     $('#form_product_option_category').trigger("reset");
