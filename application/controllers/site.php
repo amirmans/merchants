@@ -23,6 +23,7 @@ class Site extends CI_Controller {
 
     function orderlist($order_status = "neworder") {
 //Check business Customer is login
+        
         is_login() ? '' : redirect('index.php/login');
         $param['businessID'] = is_login();
         $param['order_status'] = $order_status;
@@ -30,7 +31,7 @@ class Site extends CI_Controller {
         $data['order_status'] = $order_status;
         $data['orderlist'] = $this->m_site->get_business_order_list($param);
         $order_detail['order_detail'] = $this->m_site->get_order_detail($data['orderlist'][0]['order_id']);
-        $order_detail['orderlist'] = $this->m_site->get_ordelist_order($data['orderlist'][0]['order_id'],$param['businessID']);
+        $order_detail['orderlist'] = $this->m_site->get_ordelist_order($data['orderlist'][0]['order_id'], $param['businessID']);
         $order_detail['consumer'] = $this->m_site->check_birthday_first_order($data['orderlist'][0]['order_id']);
 
         $data['order_view'] = $this->load->view('v_order_view', $order_detail, TRUE);
@@ -48,7 +49,7 @@ class Site extends CI_Controller {
         $data['orderlist'] = $this->m_site->get_search_business_order_list($param);
 
         $order_detail['order_detail'] = $this->m_site->get_order_detail($data['orderlist'][0]['order_id']);
-        $order_detail['orderlist'] = $this->m_site->get_ordelist_order($data['orderlist'][0]['order_id'],$param['businessID']);
+        $order_detail['orderlist'] = $this->m_site->get_ordelist_order($data['orderlist'][0]['order_id'], $param['businessID']);
         $data['order_view'] = $this->load->view('v_order_view', $order_detail, TRUE);
 
         $this->load->view('v_orderlist', $data);
@@ -61,7 +62,7 @@ class Site extends CI_Controller {
         $order_id = $param['order_id'];
         $param['businessID'] = is_login();
         $data['order_detail'] = $this->m_site->get_order_detail($order_id);
-        $data['orderlist'] = $this->m_site->get_ordelist_order($order_id,$param['businessID']);
+        $data['orderlist'] = $this->m_site->get_ordelist_order($order_id, $param['businessID']);
         $data['consumer'] = $this->m_site->check_birthday_first_order($order_id);
         $return['order_view'] = $this->load->view('v_order_view', $data, TRUE);
         echo json_encode($return);
@@ -103,7 +104,7 @@ class Site extends CI_Controller {
 
                         $this->m_site->update_order_status($order_id, $charge_id, $response['amount'], $order_payment_detail['consumer_id']);
 
-                        $order_info = $this->m_site->get_ordelist_order($order_id,$business_id);
+                        $order_info = $this->m_site->get_ordelist_order($order_id, $business_id);
                         $email['order_detail'] = $this->m_site->get_order_detail($order_id);
                         $redeemed_points = $this->m_site->get_redeemed_points($order_id);
                         if (count($redeemed_points) > 0) {
@@ -126,8 +127,24 @@ class Site extends CI_Controller {
                         if ($order_payment_detail['cc_info']['email1'] != '' && $order_payment_detail['cc_info']['email1'] != NULL) {
                             $this->mail_receipt($email, $order_payment_detail['cc_info']['email1']);
                         }
-                    } catch (Exception $exc) {
-                        $response = error_res("Something went wrong");
+                    } catch (Stripe_CardError $e) {
+                        $body = $e->getMessage();
+                        $response = error_res($body);
+                    } catch (Stripe_InvalidRequestError $e) {
+                        $body = $e->getMessage();
+                        $response = error_res($body);
+                    } catch (Stripe_AuthenticationError $e) {
+                        $body = $e->getMessage();
+                        $response = error_res($body);
+                    } catch (Stripe_ApiConnectionError $e) {
+                        $body = $e->getMessage();
+                        $response = error_res($body);
+                    } catch (Stripe_Error $e) {
+                        $body = $e->getMessage();
+                        $response = error_res($body);
+                    } catch (Exception $e) {
+                        $body = $e->getMessage();
+                        $response = error_res($body);
                     }
                 }
             } else {
@@ -363,8 +380,24 @@ class Site extends CI_Controller {
                                 \Stripe\Stripe::setApiKey($secret_key);
                                 $re = \Stripe\Refund::create($refund);
                                 $stripe_refund_id = $re->id;
-                            } catch (Exception $exc) {
-                                $response = error_res("Something went wrong");
+                            } catch (Stripe_CardError $e) {
+                                $body = $e->getMessage();
+                                $response = error_res($e);
+                            } catch (Stripe_InvalidRequestError $e) {
+                                $body = $e->getMessage();
+                                $response = error_res($body);
+                            } catch (Stripe_AuthenticationError $e) {
+                                $body = $e->getMessage();
+                                $response = error_res($body);
+                            } catch (Stripe_ApiConnectionError $e) {
+                                $body = $e->getMessage();
+                                $response = error_res($body);
+                            } catch (Stripe_Error $e) {
+                                $body = $e->getMessage();
+                                $response = error_res($body);
+                            } catch (Exception $e) {
+                                $body = $e->getMessage();
+                                $response = error_res($body);
                             }
                         } else {
                             $stripe_refund_id = "0";
@@ -385,8 +418,24 @@ class Site extends CI_Controller {
                             \Stripe\Stripe::setApiKey($secret_key);
                             $re = \Stripe\Refund::create($refund);
                             $stripe_refund_id = $re->id;
-                        } catch (Exception $exc) {
-                            $response = error_res("Something went wrong");
+                        } catch (Stripe_CardError $e) {
+                            $body = $e->getMessage();
+                            $response = error_res($e);
+                        } catch (Stripe_InvalidRequestError $e) {
+                            $body = $e->getMessage();
+                            $response = error_res($body);
+                        } catch (Stripe_AuthenticationError $e) {
+                            $body = $e->getMessage();
+                            $response = error_res($body);
+                        } catch (Stripe_ApiConnectionError $e) {
+                            $body = $e->getMessage();
+                            $response = error_res($body);
+                        } catch (Stripe_Error $e) {
+                            $body = $e->getMessage();
+                            $response = error_res($body);
+                        } catch (Exception $e) {
+                            $body = $e->getMessage();
+                            $response = error_res($body);
                         }
                     } else {
                         $stripe_refund_id = 0;
