@@ -60,7 +60,7 @@ class Profile extends CI_Controller {
         echo json_encode($data);
     }
 
-        function edit_internal_info() {
+    function edit_internal_info() {
         is_login() ? '' : redirect('index.php/login');
         $param = $_REQUEST;
         $param['businessID'] = is_login();

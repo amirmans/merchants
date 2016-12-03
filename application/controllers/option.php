@@ -67,6 +67,17 @@ class Option extends CI_Controller {
         redirect('index.php/option');
       
     }
+
+  function set_availailblity_status() {
+        is_login() ? '' : redirect('index.php/login');
+        $param = $_REQUEST;
+
+        $param['businessID'] = is_login();
+        $this->validation->is_parameter_blank('businessID', $param['businessID']);
+        $this->m_site->set_option_availailblity_status($param);
+        $response = success_res("Successfully Set Availailblity Status");
+        echo json_encode($response);
+    }
     
     function delete($option_id) {
         is_login() ? '' : redirect('index.php/login');

@@ -3,11 +3,9 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-class Email extends CI_Controller
-{
+class Email extends CI_Controller {
 
-    public function __construct()
-    {
+    public function __construct() {
         parent::__construct();
 ////////////DEFAULT LOAD BELOW FUNCTIONLITY WHEN CALL V1 CONTROLLER
 /////// LOAD LIBRARY VALIDATION CLASS
@@ -17,13 +15,11 @@ class Email extends CI_Controller
 ////// RESONSE HEADER CONTEN TYPRE SET FROM DEFAULT(TEXT/HTML) TO APPLICATION/JSON
     }
 
-    function index()
-    {
+    function index() {
 ///// DEFULT SITE CONTROLLER MEHOD CALL
     }
 
-    function email_configration()
-    {
+    function email_configration() {
         $email = "tap-in@tapforall.com";
         $this->load->library('email');
         $config['protocol'] = 'smtp';
@@ -31,6 +27,7 @@ class Email extends CI_Controller
         $config['smtp_port'] = '26';
         $config['smtp_timeout'] = '7';
         $config['smtp_user'] = $email;
+        // $config['smtp_pass'] = 'b#Fq0w<ZAM#u<&';
         $config['smtp_pass'] = 'TigM0m!!';
         $config['charset'] = 'utf-8';
         $config['newline'] = "\r\n";
@@ -40,10 +37,10 @@ class Email extends CI_Controller
         $this->email->from($email, 'Tap-in');
     }
 
-    function send_mail_new_order($data, $email)
-    {
+    function send_mail_new_order($data, $email) {
         $this->email_configration();
         $body = $this->load->view('v_email_new_order', $data, TRUE);
+
         $subject = "New order from Tap-In";
         $this->email->to($email);
         $this->email->subject($subject);
@@ -55,24 +52,23 @@ class Email extends CI_Controller
         }
     }
 
-    function send_neworder_email()
-    {
+    function send_neworder_email() {
 //
         $param = $_REQUEST;
 
         $order_id = $param['order_id'];
         $business_id = $param['business_id'];
-        $business_email ="";
+        $business_email = "";
 
         $business_internal_alerts = $this->m_site->get_business_internal_alerts($business_id);
         if (!empty($business_internal_alerts)) {
-          $business_email = $business_internal_alerts[0]["email"];
+            $business_email = $business_internal_alerts[0]["email"];
         }
+
 
 //        $business = $this->m_site->get_business($business_id);
 //        $business = $business["business_detail"];
-        if ($business_email != "")
-        {
+        if ($business_email != "") {
             $order_payment_detail = $this->m_site->get_order_payment_detail($order_id);
             $order_info = $this->m_site->get_ordelist_order($order_id, $business_id);
             $email['order_detail'] = $this->m_site->get_order_detail($order_id);
@@ -83,10 +79,19 @@ class Email extends CI_Controller
             $email['tax_amount'] = $order_info[0]['tax_amount'];
             $email['points_dollar_amount'] = $order_info[0]['points_dollar_amount'];
             $email['business_id'] = $business_id;
+            $email['delivery_charge_amount'] = $order_info[0]['delivery_charge_amount'];
+            $email['promotion_code'] = $order_info[0]['promotion_code'];
+            $email['promotion_discount_amount'] = $order_info[0]['promotion_discount_amount'];
+            $email['delivery_instruction'] = $order_info[0]['delivery_instruction'];
+            $email['delivery_address'] = $order_info[0]['delivery_address'];
+            $email['delivery_time'] = $order_info[0]['delivery_time'];
+            $email['consumer_delivery_id'] = $order_info[0]['consumer_delivery_id'];
 
-            $this->send_mail_new_order($email,$business_email);
+
+            $this->send_mail_new_order($email, $business_email);
         }
     }
+
 }
 
 //////////// HERE DO NOT END PHP TAG

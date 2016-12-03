@@ -79,7 +79,7 @@ function limit_text($text, $limit) {
                             <tr>
                                 <td>
                                     <h3 style="color: #fff;"> New order <?php echo $order_id; ?>!</h3>
-                                    
+
                                 </td>
 
                             </tr>
@@ -126,7 +126,7 @@ function limit_text($text, $limit) {
                                                             <?php }
                                                             ?>
                                                         </ul>
-                                                        <?php }
+                                                    <?php }
                                                     ?>
 
 
@@ -177,12 +177,12 @@ function limit_text($text, $limit) {
                                 </td>
                                 <td>
                                     <h1 style="text-align: right;margin-right: 10px">$<?php
-                                    if ($tax_amount == null || $tax_amount == '') {
+                                        if ($tax_amount == null || $tax_amount == '') {
                                             echo '0.00';
                                         } else {
                                             echo $tax_amount;
                                         }
-                                     ?></h1>
+                                        ?></h1>
                                 </td>
                             </tr>
                             <tr style="line-height: 0">
@@ -190,13 +190,13 @@ function limit_text($text, $limit) {
                                     <p style="font-weight: bold;font-size: 20px;margin-left: 10px">Tip</p>
                                 </td>
                                 <td>
-                                    <h1 style="text-align: right;margin-right: 10px">$<?php 
-                                    if ($tip_amount == null || $tip_amount == '') {
+                                    <h1 style="text-align: right;margin-right: 10px">$<?php
+                                        if ($tip_amount == null || $tip_amount == '') {
                                             echo '0.00';
                                         } else {
                                             echo $tip_amount;
                                         }
-                                     ?></h1>
+                                        ?></h1>
                                 </td>
                             </tr>
                             <tr style="line-height: 0">
@@ -217,6 +217,61 @@ function limit_text($text, $limit) {
 
                                 </td>
                             </tr>
+                            <?php if ($consumer_delivery_id != 0) {
+                                ?>
+                                <tr style="line-height: 0">
+                                    <td >
+                                        <p style="font-weight: bold;font-size: 20px;margin-left: 10px">Delivery Charges</p>
+
+                                    </td>
+                                    <td >
+
+                                        <h1 style="text-align: right;margin-right: 10px">$
+                                            <?php
+                                            if ($delivery_charge_amount == null || $delivery_charge_amount == '') {
+                                                echo '0.00';
+                                            } else {
+                                                echo $delivery_charge_amount;
+                                            }
+                                            ?></h1>
+
+                                    </td>
+                                </tr>
+                            <?php } ?>
+                            <?php if ($promotion_code != "" && $promotion_discount_amount > 0.00) {
+                                ?>
+                                <tr style="line-height: 0">
+                                    <td >
+                                        <p style="font-weight: bold;font-size: 20px;margin-left: 10px">Promotion Code</p>
+
+                                    </td>
+                                    <td >
+
+                                        <h1 style="text-align: right;margin-right: 10px">
+                                            <?php
+                                            echo $promotion_code;
+                                            ?></h1>
+
+                                    </td>
+                                </tr>
+                            <?php } ?>
+                            <?php if ($promotion_discount_amount > 0.00) {
+                                ?>
+                                <tr style="line-height: 0">
+                                    <td >
+                                        <p style="font-weight: bold;font-size: 20px;margin-left: 10px">Promotion Discount</p>
+
+                                    </td>
+                                    <td >
+
+                                        <h1 style="text-align: right;margin-right: 10px">$
+                                            <?php
+                                            echo $promotion_discount_amount;
+                                            ?></h1>
+
+                                    </td>
+                                </tr>
+                            <?php } ?>
                             <tr>
                                 <td colspan="2" height="1" style="border-collapse:collapse;border-top-color:#e0e1e2;border-top-style:dashed;border-top-width:2px;font-size:0;line-height:0;padding:0"></td>
                             </tr>
@@ -239,6 +294,45 @@ function limit_text($text, $limit) {
                             <tr>
                                 <td colspan="2" height="1" style="border-collapse:collapse;border-top-color:#e0e1e2;border-top-style:dashed;border-top-width:2px;font-size:0;line-height:0;padding:0"></td>
                             </tr>
+                            <?php if ($consumer_delivery_id != 0) {
+                                ?>
+                                <tr style="line-height: 0;">
+                                    <td>
+
+                                        <p style="font-weight: bold;font-size: 21px;margin-left: 10px">Delivery Address </p>
+                                    </td>
+                                    <td >
+
+                                        <p style="text-align: right;margin-right: 10px"><?php
+                                            echo $delivery_address;
+                                            ?></p>
+                                    </td>
+                                </tr>
+                                <tr style="line-height: 0;">
+                                    <td>
+
+                                        <p style="font-weight: bold;font-size: 21px;margin-left: 10px">Delivery Time </p>
+                                    </td>
+                                    <td >
+
+                                        <p style="text-align: right;margin-right: 10px"><?php
+                                            echo $delivery_time;
+                                            ?></p>
+                                    </td>
+                                </tr>
+                                <tr style="line-height: 0;">
+                                    <td>
+
+                                        <p style="font-weight: bold;font-size: 21px;margin-left: 10px">Delivery Instruction </p>
+                                    </td>
+                                    <td >
+
+                                        <p style="text-align: right;margin-right: 10px"><?php
+                                            echo $delivery_instruction;
+                                            ?></p>
+                                    </td>
+                                </tr>
+                            <?php } ?>
                         </table>
                     </td>
 
@@ -278,9 +372,9 @@ function limit_text($text, $limit) {
                         <table  border="0" width="100%" >
                             <tr>
                                 <td style="padding: 5px"><span style="color:#4DBEC7"><img src="<?php echo base_url('assets/email_templete/ic_rewards@3x.png'); ?>" width="30" height="30"></img></span></td>
-                                <?php
-                                $earnPoints = round($total);
-                                ?>
+                <?php
+                $earnPoints = round($total);
+                ?>
                                 <td style="padding: 5px"><span style="color:#4DBEC7">Earned <?php echo $earnPoints; ?> Reward Points</span></td>
                             </tr>
                             <tr>

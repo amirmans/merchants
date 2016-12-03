@@ -23,17 +23,16 @@ class Site extends CI_Controller {
 
     function orderlist($order_status = "neworder") {
 //Check business Customer is login
-        
         is_login() ? '' : redirect('index.php/login');
         $param['businessID'] = is_login();
+        $param['sub_businesses'] = sub_businesses();
         $param['order_status'] = $order_status;
         $this->validation->is_parameter_blank('businessID', $param['businessID']);
         $data['order_status'] = $order_status;
         $data['orderlist'] = $this->m_site->get_business_order_list($param);
         $order_detail['order_detail'] = $this->m_site->get_order_detail($data['orderlist'][0]['order_id']);
-        $order_detail['orderlist'] = $this->m_site->get_ordelist_order($data['orderlist'][0]['order_id'], $param['businessID']);
+        $order_detail['orderlist'] = $this->m_site->get_ordelist_order($data['orderlist'][0]['order_id'], $param['businessID'], $param['sub_businesses']);
         $order_detail['consumer'] = $this->m_site->check_birthday_first_order($data['orderlist'][0]['order_id']);
-
         $data['order_view'] = $this->load->view('v_order_view', $order_detail, TRUE);
         $this->load->view('v_orderlist', $data);
     }
@@ -43,13 +42,14 @@ class Site extends CI_Controller {
         is_login() ? '' : redirect('index.php/login');
         $param = $_REQUEST;
         $param['businessID'] = is_login();
+        $param['sub_businesses'] = sub_businesses();
 
         $this->validation->is_parameter_blank('businessID', $param['businessID']);
         $data['order_status'] = 'completed';
         $data['orderlist'] = $this->m_site->get_search_business_order_list($param);
 
         $order_detail['order_detail'] = $this->m_site->get_order_detail($data['orderlist'][0]['order_id']);
-        $order_detail['orderlist'] = $this->m_site->get_ordelist_order($data['orderlist'][0]['order_id'], $param['businessID']);
+        $order_detail['orderlist'] = $this->m_site->get_ordelist_order($data['orderlist'][0]['order_id'], $param['businessID'], $param['sub_businesses']);
         $data['order_view'] = $this->load->view('v_order_view', $order_detail, TRUE);
 
         $this->load->view('v_orderlist', $data);
@@ -61,8 +61,9 @@ class Site extends CI_Controller {
         $param = $_REQUEST;
         $order_id = $param['order_id'];
         $param['businessID'] = is_login();
+        $param['sub_businesses'] = sub_businesses();
         $data['order_detail'] = $this->m_site->get_order_detail($order_id);
-        $data['orderlist'] = $this->m_site->get_ordelist_order($order_id, $param['businessID']);
+        $data['orderlist'] = $this->m_site->get_ordelist_order($order_id, $param['businessID'], $param['sub_businesses']);
         $data['consumer'] = $this->m_site->check_birthday_first_order($order_id);
         $return['order_view'] = $this->load->view('v_order_view', $data, TRUE);
         echo json_encode($return);
@@ -74,6 +75,7 @@ class Site extends CI_Controller {
         is_login() ? '' : redirect('index.php/login');
         $param = $_REQUEST;
         $business_id = is_login();
+        $param['sub_businesses'] = sub_businesses();
         $this->validation->is_parameter_blank('order_id', $param['order_id']);
         $order_id = decrypt_string($param['order_id']);
         $order_payment_detail = $this->m_site->get_order_payment_detail($order_id);
@@ -87,7 +89,7 @@ class Site extends CI_Controller {
                 } else {
 
                     try {
-                        if ($amount != 0) {
+                        if ($amount > 50) {
 
                             require_once('lib/stripe-php-master/init.php');
 
@@ -104,7 +106,7 @@ class Site extends CI_Controller {
 
                         $this->m_site->update_order_status($order_id, $charge_id, $response['amount'], $order_payment_detail['consumer_id']);
 
-                        $order_info = $this->m_site->get_ordelist_order($order_id, $business_id);
+                        $order_info = $this->m_site->get_ordelist_order($order_id, $business_id, $param['sub_businesses']);
                         $email['order_detail'] = $this->m_site->get_order_detail($order_id);
                         $redeemed_points = $this->m_site->get_redeemed_points($order_id);
                         if (count($redeemed_points) > 0) {
@@ -123,7 +125,13 @@ class Site extends CI_Controller {
                         $email['tip_amount'] = $order_info[0]['tip_amount'];
                         $email['tax_amount'] = $order_info[0]['tax_amount'];
                         $email['points_dollar_amount'] = $order_info[0]['points_dollar_amount'];
-
+                        $email['delivery_charge_amount'] = $order_info[0]['delivery_charge_amount'];
+                        $email['promotion_code'] = $order_info[0]['promotion_code'];
+                        $email['promotion_discount_amount'] = $order_info[0]['promotion_discount_amount'];
+                        $email['delivery_instruction'] = $order_info[0]['delivery_instruction'];
+                        $email['delivery_address'] = $order_info[0]['delivery_address'];
+                        $email['delivery_time'] = $order_info[0]['delivery_time'];
+                        $email['consumer_delivery_id'] = $order_info[0]['consumer_delivery_id'];
                         if ($order_payment_detail['cc_info']['email1'] != '' && $order_payment_detail['cc_info']['email1'] != NULL) {
                             $this->mail_receipt($email, $order_payment_detail['cc_info']['email1']);
                         }
@@ -224,7 +232,7 @@ class Site extends CI_Controller {
     }
 
     function test_notification() {
-        $device_token = '85acb18a66913db73fdc48f1df48a8f681b42d7031cee302108950bc53c77a0d';
+        $device_token = 'ae2ad01b457ecb798d8442fbf2f66cc1f2326fce6e576466407ef70a43226646';
         $message_body = array(
             'type' => 1,
             'alert' => "Distribution Notification Testing",
@@ -237,6 +245,7 @@ class Site extends CI_Controller {
 
     function get_new_orders() {
         $param = $_REQUEST;
+        $param['sub_businesses'] = sub_businesses();
         $this->validation->is_parameter_blank('latest_order_id', $param['latest_order_id']);
         $param['businessID'] = is_login();
         $response = $this->m_site->get_new_orders($param);
@@ -254,6 +263,7 @@ class Site extends CI_Controller {
 
     function count_order_for_remaining_approve() {
         $param['businessID'] = is_login();
+        $param['sub_businesses'] = sub_businesses();
         $response = $this->m_site->count_order_for_remaining_approve($param);
         echo json_encode($response);
     }
@@ -382,7 +392,7 @@ class Site extends CI_Controller {
                                 $stripe_refund_id = $re->id;
                             } catch (Stripe_CardError $e) {
                                 $body = $e->getMessage();
-                                $response = error_res($e);
+                                $response = error_res($body);
                             } catch (Stripe_InvalidRequestError $e) {
                                 $body = $e->getMessage();
                                 $response = error_res($body);
@@ -420,7 +430,7 @@ class Site extends CI_Controller {
                             $stripe_refund_id = $re->id;
                         } catch (Stripe_CardError $e) {
                             $body = $e->getMessage();
-                            $response = error_res($e);
+                            $response = error_res($body);
                         } catch (Stripe_InvalidRequestError $e) {
                             $body = $e->getMessage();
                             $response = error_res($body);

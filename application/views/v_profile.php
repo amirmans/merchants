@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -355,14 +354,14 @@
                             <div class="form-group">
                                 <label for="internal_email" class="col-sm-4 control-label form-label">Internal email</label>
                                 <div class="col-sm-8">
-                                    <input type="text" class="form-control user-success" id="internal_email" name="internal_email" value="<?php echo $internal['email']; ?>" required="">
+                                    <input type="email" class="form-control user-success" id="internal_email" name="internal_email" value="<?php echo $internal['email']; ?>" >
                                 </div>
                             </div>
 
                             <div class="form-group">
                                 <label for="internal_sms_no" class="col-sm-4 control-label form-label">Internal SMS no</label>
                                 <div class="col-sm-8">
-                                    <input type="text" class="form-control user-success" id="internal_sms_no" name="internal_sms_no" value="<?php echo $internal['sms_no']; ?>" required="">
+                                    <input type="text" class="form-control user-success" id="internal_sms_no" name="internal_sms_no" value="<?php echo $internal['sms_no']; ?>"   pattern="/^+1\d{3}\d{3}\d{4}" maxlength="12" minlength="12" >
                                 </div>
                             </div>
                         </div>

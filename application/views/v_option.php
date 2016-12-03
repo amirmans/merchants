@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -43,7 +42,10 @@
                                                 <td>Name</td>
                                                 <td>Price</td>
                                                 <td>Description</td>
+                                                
+                                                
                                                 <td>Category</td>
+<td>AVAILABILITY STATUS</td>
                                                 <td class="text-center">Edit</td>
 
                                             </tr>
@@ -57,6 +59,18 @@
                                                     <td>$ <?php echo $options[$i]['price']; ?></td>
                                                     <td><?php echo $options[$i]['description']; ?></td>
                                                     <td><?php echo $options[$i]['product_option_category_name']; ?></td>
+                                                     <td>
+                                                        <?php
+                                                        $checked = '';
+                                                        if ($options[$i]['availability_status'] == 1) {
+                                                            $checked = 'checked';
+                                                        }
+                                                        ?>
+                                                        <div class="col-sm-8">
+                                                            <input type="checkbox"  data-toggle="toggle" data-onstyle="success" id="availability_status_<?php echo $options[$i]['option_id']; ?>" onchange="set_availailblity_status(<?php echo $options[$i]['option_id']; ?>)" <?php echo $checked; ?> >
+                                                        </div>
+
+                                                    </td>
                                                     <!--<td><a href="<?php // echo base_url('index.php/product/options/' . $products[$i]['product_id']);  ?>" class="btn btn-info add_product_btn"><i class="fa fa-eye"></i>View</a></td>-->
                                                     <td><a href="<?php echo base_url('index.php/option/edit/' . $options[$i]['option_id']); ?>" class="btn btn-info add_product_btn"><i class="fa fa-edit"></i>Edit</a></td>
                                                 </tr>
@@ -90,6 +104,23 @@
         </script>
 
 
+        <script>
+   
+
+            function set_availailblity_status(option_id) {
+                var availability_status = $('#availability_status_' + option_id).prop('checked');
+                var param = {availability_status: availability_status, option_id: option_id};
+                $.post("<?php echo base_url('index.php/option/set_availailblity_status') ?>", param)
+                        .done(function(data) {
+                            data = jQuery.parseJSON(data);
+
+                            if (data['status'] == '1')
+                            {
+                                swal("", data['msg'], "success");
+                            }
+                        });
+            }
+        </script>
 
 
 

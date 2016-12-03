@@ -9,13 +9,12 @@ class M_site extends CI_Model {
     }
 
     function do_login($param) {
-        $this->db->select('businessID,name,username');
+        $this->db->select('businessID,name,username,sub_businesses');
         $this->db->from('business_customers');
         $this->db->limit(1);
         $this->db->where('username', $param['username']);
         $this->db->where('password', md5($param['password']));
-        $this->db->where('active', 1);
-        $this->db->or_where('beta', 1);
+        $this->db->where('active = 1 or beta = 1');
         $result = $this->db->get();
         $row = $result->result_array();
 
@@ -39,11 +38,7 @@ class M_site extends CI_Model {
         $this->db->where('stripe_username', $param['username']);
         $this->db->where('stripe_password', md5($param['password']));
         $this->db->where('businessID', $param['businessID']);
-
-        $this->db->where("(active=1 or beta='1)");
-
-//        $this->db->where('active', 1);
-//        $this->db->or_where('beta', 1);
+        $this->db->where('active = 1 or beta = 1');
         $result = $this->db->get();
         $row = $result->result_array();
 
@@ -108,8 +103,7 @@ class M_site extends CI_Model {
     function get_business_list() {
         $this->db->select('businessID,name');
         $this->db->from('business_customers');
-        $this->db->where('active', 1);
-        $this->db->or_where('beta', 1);
+        $this->db->where('active = 1 or beta = 1');
         $this->db->order_by("businessID", "asc");
         $result = $this->db->get();
         $row = $result->result_array();
@@ -226,7 +220,12 @@ class M_site extends CI_Model {
             $this->db->where('o.status !=', 3);
             $this->db->where('o.status !=', 4);
         }
-        $this->db->where('o.business_id', $param['businessID']);
+        if ($param['sub_businesses'] == "") {
+            $this->db->where('o.business_id', $param['businessID']);
+        } else {
+            $sub_businesses = explode(",", $param['sub_businesses']);
+            $this->db->where_in('o.business_id', $sub_businesses);
+        }
         $this->db->order_by("o.order_id", "desc");
         //$this->db->limit(10);
         $result = $this->db->get();
@@ -250,25 +249,34 @@ class M_site extends CI_Model {
         return $row;
     }
 
-    function get_ordelist_order($order_id, $businessId) {
-        $this->db->select('o.order_id,o.payment_id,o.total,o.date,cp.nickname,o.status,o.note,o.subtotal,o.tip_amount,o.tax_amount,o.points_dollar_amount,TIMESTAMPDIFF(SECOND,o.date,now()) as seconds,oc.is_refunded');
+    function get_ordelist_order($order_id, $businessId, $p_sub_businesses) {
+        $this->db->select('o.order_id,o.payment_id,o.total,o.date,cp.nickname,o.status,o.note,o.subtotal,o.tip_amount,o.tax_amount,o.points_dollar_amount,TIMESTAMPDIFF(SECOND,o.date,now()) as seconds,oc.is_refunded,o.delivery_charge_amount,o.promotion_code,o.promotion_discount_amount,cd.delivery_instruction,cd.delivery_address,cd.delivery_time,o.consumer_delivery_id');
         $this->db->from('order as o');
         $this->db->join('consumer_profile as cp', 'o.consumer_id = cp.uid', 'left');
         $this->db->join('order_charge as oc', 'oc.order_id = o.order_id', 'left');
+        $this->db->join('consumer_delivery as cd', 'cd.consumer_delivery_id = o.consumer_delivery_id', 'left');
         $this->db->where('o.order_id', $order_id);
-        $this->db->where('o.business_id', $businessId);
+        if ($p_sub_businesses == "") {
+            $this->db->where('o.business_id', $businessId);
+        } else {
+            $sub_businesses = explode(",", $p_sub_businesses);
+            $this->db->where_in('o.business_id', $sub_businesses);
+        }
+
         $this->db->limit(1);
         $result = $this->db->get();
         $row = $result->result_array();
+
 
         return $row;
     }
 
     function get_order_detail($order_id) {
 
-        $this->db->select('o.order_item_id,o.price,o.quantity,p.name,p.short_description,o.option_ids,o.product_id');
+        $this->db->select('o.order_item_id,o.price,o.quantity,p.name,p.short_description,o.option_ids,o.product_id,p.businessID,bc.short_name as business_name');
         $this->db->from('order_item as o');
         $this->db->join('product as p', 'o.product_id = p.product_id', 'left');
+        $this->db->join('business_customers as bc', 'bc.businessID = p.businessID', 'left');
         $this->db->where('o.order_id', $order_id);
         $result = $this->db->get();
         $row = $result->result_array();
@@ -415,39 +423,23 @@ class M_site extends CI_Model {
 //        }
     }
 
-    function smsMerchant($message, $businessSMS, $businessID) {
-        require_once APPPATH.'libraries/Twilio/autoload.php'; // Loads the Twilio library
-        $TapInServerConstsParentPath = APPPATH . "../" . "../" . staging_directory() . '/include/consts_server.inc';
-        require_once $TapInServerConstsParentPath; // Loads our consts
-//        use Twilio\Rest\Client;
-
-        $this->db->select('username');
+    function notifyMerchant($message) {
+        // first get the uuid for the device that the business has setup for notifications
+        $businessUUID = '';
+        $businessID = is_login();
+        $this->db->select('iDeviceNotificationUUID');
         $this->db->from('business_customers');
         $this->db->where('businessID', $businessID);
         $this->db->limit(1);
         $result = $this->db->get();
         $row = $result->result_array();
-        if (count($row) > 0) {
-            $merchantLink = BaseURL . "/" . $row[0]["username"];
-            $message = $message . " Refer to: " . $merchantLink;
 
+        if (empty($row[0]['iDeviceNotificationUUID'])) {
+            log_message('error', "*****Could not find $businessID toke!");
+            return -1;
         }
-      $sid =    "AC425f4f32e8cc26b7cd3cca7122d59edb";
-      $token =  "28c81ad67d2530aca9a947f785c54ef6";
+        $businessUUID = $row[0]['iDeviceNotificationUUID'];
 
-      $client = new Twilio\Rest\Client($sid, $token);
-      $client->messages->create(
-        "$businessSMS",
-        array(
-          'from' => '+15032785619',
-          'body' => $message
-          )
-        );
-
-    }
-
-
-    function sendPushNotificationToMerchant($message, $businessUUID) {
         // now let's get the device token so we can send the notiication
         $this->db->select('device_token');
         $this->db->from('consumer_profile');
@@ -467,34 +459,18 @@ class M_site extends CI_Model {
 
             push_notification_ios($device_token, $message_body);
             log_message('info', "****Just notified $device_token that there is a new order!");
+
+            // we are good
+            return 0;
+
+//            $notification['consumer_id'] = $order_detail['consumer_id'];
+//            $notification['business_id'] = is_login();
+//            $notification['message'] = $message;
+//            $notification['image'] = "";
+//            $notification['time_sent'] = date("Y-m-d H:i:s");
+//            $notification['notification_type_id'] = "6";
+//            $this->db->insert('notification', $notification);
         }
-    }
-
-    function notifyMerchant($message) {
-        // first get the uuid for the device that the business has setup for notifications
-        $businessUUID = '';
-        $businessID = is_login();
-        $this->db->select('*');
-        $this->db->from('business_internal_alert');
-        $this->db->where('business_id', $businessID);
-        $this->db->limit(1);
-        $result = $this->db->get();
-        $row = $result->result_array();
-
-        if (empty($row[0]['uuid'])) {
-            log_message('info', "Could not find device token for $businessID");
-        } else {
-            $businessUUID = $row[0]['uuid'];
-            $this->sendPushNotificationToMerchant($message, $businessUUID);
-        }
-
-        if (empty($row[0]['sms_no'])) {
-            log_message('info', "Could not find sms_no for business $businessID ");
-        } else {
-            $businessSMS = $row[0]['sms_no'];
-            $this->smsMerchant($message, $businessSMS, $businessID);
-        }
-
     }
 
     function completedorder($order_id) {
@@ -504,6 +480,32 @@ class M_site extends CI_Model {
         $this->db->where('order_id', $order_id);
         $this->db->update('order', $data);
         $order_detail = $this->get_order_info($order_id);
+
+        $this->db->select('consumer_delivery_id');
+        $this->db->from('order');
+        $this->db->where('order_id', $order_id);
+        $this->db->limit(1);
+        $result1 = $this->db->get();
+        $row1 = $result1->result_array();
+        if (count($row1) > 0) {
+
+            if ($row1[0]['consumer_delivery_id'] == 0) {
+                $this->db->select('business_delivery_id');
+                $this->db->from('business_delivery');
+                $this->db->where('business_id', $row1[0]['business_id']);
+                $this->db->limit(1);
+                $result2= $this->db->get();
+                $row2 = $result2->result_array();
+                if(count($row2)>0)
+                {
+                      $alert="Order #" . $order_id . " is ready.   For delivery, please email amir@tap-in.co with delivery info.";
+                }else{
+                    $alert="Your order #" . $order_id . " is completed ";
+                }
+            } else {
+                $alert = "Your order #" . $order_id . " is ready and it is being delivered";
+            }
+        }
 
 
         $this->db->select('device_token');
@@ -519,7 +521,7 @@ class M_site extends CI_Model {
 
             $message_body = array(
                 'type' => "0",
-                'alert' => "Your order #" . $order_id . " is completed ",
+                'alert' => $alert,
                 'badge' => 0,
                 'sound' => 'newMessage.wav'
             );
@@ -527,7 +529,7 @@ class M_site extends CI_Model {
 
             $notification['consumer_id'] = $order_detail['consumer_id'];
             $notification['business_id'] = is_login();
-            $notification['message'] = "Your order #" . $order_id . " is completed ";
+            $notification['message'] = $alert;
             $notification['image'] = "";
             $notification['time_sent'] = date("Y-m-d H:i:s");
             $notification['notification_type_id'] = "6";
@@ -602,7 +604,7 @@ class M_site extends CI_Model {
     function get_business_options($param) {
         $this->db->select('o.*,poc.name as product_option_category_name');
         $this->db->from('option as o');
-          $this->db->join('product_option_category as poc', 'o.product_option_category_id = poc.product_option_category_id', 'left');
+        $this->db->join('product_option_category as poc', 'o.product_option_category_id = poc.product_option_category_id', 'left');
         $this->db->where('o.business_id', $param['businessID']);
         $this->db->order_by("o.option_id", "desc");
         $result = $this->db->get();
@@ -981,8 +983,12 @@ class M_site extends CI_Model {
         $this->db->where('o.status !=', 3);
         $this->db->where('o.status !=', 4);
         $this->db->where('o.order_id >', $param['latest_order_id']);
-
-        $this->db->where('o.business_id', $param['businessID']);
+        if ($param['sub_businesses'] == "") {
+            $this->db->where('o.business_id', $param['businessID']);
+        } else {
+            $sub_businesses = explode(",", $param['sub_businesses']);
+            $this->db->where_in('o.business_id', $sub_businesses);
+        }
         $this->db->order_by("o.order_id", "desc");
         //$this->db->limit(10);
         $result = $this->db->get();
@@ -992,7 +998,13 @@ class M_site extends CI_Model {
 
     function count_order_for_remaining_approve($param) {
 
-        $this->db->where('business_id', $param['businessID']);
+        if ($param['sub_businesses'] == "") {
+            $this->db->where('business_id', $param['businessID']);
+        } else {
+            $sub_businesses = explode(",", $param['sub_businesses']);
+            $this->db->where_in('business_id', $sub_businesses);
+        }
+
         $this->db->where('status', 1);
         $this->db->from('order');
         return $this->db->count_all_results();
@@ -1007,6 +1019,17 @@ class M_site extends CI_Model {
         $data['availability_status'] = $param['availability_status'];
         $this->db->where('product_id', $param['product_id']);
         $this->db->update('product', $data);
+    }
+
+   function set_option_availailblity_status($param) {
+        if ($param['availability_status'] == "true") {
+            $param['availability_status'] = 1;
+        } else {
+            $param['availability_status'] = 0;
+        }
+        $data['availability_status'] = $param['availability_status'];
+        $this->db->where('option_id', $param['option_id']);
+        $this->db->update('option', $data);
     }
 
     function get_product_info($product_id) {

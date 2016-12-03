@@ -20,6 +20,14 @@ function is_login() {
     return $user_id;
 }
 
+function sub_businesses() {
+    /////////// CHECK PARAMETER USER_ID SET IN CODEIGNTER SESSION
+    //////////// CODIGNATER SESSION IS NOT SESSTION OF PHP..CODEIGNATER USE COKIE FOR SESSTION
+    $CI = & get_instance();
+    $sub_businesses = $CI->session->userdata('sub_businesses');
+    return $sub_businesses;
+}
+
 function generateRandomString($length = 2) {
     ///////////GET RAMNDOM STRING FROM BELOW STRING
     $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -63,7 +71,7 @@ function time_elapsed_string($ptime) {
 //    date_default_timezone_set('America/Los_Angeles');
 //    $etime = time() - $ptime;
 
-        $etime = $ptime;
+    $etime = $ptime;
 
     if ($etime < 1) {
         return '0 seconds';
@@ -97,7 +105,7 @@ function push_notification_ios($arg_device_token, $message_body) {
     $deviceToken = "" . $arg_device_token . "";
 
 
-    $production = 0;
+    $production = 1;
     if ($production) {
         $gateway = 'ssl://gateway.push.apple.com:2195';
     } else {
@@ -107,14 +115,16 @@ function push_notification_ios($arg_device_token, $message_body) {
 // Create a Stream
     $ctx = stream_context_create();
 // Define the certificate to use
-    stream_context_set_option($ctx, 'ssl', 'local_cert', 'ck_prod2.pem');
+    // stream_context_set_option($ctx, 'ssl', 'local_cert', 'ck_prod2.pem');
 // Passphrase to the certificate
-    stream_context_set_option($ctx, 'ssl', 'passphrase', 'tapinpush');
+    // stream_context_set_option($ctx, 'ssl', 'passphrase', 'tapinpush');
+
+    stream_context_set_option($ctx, 'ssl', 'local_cert', 'ck.pem');
+    stream_context_set_option($ctx, 'ssl', 'passphrase', 'id0ntknow');
 
 // Open a connection to the APNS server
     $fp = stream_socket_client(
-        $gateway, $err,
-        $errstr, 60, STREAM_CLIENT_CONNECT|STREAM_CLIENT_PERSISTENT, $ctx);
+            $gateway, $err, $errstr, 60, STREAM_CLIENT_CONNECT | STREAM_CLIENT_PERSISTENT, $ctx);
 
 // Check that we've connected
     if (!$fp) {
@@ -143,7 +153,6 @@ function push_notification_ios($arg_device_token, $message_body) {
     }
 }
 
-function staging_directory()
-    {
-        return 'tap-in';
-    }
+function staging_directory() {
+    return 'tap-in';
+}

@@ -2,3 +2,4 @@
 .idea
 application/logs/
 /ck.pem
+/error_log
