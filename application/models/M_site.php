@@ -422,24 +422,39 @@ class M_site extends CI_Model {
 //            $this->db->insert('notification', $notification);
 //        }
     }
+    function smsMerchant($message, $businessSMS, $businessID) {
+        require_once APPPATH.'libraries/Twilio/autoload.php'; // Loads the Twilio library
+        $TapInServerConstsParentPath = APPPATH . "../" . "../" . staging_directory() . '/include/consts_server.inc';
+        require_once $TapInServerConstsParentPath; // Loads our consts
+//        use Twilio\Rest\Client;
 
-    function notifyMerchant($message) {
-        // first get the uuid for the device that the business has setup for notifications
-        $businessUUID = '';
-        $businessID = is_login();
-        $this->db->select('iDeviceNotificationUUID');
+        $this->db->select('username');
         $this->db->from('business_customers');
         $this->db->where('businessID', $businessID);
         $this->db->limit(1);
         $result = $this->db->get();
         $row = $result->result_array();
+        if (count($row) > 0) {
+            $merchantLink = BaseURL . "/" . $row[0]["username"];
+            $message = $message . " Refer to: " . $merchantLink;
 
-        if (empty($row[0]['iDeviceNotificationUUID'])) {
-            log_message('error', "*****Could not find $businessID toke!");
-            return -1;
         }
-        $businessUUID = $row[0]['iDeviceNotificationUUID'];
+        $sid =    "AC425f4f32e8cc26b7cd3cca7122d59edb";
+        $token =  "28c81ad67d2530aca9a947f785c54ef6";
 
+        $client = new Twilio\Rest\Client($sid, $token);
+        $client->messages->create(
+            "$businessSMS",
+            array(
+                'from' => '+15032785619',
+                'body' => $message
+            )
+        );
+
+    }
+
+
+    function sendPushNotificationToMerchant($message, $businessUUID) {
         // now let's get the device token so we can send the notiication
         $this->db->select('device_token');
         $this->db->from('consumer_profile');
@@ -459,17 +474,32 @@ class M_site extends CI_Model {
 
             push_notification_ios($device_token, $message_body);
             log_message('info', "****Just notified $device_token that there is a new order!");
+        }
+    }
 
-            // we are good
-            return 0;
+    function notifyMerchant($message) {
+        // first get the uuid for the device that the business has setup for notifications
+        $businessUUID = '';
+        $businessID = is_login();
+        $this->db->select('*');
+        $this->db->from('business_internal_alert');
+        $this->db->where('business_id', $businessID);
+        $this->db->limit(1);
+        $result = $this->db->get();
+        $row = $result->result_array();
 
-//            $notification['consumer_id'] = $order_detail['consumer_id'];
-//            $notification['business_id'] = is_login();
-//            $notification['message'] = $message;
-//            $notification['image'] = "";
-//            $notification['time_sent'] = date("Y-m-d H:i:s");
-//            $notification['notification_type_id'] = "6";
-//            $this->db->insert('notification', $notification);
+        if (empty($row[0]['uuid'])) {
+            log_message('info', "Could not find device token for $businessID");
+        } else {
+            $businessUUID = $row[0]['uuid'];
+            $this->sendPushNotificationToMerchant($message, $businessUUID);
+        }
+
+        if (empty($row[0]['sms_no'])) {
+            log_message('info', "Could not find sms_no for business $businessID ");
+        } else {
+            $businessSMS = $row[0]['sms_no'];
+            $this->smsMerchant($message, $businessSMS, $businessID);
         }
     }
 
