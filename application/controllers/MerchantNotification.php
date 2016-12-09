@@ -3,7 +3,7 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-class Email extends CI_Controller {
+class MerchantNotification extends CI_Controller {
 
     public function __construct() {
         parent::__construct();
@@ -37,7 +37,7 @@ class Email extends CI_Controller {
         $this->email->from($email, 'Tap-in');
     }
 
-    function send_mail_new_order($data, $email) {
+    function send_mail_for_new_order($data, $email) {
         $this->email_configration();
         $body = $this->load->view('v_email_new_order', $data, TRUE);
 
@@ -52,7 +52,7 @@ class Email extends CI_Controller {
         }
     }
 
-    function send_neworder_email() {
+    function notify_business_for_new_order() {
 //
         $param = $_REQUEST;
 
@@ -61,6 +61,7 @@ class Email extends CI_Controller {
         $business_email = "";
 
         $business_internal_alerts = $this->m_site->get_business_internal_alerts($business_id);
+        $this->m_site->smsMerchant("Hello There!", $business_internal_alerts[0]["sms_no"], $business_id);
         if (!empty($business_internal_alerts)) {
             $business_email = $business_internal_alerts[0]["email"];
         }
@@ -86,9 +87,9 @@ class Email extends CI_Controller {
             $email['delivery_address'] = $order_info[0]['delivery_address'];
             $email['delivery_time'] = $order_info[0]['delivery_time'];
             $email['consumer_delivery_id'] = $order_info[0]['consumer_delivery_id'];
+            $email['business_link'] = "https://tapforall.com/merchants/tap-in-adminpanel/";
 
-
-            $this->send_mail_new_order($email, $business_email);
+            $this->send_mail_for_new_order($email, $business_email);
         }
     }
 

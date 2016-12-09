@@ -156,10 +156,10 @@ switch (ENVIRONMENT)
 	// $routing['directory'] = '';
 
 	// The controller class file name.  Example:  mycontroller
-	 $routing['controller'] = 'email';
+	 $routing['controller'] = 'MerchantNotification';
 
 	// The controller function you wish to be called.
-	 $routing['function']	= 'send_neworder_email';
+	 $routing['function']	= 'notify_business_for_new_order';
 
 
 /*
