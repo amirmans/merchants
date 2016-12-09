@@ -59,13 +59,21 @@ class MerchantNotification extends CI_Controller {
         $order_id = $param['order_id'];
         $business_id = $param['business_id'];
         $business_email = "";
+        $sms_numbers = "";
 
         $business_internal_alerts = $this->m_site->get_business_internal_alerts($business_id);
-        $this->m_site->smsMerchant("Hello There!", $business_internal_alerts[0]["sms_no"], $business_id);
         if (!empty($business_internal_alerts)) {
             $business_email = $business_internal_alerts[0]["email"];
+            $sms_numbers = $business_internal_alerts[0]["sms_no"];
         }
 
+        if (!empty($sms_numbers)) {
+            $sms_numbers = preg_replace('/\s/', '', $sms_numbers);
+            $sms_numbers_array = explode(',', $sms_numbers);
+            foreach ($sms_numbers_array as $sms_no) {
+                $this->m_site->smsMerchant("There is a new order!", $sms_no, $business_id);
+            }
+        }
 
 //        $business = $this->m_site->get_business($business_id);
 //        $business = $business["business_detail"];
@@ -87,7 +95,6 @@ class MerchantNotification extends CI_Controller {
             $email['delivery_address'] = $order_info[0]['delivery_address'];
             $email['delivery_time'] = $order_info[0]['delivery_time'];
             $email['consumer_delivery_id'] = $order_info[0]['consumer_delivery_id'];
-            $email['business_link'] = "https://tapforall.com/merchants/tap-in-adminpanel/";
 
             $this->send_mail_for_new_order($email, $business_email);
         }
