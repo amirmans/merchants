@@ -67,19 +67,11 @@ class MerchantNotification extends CI_Controller {
             $sms_numbers = $business_internal_alerts[0]["sms_no"];
         }
 
-        if (!empty($sms_numbers)) {
-            $sms_numbers = preg_replace('/\s/', '', $sms_numbers);
-            $sms_numbers_array = explode(',', $sms_numbers);
-            foreach ($sms_numbers_array as $sms_no) {
-                $this->m_site->smsMerchant("There is a new order!", $sms_no, $business_id);
-            }
-        }
-
 //        $business = $this->m_site->get_business($business_id);
 //        $business = $business["business_detail"];
         if ($business_email != "") {
             $order_payment_detail = $this->m_site->get_order_payment_detail($order_id);
-            $order_info = $this->m_site->get_ordelist_order($order_id, $business_id);
+            $order_info = $this->m_site->get_ordelist_order($order_id, $business_id,"");//TODO
             $email['order_detail'] = $this->m_site->get_order_detail($order_id);
             $email['order_id'] = $order_id;
             $email['total'] = $order_payment_detail['total'];
@@ -98,7 +90,19 @@ class MerchantNotification extends CI_Controller {
 
             $this->send_mail_for_new_order($email, $business_email);
         }
+
+        // if sms fails, twilio exits the app, That is why we want call this at the end after sending the email
+        if (!empty($sms_numbers)) {
+            $sms_numbers = preg_replace('/\s/', '', $sms_numbers);
+            $sms_numbers_array = explode(',', $sms_numbers);
+            foreach ($sms_numbers_array as $sms_no) {
+                $this->m_site->smsMerchant("There is a new order!", $sms_no, $business_id);
+            }
+        }
+
     }
+
+
 
 }
 

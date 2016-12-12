@@ -443,14 +443,18 @@ class M_site extends CI_Model {
         $token =  "28c81ad67d2530aca9a947f785c54ef6";
 
         $client = new Twilio\Rest\Client($sid, $token);
-        $client->messages->create(
-            "$businessSMS",
-            array(
-                'from' => '+15032785619',
-                'body' => $message
-            )
-        );
-
+        try {
+            $client->messages->create(
+                "$businessSMS",
+                array(
+                    'from' => '+15032785619',
+                    'body' => "$message"
+                    )
+            );
+        } catch (Services_Twilio_RestException $e) {
+            log_message('Error', "Could send sms with this error: $e->getMessage()");
+        }
+        log_message('Info', "sent a message to $businessID");
     }
 
 
