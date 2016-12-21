@@ -341,7 +341,7 @@ class M_site extends CI_Model {
     }
 
     function get_order_payment_detail($order_id) {
-        $this->db->select('o.total,o.consumer_id');
+        $this->db->select('o.total,o.consumer_id,o.cc_last_4_digits');
         $this->db->from('order as o');
         //$this->db->join('product as p', 'o.product_id = p.product_id', 'left');
         $this->db->where('o.order_id', $order_id);
@@ -356,6 +356,7 @@ class M_site extends CI_Model {
         $this->db->from('consumer_cc_info as ci');
         $this->db->join('consumer_profile cp', 'cp.uid = ci.consumer_id', 'left');
         $this->db->where('ci.consumer_id', $row[0]['consumer_id']);
+        $this->db->like('ci.cc_no', $row[0]['cc_last_4_digits'],"both");
         $this->db->limit(1);
         $result = $this->db->get();
         $row = $result->result_array();

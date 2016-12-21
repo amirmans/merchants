@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -109,11 +110,21 @@
                     <div class="line row">
                         <div class="col-md-6 col-xs-6 padding-0 text-left">
                             <h4>Internal Email</h4>
-                            <h2 id="email_text"><?php echo $internal['email']; ?></h2>
+                            <?php
+                            $email_array = explode(",", $internal['email']);
+                            for ($hy = 0; $hy < count($email_array); $hy++) {
+                                ?>
+                                <h2 ><?php echo $email_array[$hy]; ?></h2>
+                            <?php } ?>
                         </div>
                         <div class="col-md-6 col-xs-6 padding-0 text-right">
                             <h4>Internal SMS NO</h4>
-                            <h2 id="website_text"><?php echo $internal['sms_no']; ?></h2>
+                            <?php
+                            $sms_no_array = explode(",", $internal['sms_no']);
+                            for ($hy = 0; $hy < count($sms_no_array); $hy++) {
+                                ?>
+                                <h2 ><?php echo $sms_no_array[$hy]; ?></h2>
+                            <?php } ?>
                         </div>
                     </div>
 
@@ -354,21 +365,21 @@
                             <div class="form-group">
                                 <label for="internal_email" class="col-sm-4 control-label form-label">Internal email</label>
                                 <div class="col-sm-8">
-                                    <input type="email" class="form-control user-success" id="internal_email" name="internal_email" value="<?php echo $internal['email']; ?>" >
+                                    <input type="email" class="form-control user-success" id="internal_email" name="internal_email"  multiple pattern="^([\w+-.%]+@[\w-.]+\.[A-Za-z]{2,4},*[\W]*)+$"  value="<?php echo $internal['email']; ?>" >
                                 </div>
                             </div>
 
                             <div class="form-group">
                                 <label for="internal_sms_no" class="col-sm-4 control-label form-label">Internal SMS no</label>
                                 <div class="col-sm-8">
-                                    <input type="text" class="form-control user-success" id="internal_sms_no" name="internal_sms_no" value="<?php echo $internal['sms_no']; ?>"   pattern="/^+1\d{3}\d{3}\d{4}" maxlength="12" minlength="12" >
+                                    <input type="text" class="form-control user-success" id="internal_sms_no" name="internal_sms_no" value="<?php echo $internal['sms_no']; ?>"   pattern="^\+\d{10,11}(,\+\d{10,11})*$"  >
                                 </div>
                             </div>
                         </div>
                         <div class="modal-footer">
 
                             <button type="button" class="btn btn-white" data-dismiss="modal" >Close</button>
-                            <button type="submit" class="btn btn-default" >Save</button>
+                            <button type="submit" class="btn btn-default" onclick="return validate_before_save_internal()" >Save</button>
                         </div>
                     </form>
                 </div>
@@ -402,7 +413,7 @@
                                             for ($i = 0; $i < count($business_detail['hours']); $i++) {
                                                 $enrtyids .= $business_detail['hours'][$i]['entry_id'];
                                                 if ($i != count($business_detail['hours']) - 1) {
-                                                    $enrtyids .=',';
+                                                    $enrtyids .= ',';
                                                 }
                                                 ?>
                                                 <tr>
@@ -481,6 +492,26 @@
 
 
         <script>
+            function validate_before_save_internal()
+            {
+                var validate = 1;
+                var internal_email = $("#internal_email").val();
+                var internal_sms_no = $("#internal_sms_no").val();
+                var ec = internal_email.split(",");
+                if (ec.length > 5) {
+                    alert('You can add max 5 email');
+                    return false;
+                }
+
+                var is = internal_sms_no.split(",");
+                if (is.length > 5) {
+                    alert('You can add max 5 mobile no');
+                    return false;
+                }
+
+
+                return true;
+            }
             var hours = $.parseJSON('<?php echo json_encode($business_detail['hours']); ?>')
 
             var options = {
@@ -633,8 +664,7 @@
                         $('#loginModal').modal('toggle');
                         $('#formlogin').trigger("reset");
                         $('#editStripeKeyModal').modal('show');
-                    }
-                    else
+                    } else
                     {
                         swal('', "Invalid Login", 'error')
                     }
