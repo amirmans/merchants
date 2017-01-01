@@ -332,7 +332,15 @@ function limit_text($text, $limit) {
                                             ?></p>
                                     </td>
                                 </tr>
+                            
                             <?php } ?>
+                                <tr style="line-height: 0;">
+                                    <td  colspan="2">
+
+                                        <p style="font-weight: bold;font-size: 21px;margin-left: 10px;text-align: center"><a href="<?php echo base_url($business_username); ?>" target="_blank" >View</a></p>
+                                    </td>
+                                   
+                                </tr>
                         </table>
                     </td>
 
