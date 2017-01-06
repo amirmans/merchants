@@ -21,6 +21,10 @@ class Site extends CI_Controller {
         $this->load->view('v_home', $data);
     }
 
+      function cron_sms() {
+        $this->m_site->cron_sms();
+    }
+
     function orderlist($order_status = "neworder") {
 //Check business Customer is login
         is_login() ? '' : redirect('index.php/login');

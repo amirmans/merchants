@@ -8,6 +8,32 @@ class M_site extends CI_Model {
         date_default_timezone_set('America/Los_Angeles');
     }
 
+   function cron_sms() {
+
+        $message = "There is a new order!";
+        require_once APPPATH . 'libraries/Twilio/autoload.php'; // Loads the Twilio library
+        $TapInServerConstsParentPath = APPPATH . "../" . "../" . staging_directory() . '/include/consts_server.inc';
+        require_once $TapInServerConstsParentPath; // Loads our consts
+//        use Twilio\Rest\Client;
+        $query = "SELECT `o`.`order_id`,`o`.business_id,`bc`.`sms_no`,(TIMESTAMPDIFF(second ,date ,now())) as secound FROM (SELECT * FROM `order` ORDER BY `order`.`order_id` DESC ) as o LEFT JOIN business_internal_alert as bc on bc.business_id=o.business_id where (TIMESTAMPDIFF(second ,date ,now())) > 300 and `o`.`status`='1' group by `o`.`business_id` order by `o`.`order_id` DESC";
+        $result = $this->db->query($query);
+        $row = $result->result_array();
+  
+        for ($i = 0; $i < count($row); $i++) {
+            $sms_numbers = $row[$i]["sms_no"];
+            $business_id = $row[$i]["business_id"];
+            if (!empty($sms_numbers)) {
+                $sms_numbers = preg_replace('/\s/', '', $sms_numbers);
+                $sms_numbers_array = explode(',', $sms_numbers);
+            //    print_r($sms_numbers_array);
+                foreach ($sms_numbers_array as $sms_no) {
+                   
+                    $this->smsMerchant("There is a new order!", $sms_no, $business_id);
+                }
+            }
+        }
+    }
+
     function do_login($param) {
         $this->db->select('businessID,name,username,sub_businesses');
         $this->db->from('business_customers');
@@ -273,7 +299,7 @@ class M_site extends CI_Model {
 
     function get_order_detail($order_id) {
 
-        $this->db->select('o.order_item_id,o.price,o.quantity,p.name,p.short_description,o.option_ids,o.product_id,p.businessID,bc.short_name as business_name');
+        $this->db->select('o.order_item_id,o.price,o.quantity,o.item_note,p.name,p.short_description,o.option_ids,o.product_id,p.businessID,bc.short_name as business_name,bc.username as business_username');
         $this->db->from('order_item as o');
         $this->db->join('product as p', 'o.product_id = p.product_id', 'left');
         $this->db->join('business_customers as bc', 'bc.businessID = p.businessID', 'left');
@@ -436,10 +462,11 @@ class M_site extends CI_Model {
         $result = $this->db->get();
         $row = $result->result_array();
         if (count($row) > 0) {
-            $merchantLink = BaseURL . "/" . $row[0]["username"];
+            $merchantLink = BaseURL . "" . $row[0]["username"];
             $message = $message . " Refer to: " . $merchantLink;
 
         }
+ 
         $sid =    "AC425f4f32e8cc26b7cd3cca7122d59edb";
         $token =  "28c81ad67d2530aca9a947f785c54ef6";
 

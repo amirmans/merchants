@@ -125,6 +125,7 @@ function limit_text($text, $limit) {
                                                                 <li>+ <?php echo $option['name']; ?></li>
                                                             <?php }
                                                             ?>
+                                                                <?php if($order_detail[$i]['item_note']!=""){                                                                echo '<li>'.$order_detail[$i]['item_note'].'</li>';} ?>
                                                         </ul>
                                                     <?php }
                                                     ?>
@@ -337,7 +338,7 @@ function limit_text($text, $limit) {
                                 <tr style="line-height: 0;">
                                     <td  colspan="2">
 
-                                        <p style="font-weight: bold;font-size: 21px;margin-left: 10px;text-align: center"><a href="<?php echo base_url($business_username); ?>" target="_blank" >View</a></p>
+                                        <p style="font-weight: bold;font-size: 21px;margin-left: 10px;text-align: center"><a href="<?php echo base_url($order_detail[0]['business_username']); ?>" target="_blank" >View</a></p>
                                     </td>
                                    
                                 </tr>

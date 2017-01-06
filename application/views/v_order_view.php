@@ -117,6 +117,7 @@
                                 <p class="product_description"><?php echo $option['name'] ?> </p>
                             <?php }
                             ?>
+                                 <?php  if($order_detail[$i]['item_note']!=""){   echo '<p>Note : ' . $order_detail[$i]['item_note'] . "</p>";  } ?>
                         </td>
                         <td class="th_price" ><?php echo $order_detail[$i]['price']; ?></td>
                         <td class="th_quantity"><?php echo $order_detail[$i]['quantity']; ?></td>
