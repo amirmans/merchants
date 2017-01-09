@@ -522,9 +522,12 @@
 
 
 </script>
+<?php if($orderlist[0]['sms_no']!="")
+{ ?>
 <a id="button_refund" href="#" class=" btn btn-primary " data-toggle="modal" data-target="#send_message_modal"    style=" font-size: 20px;">
 Send Message
 </a>
+<?php } ?>
 
 
 
