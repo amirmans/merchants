@@ -5,12 +5,14 @@
         font-size: 17px;
     }
     .invoice .invoicename{
-           right: 55px;
+        right: 55px;
     }
     .text-right1{
         margin-top: 90px;
     }
 </style>
+<input type="hidden" name="ov_user_id" id="ov_user_id"  value="<?php echo $orderlist[0]['uid']; ?>"/>
+<input type="hidden" name="ov_business_id" id="ov_business_id" value="<?php echo $order_detail[0]['businessID']; ?>" />
 <div class="invoice invoice-row" tabindex="1">
 
     <div class="invoicename"><a href="#" onclick="PrintDiv()" class=" btn btn-primary"><i class="fa fa-print"></i>Print</a></div>
@@ -68,10 +70,10 @@
                 ?>
             </div>
             <div class="col-md-6  padding-0 text-right text-right1" >
-                    <?php if ($orderlist[0]['consumer_delivery_id'] != 0) {
+                <?php if ($orderlist[0]['consumer_delivery_id'] != 0) {
                     ?>
 
-                <span class="delivery_time">Delivery Time : <b><?php echo date('h :i a', strtotime($orderlist[0]['delivery_time'])) ; ?> </b></span>
+                    <span class="delivery_time">Delivery Time : <b><?php echo date('h :i a', strtotime($orderlist[0]['delivery_time'])); ?> </b></span>
                     <br>
                     <span class="delivery_address">Delivery Address : <b><?php echo $orderlist[0]['delivery_address']; ?></b> </span>
                     <br>
@@ -117,7 +119,9 @@
                                 <p class="product_description"><?php echo $option['name'] ?> </p>
                             <?php }
                             ?>
-                                 <?php  if($order_detail[$i]['item_note']!=""){   echo '<p>Note : ' . $order_detail[$i]['item_note'] . "</p>";  } ?>
+                            <?php if ($order_detail[$i]['item_note'] != "") {
+                                echo '<p>Note : ' . $order_detail[$i]['item_note'] . "</p>";
+                            } ?>
                         </td>
                         <td class="th_price" ><?php echo $order_detail[$i]['price']; ?></td>
                         <td class="th_quantity"><?php echo $order_detail[$i]['quantity']; ?></td>
@@ -128,8 +132,8 @@
                     </tr>
 
 
-                <?php }
-                ?>
+<?php }
+?>
                 <tr id="dashed_line">
                     <td colspan="4" height="1" style="border-collapse:collapse;border-top-color:rgb(103, 104, 105);border-top-style:dashed;border-top-width:2px;font-size:0;line-height:0;padding:0"></td>
                 </tr>
@@ -157,8 +161,8 @@
                     <td class="th_quantity"></td>
                     <td class="th_total text-right">$ <?php echo $orderlist[0]['points_dollar_amount']; ?></td>
                 </tr>
-                <?php if ($orderlist[0]['consumer_delivery_id'] != 0) {
-                    ?>
+<?php if ($orderlist[0]['consumer_delivery_id'] != 0) {
+    ?>
                     <tr>
                         <td class="th_product">Delivery Charges</td>
                         <td class="th_price"></td>
@@ -167,8 +171,8 @@
                     </tr>
                 <?php } ?>
 
-                <?php if ($orderlist[0]['promotion_code'] != "" && $orderlist[0]['promotion_discount_amount'] > 0.00) {
-                    ?>
+<?php if ($orderlist[0]['promotion_code'] != "" && $orderlist[0]['promotion_discount_amount'] > 0.00) {
+    ?>
                     <tr>
                         <td class="th_product">Promotion Code</td>
                         <td class="th_price"></td>
@@ -176,15 +180,15 @@
                         <td class="th_total text-right"><?php echo $orderlist[0]['promotion_code']; ?></td>
                     </tr>
                 <?php } ?>
-                <?php if ($orderlist[0]['promotion_discount_amount'] > 0.00) {
-                    ?>
+<?php if ($orderlist[0]['promotion_discount_amount'] > 0.00) {
+    ?>
                     <tr>
                         <td class="th_product">Promotion Discount</td>
                         <td class="th_price"></td>
                         <td class="th_quantity"></td>
                         <td class="th_total text-right">$ <?php echo $orderlist[0]['promotion_discount_amount']; ?></td>
                     </tr>
-                <?php } ?>
+<?php } ?>
                 <tr id="dashed_line">
                     <td colspan="4" height="1" style="border-collapse:collapse;border-top-color:rgb(103, 104, 105);border-top-style:dashed;border-top-width:2px;font-size:0;line-height:0;padding:0"></td>
                 </tr>
@@ -204,8 +208,8 @@
     <div>
 
         <div class="bottomtext" style="text-align: center ">
-            <?php if ($orderlist[0]['status'] == "1") {
-                ?>
+<?php if ($orderlist[0]['status'] == "1") {
+    ?>
                 <a id="button_approve" href="#" class=" btn btn-primary " data-toggle="modal" data-target="#approveModal" style=" font-size: 20px;">
                     APPROVE
                 </a>
@@ -295,8 +299,8 @@
                 </script>
 
 
-            <?php } elseif ($orderlist[0]['status'] == "2") {
-                ?>
+<?php } elseif ($orderlist[0]['status'] == "2") {
+    ?>
                 <a id="button_complete" href="#" class=" btn btn-primary " data-toggle="modal" data-target="#completeModal"    style=" font-size: 20px;">
                     COMPLETE
                 </a>
@@ -420,8 +424,7 @@
         if (sendto == 1)
         {
             $('#refund_amt').hide();
-        }
-        else
+        } else
         {
             $('#refund_amt').show();
         }
@@ -519,6 +522,9 @@
 
 
 </script>
+<a id="button_refund" href="#" class=" btn btn-primary " data-toggle="modal" data-target="#send_message_modal"    style=" font-size: 20px;">
+Send Message
+</a>
 
 
 

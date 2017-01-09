@@ -21,8 +21,14 @@ class Site extends CI_Controller {
         $this->load->view('v_home', $data);
     }
 
-      function cron_sms() {
+    function cron_sms() {
         $this->m_site->cron_sms();
+    }
+
+    function send_sms() {
+        $param = $_REQUEST;
+        $response=$this->m_site->send_sms($param);
+        echo json_encode($response);
     }
 
     function orderlist($order_status = "neworder") {

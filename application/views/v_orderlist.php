@@ -105,6 +105,8 @@
     <body>
         <?php $this->load->view('v_header'); ?>
 
+
+
         <form id="new_order_form" name="new_order_form" action="<?php echo base_url(); ?>index.php/site/get_new_orders" method="post">
 
             <input type="hidden" name="latest_order_id" id="latest_order_id" value="<?php
@@ -116,6 +118,39 @@
             ?>" />
         </form>
         <div class="content">
+
+            <div class="modal fade in" id="send_message_modal" tabindex="0" role="dialog" aria-hidden="false" style="">
+                <div class="modal-backdrop fade in" style=""></div>
+                <div class="modal-dialog" style=" background: white">
+                    <form id="formTestCase" enctype="multipart/form-data" onsubmit="submit3.disabled = true;
+                            return true;"   method="post" action="">
+
+                        <div class = "modal-header">
+                            <button type = "button" class = "close" data-dismiss = "modal" aria-label = "Close"><span aria-hidden = "true">×</span></button>
+                            <h4 class = "modal-title">Send Message</h4>
+                        </div>
+
+
+                        <div class="modal-body">
+
+
+                            <div class="form-group">
+                                <label for="input2" class="form-label">Text Message</label>
+                                <textarea type="text" class="form-control" id="text_message" name="text_message"   ></textarea>
+                            </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <p style=" color: green; float: left" id="sms_validation_message"  ></p>
+                            <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-default"  id="submit3" onclick="send_sms_to_customer()"  >Send</button>
+                        </div>
+
+                        <div class="modal-content"></div>
+                    </form>
+
+                </div>
+            </div>
             <div class="container-mail">
                 <div class="mailbox clearfix">
                     <div class="container-mailbox">
@@ -221,10 +256,10 @@
         <?php $this->load->view('v_script'); ?>
         <audio></audio>
         <script>
-            $(function() {
+            $(function () {
                 // Setup the player to autoplay the next track
                 var a = audiojs.createAll({
-                    trackEnded: function() {
+                    trackEnded: function () {
                         audio.pause();
                     }
                 });
@@ -236,14 +271,14 @@
                 audio.load(first);
 
                 // Load in a track on click
-                $('#audio1').click(function(e) {
+                $('#audio1').click(function (e) {
                     e.preventDefault();
                     $(this).addClass('playing').siblings().removeClass('playing');
                     audio.load($('a', this).attr('data-src'));
                     audio.play();
                 });
                 // Keyboard shortcuts
-                $(document).keydown(function(e) {
+                $(document).keydown(function (e) {
                     var unicode = e.charCode ? e.charCode : e.keyCode;
                     // right arrow
                     if (unicode == 39) {
@@ -271,7 +306,7 @@
             {
                 var param = {order_id: order_id};
                 $.post("<?php echo base_url('index.php/site/order_view') ?>", param)
-                        .done(function(data) {
+                        .done(function (data) {
                             data = jQuery.parseJSON(data);
                             $("#order_view").html(data['order_view']);
 
@@ -314,7 +349,7 @@
             {
                 $("#new_order_form").submit();
             }
-            $(document).ready(function() {
+            $(document).ready(function () {
                 // bind 'myForm' and provide a simple callback function
                 $('#new_order_form').ajaxForm({
                     success: displayneworder
@@ -333,7 +368,7 @@
                     $("#count_new_order").html(data['count_new_order']);
                     $("#alertbottom").show();
                     $('#audio1').click();
-//                    window.location = "<?php //echo base_url('index.php/site/notifyMerchant'); ?>//";
+//                    window.location = "<?php //echo base_url('index.php/site/notifyMerchant');            ?>//";
 
 //                     $.get("<?php echo base_url('index.php/site/notifyMerchant') ?>")
 //                         .done(function(data) {
@@ -355,7 +390,7 @@
             {
                 var parm
                 $.get("<?php echo base_url('index.php/site/count_order_for_remaining_approve') ?>")
-                        .done(function(data) {
+                        .done(function (data) {
                             data = jQuery.parseJSON(data);
                             if (data)
                             {
@@ -366,11 +401,34 @@
 
             }
 
+            function send_sms_to_customer()
+            {
+                var user_id = $("#ov_user_id").val();
+                var business_id = $("#ov_business_id").val();
+                var text_message = $("#text_message").val();
+
+                var param = {user_id: user_id, business_id: business_id, text_message: text_message};
+                if (text_message == "")
+                {
+                    return false;
+                }
+                $.post("<?php echo base_url('index.php/site/send_sms') ?>", param)
+                        .done(function (data) {
+                            data = jQuery.parseJSON(data);
+                            $("#sms_validation_message").html('Successfully sent sms');
+                            setTimeout(function () {
+                                $("#sms_validation_message").html('');
+                                $("#text_message").val('');
+                                $("#send_message_modal").modal('hide');
+                            }, 2000);
+                        });
+            }
+
 
             function scroll_to_orderview()
             {
                 console.log('true')
-                setTimeout(function() {
+                setTimeout(function () {
                     console.log('true')
 //                        $('.invoice').focus();
                     var target = ".invoice";

@@ -8,7 +8,7 @@ class M_site extends CI_Model {
         date_default_timezone_set('America/Los_Angeles');
     }
 
-   function cron_sms() {
+    function cron_sms() {
 
         $message = "There is a new order!";
         require_once APPPATH . 'libraries/Twilio/autoload.php'; // Loads the Twilio library
@@ -18,18 +18,32 @@ class M_site extends CI_Model {
         $query = "SELECT `o`.`order_id`,`o`.business_id,`bc`.`sms_no`,(TIMESTAMPDIFF(second ,date ,now())) as secound FROM (SELECT * FROM `order` ORDER BY `order`.`order_id` DESC ) as o LEFT JOIN business_internal_alert as bc on bc.business_id=o.business_id where (TIMESTAMPDIFF(second ,date ,now())) > 300 and `o`.`status`='1' group by `o`.`business_id` order by `o`.`order_id` DESC";
         $result = $this->db->query($query);
         $row = $result->result_array();
-  
+
         for ($i = 0; $i < count($row); $i++) {
             $sms_numbers = $row[$i]["sms_no"];
             $business_id = $row[$i]["business_id"];
             if (!empty($sms_numbers)) {
                 $sms_numbers = preg_replace('/\s/', '', $sms_numbers);
                 $sms_numbers_array = explode(',', $sms_numbers);
-            //    print_r($sms_numbers_array);
+                //    print_r($sms_numbers_array);
                 foreach ($sms_numbers_array as $sms_no) {
-                   
+
                     $this->smsMerchant("There is a new order!", $sms_no, $business_id);
                 }
+            }
+        }
+    }
+
+    function send_sms($param) {
+        $this->db->select('sms_no');
+        $this->db->from('consumer_profile');
+        $this->db->where('uid', $param['user_id']);
+        $this->db->limit(1);
+        $result = $this->db->get();
+        $row = $result->result_array();
+        if (count($row) > 0) {
+            if ($row[0]['sms_no'] != "") {
+                $this->smsMerchant($param['text_message'], $row[0]['sms_no'], $param['business_id']);
             }
         }
     }
@@ -276,7 +290,7 @@ class M_site extends CI_Model {
     }
 
     function get_ordelist_order($order_id, $businessId, $p_sub_businesses) {
-        $this->db->select('o.order_id,o.payment_id,o.total,o.date,cp.nickname,o.status,o.note,o.subtotal,o.tip_amount,o.tax_amount,o.points_dollar_amount,TIMESTAMPDIFF(SECOND,o.date,now()) as seconds,oc.is_refunded,o.delivery_charge_amount,o.promotion_code,o.promotion_discount_amount,cd.delivery_instruction,cd.delivery_address,cd.delivery_time,o.consumer_delivery_id');
+        $this->db->select('o.order_id,o.payment_id,o.total,o.date,cp.nickname,cp.sms_no,cp.uid,o.status,o.note,o.subtotal,o.tip_amount,o.tax_amount,o.points_dollar_amount,TIMESTAMPDIFF(SECOND,o.date,now()) as seconds,oc.is_refunded,o.delivery_charge_amount,o.promotion_code,o.promotion_discount_amount,cd.delivery_instruction,cd.delivery_address,cd.delivery_time,o.consumer_delivery_id');
         $this->db->from('order as o');
         $this->db->join('consumer_profile as cp', 'o.consumer_id = cp.uid', 'left');
         $this->db->join('order_charge as oc', 'oc.order_id = o.order_id', 'left');
@@ -382,7 +396,7 @@ class M_site extends CI_Model {
         $this->db->from('consumer_cc_info as ci');
         $this->db->join('consumer_profile cp', 'cp.uid = ci.consumer_id', 'left');
         $this->db->where('ci.consumer_id', $row[0]['consumer_id']);
-        $this->db->like('ci.cc_no', $row[0]['cc_last_4_digits'],"both");
+        $this->db->like('ci.cc_no', $row[0]['cc_last_4_digits'], "both");
         $this->db->limit(1);
         $result = $this->db->get();
         $row = $result->result_array();
@@ -449,8 +463,9 @@ class M_site extends CI_Model {
 //            $this->db->insert('notification', $notification);
 //        }
     }
+
     function smsMerchant($message, $businessSMS, $businessID) {
-        require_once APPPATH.'libraries/Twilio/autoload.php'; // Loads the Twilio library
+        require_once APPPATH . 'libraries/Twilio/autoload.php'; // Loads the Twilio library
         $TapInServerConstsParentPath = APPPATH . "../" . "../" . staging_directory() . '/include/consts_server.inc';
         require_once $TapInServerConstsParentPath; // Loads our consts
 //        use Twilio\Rest\Client;
@@ -464,19 +479,17 @@ class M_site extends CI_Model {
         if (count($row) > 0) {
             $merchantLink = BaseURL . "" . $row[0]["username"];
             $message = $message . " Refer to: " . $merchantLink;
-
         }
- 
-        $sid =    "AC425f4f32e8cc26b7cd3cca7122d59edb";
-        $token =  "28c81ad67d2530aca9a947f785c54ef6";
+
+        $sid = "AC425f4f32e8cc26b7cd3cca7122d59edb";
+        $token = "28c81ad67d2530aca9a947f785c54ef6";
 
         $client = new Twilio\Rest\Client($sid, $token);
         try {
             $client->messages->create(
-                "$businessSMS",
-                array(
-                    'from' => '+15032785619',
-                    'body' => "$message"
+                    "$businessSMS", array(
+                'from' => '+15032785619',
+                'body' => "$message"
                     )
             );
         } catch (Services_Twilio_RestException $e) {
@@ -484,7 +497,6 @@ class M_site extends CI_Model {
         }
         log_message('Info', "sent a message to $businessID");
     }
-
 
     function sendPushNotificationToMerchant($message, $businessUUID) {
         // now let's get the device token so we can send the notiication
@@ -556,13 +568,12 @@ class M_site extends CI_Model {
                 $this->db->from('business_delivery');
                 $this->db->where('business_id', $row1[0]['business_id']);
                 $this->db->limit(1);
-                $result2= $this->db->get();
+                $result2 = $this->db->get();
                 $row2 = $result2->result_array();
-                if(count($row2)>0)
-                {
-                      $alert="Order #" . $order_id . " is ready.   For delivery, please email amir@tap-in.co with delivery info.";
-                }else{
-                    $alert="Your order #" . $order_id . " is completed ";
+                if (count($row2) > 0) {
+                    $alert = "Order #" . $order_id . " is ready.   For delivery, please email amir@tap-in.co with delivery info.";
+                } else {
+                    $alert = "Your order #" . $order_id . " is completed ";
                 }
             } else {
                 $alert = "Your order #" . $order_id . " is ready and it is being delivered";
@@ -1083,7 +1094,7 @@ class M_site extends CI_Model {
         $this->db->update('product', $data);
     }
 
-   function set_option_availailblity_status($param) {
+    function set_option_availailblity_status($param) {
         if ($param['availability_status'] == "true") {
             $param['availability_status'] = 1;
         } else {
