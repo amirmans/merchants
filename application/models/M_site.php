@@ -43,7 +43,7 @@ class M_site extends CI_Model {
         $row = $result->result_array();
         if (count($row) > 0) {
             if ($row[0]['sms_no'] != "") {
-                $this->smsMerchant($param['text_message'], $row[0]['sms_no'], $param['business_id']);
+                $this->smsMerchant($param['text_message'], $row[0]['sms_no'], 0);
             }
         }
     }
@@ -470,15 +470,17 @@ class M_site extends CI_Model {
         require_once $TapInServerConstsParentPath; // Loads our consts
 //        use Twilio\Rest\Client;
 
-        $this->db->select('username');
-        $this->db->from('business_customers');
-        $this->db->where('businessID', $businessID);
-        $this->db->limit(1);
-        $result = $this->db->get();
-        $row = $result->result_array();
-        if (count($row) > 0) {
-            $merchantLink = BaseURL . "" . $row[0]["username"];
-            $message = $message . " Refer to: " . $merchantLink;
+        if ($businessID != 0) {
+            $this->db->select('username');
+            $this->db->from('business_customers');
+            $this->db->where('businessID', $businessID);
+            $this->db->limit(1);
+            $result = $this->db->get();
+            $row = $result->result_array();
+            if (count($row) > 0) {
+                $merchantLink = BaseURL . "" . $row[0]["username"];
+                $message = $message . " Refer to: " . $merchantLink;
+            }
         }
 
         $sid = "AC425f4f32e8cc26b7cd3cca7122d59edb";
