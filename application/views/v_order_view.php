@@ -228,7 +228,7 @@
                                         $("#button_reject").remove();
                                         $("#button_complete").show();
                                         $("#order_view_h4").html('<img src="<?php echo base_url('assets/img/ic_reload@3x.png'); ?>" alt="img" class="img order_view_icon"> In Progress');
-                                        $("#order_id_" + order_id + " .img").remove("asasas");
+                                        $("#order_id_<?php echo $orderlist[0]['order_id']; ?> .img").remove();
                                         $("#order_id_<?php echo $orderlist[0]['order_id']; ?> img").attr('src', "<?php echo base_url('assets/img/ic_reload@3x.png'); ?>");
                                         $("#li_order_id_<?php echo $orderlist[0]['order_id']; ?>").removeClass('pending_order_color');
                                         $("#order_id_<?php echo $orderlist[0]['order_id']; ?> img").toggleClass('pending_order_img img');
@@ -239,6 +239,7 @@
                                         swal("$" + amout, data['msg'], "error");
                                     }
                                 });
+                                setTimeout(function(){ get_remaining_approval_order(); }, 3000);
                     };
                 </script>
                 &nbsp;

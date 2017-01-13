@@ -368,7 +368,7 @@
                     $("#count_new_order").html(data['count_new_order']);
                     $("#alertbottom").show();
                     $('#audio1').click();
-//                    window.location = "<?php //echo base_url('index.php/site/notifyMerchant');            ?>//";
+//                    window.location = "<?php //echo base_url('index.php/site/notifyMerchant');               ?>//";
 
 //                     $.get("<?php echo base_url('index.php/site/notifyMerchant') ?>")
 //                         .done(function(data) {
@@ -392,10 +392,13 @@
                 $.get("<?php echo base_url('index.php/site/count_order_for_remaining_approve') ?>")
                         .done(function (data) {
                             data = jQuery.parseJSON(data);
-                            if (data)
+                            data = parseInt(data);
+                            if (data > 0)
                             {
                                 $("#count_pending_order").html(data);
                                 $("#alertPendingOrder").show();
+                            } else {
+                                $("#alertPendingOrder").hide();
                             }
                         });
 
