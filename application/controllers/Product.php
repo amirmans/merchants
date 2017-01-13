@@ -121,7 +121,19 @@ class Product extends CI_Controller {
         if (!file_exists('../' . staging_directory() . '/customer_files/' . $param['businessID'] . '/products')) {
             mkdir('../' . staging_directory() . '/customer_files/' . $param['businessID'] . '/products', 0777, true);
         }
-        $param['pictures'] = $this->validation->file_upload("pictures", '../' . staging_directory() . '/customer_files/' . $param['businessID'] . '/products');
+        if ($_FILES['pictures']["name"] != "") {
+            // $temp = explode(".", $_FILES['pictures']["name"]);
+            // $extension = end($temp);
+
+            if (move_uploaded_file($_FILES['pictures']['tmp_name'], '../' . staging_directory() . '/customer_files/' . $param['businessID'] . '/products/' . '' . $_FILES['pictures']["name"])) {
+                $param['pictures'] = $_FILES['pictures']["name"];
+            } else {
+                $param['pictures'] = "";
+            }
+        }else{
+              $param['pictures'] = "";
+        }
+        // $param['pictures'] = $this->validation->file_upload("pictures", '../' . staging_directory() . '/customer_files/' . $param['businessID'] . '/products');
 
         $data = $this->m_site->insert_product($param);
         echo json_encode($data);
@@ -217,22 +229,37 @@ class Product extends CI_Controller {
         if (!file_exists('../' . staging_directory() . '/customer_files/' . $param['businessID'] . '/products')) {
             mkdir('../' . staging_directory() . '/customer_files/' . $param['businessID'] . '/products', 0777, true);
         }
-        $param['pictures'] = $this->validation->file_upload("pictures", '../' . staging_directory() . '/customer_files/' . $param['businessID'] . '/products');
-        if ($param['pictures'] != '') {
-            $oldfilepath = '../' . staging_directory() . '/customer_files/' . $param['businessID'] . '/products/' . $param['old_pictures'];
-            if (file_exists($oldfilepath)) {
-                unlink($oldfilepath);
+
+
+        if ($_FILES['pictures']["name"] != "") {
+            // $temp = explode(".", $_FILES['pictures']["name"]);
+            // $extension = end($temp);
+
+            if (move_uploaded_file($_FILES['pictures']['tmp_name'], '../' . staging_directory() . '/customer_files/' . $param['businessID'] . '/products/' . '' . $_FILES['pictures']["name"])) {
+                $param['pictures'] = $_FILES['pictures']["name"];
+            } else {
+                $param['pictures'] = "";
             }
+        }else{
+              $param['pictures'] = "";
         }
-        if ($param['is_picture_deleted'] == '1') {
-            $oldfilepath = '../' . staging_directory() . '/customer_files/' . $param['businessID'] . '/products/' . $param['old_pictures'];
-            if (file_exists($oldfilepath)) {
-                unlink($oldfilepath);
-            }
-        }
-        if ($param['is_picture_deleted'] == '0' && $param['pictures'] == '') {
-            $param['pictures'] = $param['old_pictures'];
-        }
+
+        //$param['pictures'] = $this->validation->file_upload("pictures", '../' . staging_directory() . '/customer_files/' . $param['businessID'] . '/products');
+//        if ($param['pictures'] != '') {
+//            $oldfilepath = '../' . staging_directory() . '/customer_files/' . $param['businessID'] . '/products/' . $param['old_pictures'];
+//            if (file_exists($oldfilepath)) {
+//                unlink($oldfilepath);
+//            }
+//        }
+//        if ($param['is_picture_deleted'] == '1') {
+//            $oldfilepath = '../' . staging_directory() . '/customer_files/' . $param['businessID'] . '/products/' . $param['old_pictures'];
+//            if (file_exists($oldfilepath)) {
+//                unlink($oldfilepath);
+//            }
+//        }
+//        if ($param['is_picture_deleted'] == '0' && $param['pictures'] == '') {
+//            $param['pictures'] = $param['old_pictures'];
+//        }
         $data = $this->m_site->update_product($param);
         redirect('index.php/product');
     }

@@ -1137,7 +1137,9 @@ class M_site extends CI_Model {
         $data['has_option'] = $param['has_option'];
         $data['bought_with_rewards'] = $param['bought_with_rewards'];
         $data['more_information'] = $param['more_information'];
-        $data['pictures'] = $param['pictures'];
+        if ($param['pictures'] != "") {
+            $data['pictures'] = $param['pictures'];
+        }
 
         $this->db->where('product_id', $param['product_id']);
         $this->db->update('product', $data);
