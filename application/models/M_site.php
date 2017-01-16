@@ -711,14 +711,14 @@ class M_site extends CI_Model {
             $this->db->insert('product_category', $data);
             $categoryId = $this->db->insert_id();
 
-            $updatedata = array();
-            $updatedata['product_category_id'] = $categoryId;
-            $this->db->where('table_id', $categoryId);
-            $this->db->update('product_category', $updatedata);
+//            $updatedata = array();
+//            $updatedata['product_category_id'] = $categoryId;
+//            $this->db->where('table_id', $categoryId);
+//            $this->db->update('product_category', $updatedata);
 
             $this->db->select('*');
             $this->db->from('product_category');
-            $this->db->where('table_id', $categoryId);
+            $this->db->where('product_category_id', $categoryId);
             $result = $this->db->get();
             $row = $result->row_array();
             $return['status'] = 1;
@@ -735,7 +735,7 @@ class M_site extends CI_Model {
         $this->db->select('*');
         $this->db->from('product_category');
         $this->db->where('category_name', $param['edit_category_name']);
-        $this->db->where('table_id !=', $param['table_id']);
+        $this->db->where('product_category_id !=', $param['table_id']);
         $this->db->where('business_id', $param['businessID']);
         $category_result = $this->db->get();
         $category_row = $category_result->row_array();
@@ -743,12 +743,12 @@ class M_site extends CI_Model {
             $data['category_name'] = $param['edit_category_name'];
             $data['desc'] = $param['edit_desc'];
             $data['business_id'] = $param['businessID'];
-            $this->db->where('table_id', $param['table_id']);
+            $this->db->where('product_category_id', $param['table_id']);
             $this->db->update('product_category', $data);
 
             $this->db->select('*');
             $this->db->from('product_category');
-            $this->db->where('table_id', $param['table_id']);
+            $this->db->where('product_category_id', $param['table_id']);
             $result = $this->db->get();
             $row = $result->row_array();
             $return['status'] = 1;
@@ -763,7 +763,7 @@ class M_site extends CI_Model {
     function delete_product_category($param) {
 
         $this->db->where('business_id', $param['businessID']);
-        $this->db->where('table_id', $param['table_id']);
+        $this->db->where('product_category_id', $param['table_id']);
         $this->db->delete('product_category');
 
         $return['status'] = 1;

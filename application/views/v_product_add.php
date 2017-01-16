@@ -325,11 +325,11 @@
                                     <tbody>
                                         <?php for ($i = 0; $i < count($product_category); $i++) {
                                             ?>
-                                            <tr id="row_<?php echo $product_category[$i]['table_id']; ?>">
-                                                <td id="categoryname_<?php echo $product_category[$i]['table_id']; ?>"><?php echo $product_category[$i]['category_name']; ?></td>
-                                                <td id="categorydesc_<?php echo $product_category[$i]['table_id']; ?>"><?php echo $product_category[$i]['desc']; ?></td>
-                                                <td><a  class="btn btn-info add_product_btn" onclick="show_edit_category_modal(<?php echo $product_category[$i]['table_id']; ?>)"><i class="fa fa-edit"></i>Edit</a></td>
-                                                <td><a  class="btn btn-danger add_product_btn" onclick="delete_product_category(<?php echo $product_category[$i]['table_id']; ?>)"><i class="fa fa-trash"></i>Delete</a></td>                                            </tr>
+                                            <tr id="row_<?php echo $product_category[$i]['product_category_id']; ?>">
+                                                <td id="categoryname_<?php echo $product_category[$i]['product_category_id']; ?>"><?php echo $product_category[$i]['category_name']; ?></td>
+                                                <td id="categorydesc_<?php echo $product_category[$i]['product_category_id']; ?>"><?php echo $product_category[$i]['desc']; ?></td>
+                                                <td><a  class="btn btn-info add_product_btn" onclick="show_edit_category_modal(<?php echo $product_category[$i]['product_category_id']; ?>)"><i class="fa fa-edit"></i>Edit</a></td>
+                                                <td><a  class="btn btn-danger add_product_btn" onclick="delete_product_category(<?php echo $product_category[$i]['product_category_id']; ?>)"><i class="fa fa-trash"></i>Delete</a></td>                                            </tr>
                                         <?php } ?>
 
                                     </tbody>
@@ -391,7 +391,7 @@
                 var data = JSON.parse(data);
                 if (data.product_category.status)
                 {
-                    var tableid = data.product_category.category.table_id;
+                    var tableid = data.product_category.category.product_category_id;
                     var newOption = $('<option value="' + data.product_category.category.table_id + '">' + data.product_category.category.category_name + '</option>');
                     $('#product_category_id').append(newOption);
                     var row = '<tr id="row_' + tableid + '"><td id="categoryname_' + tableid + '">'+data.product_category.category.category_name+'</td>' +
@@ -415,7 +415,7 @@
                 console.log(data)
                 if (data.product_category.status)
                 {
-                    var tableid = data.product_category.category.table_id;
+                    var tableid = data.product_category.category.product_category_id;
                     $("#categoryname_" + tableid).text(data.product_category.category.category_name)
                     $("#categorydesc_" + tableid).text(data.product_category.category.desc)
                     $('#product_category_id option[value="' + tableid + '"]').text(data.product_category.category.category_name)

@@ -33,7 +33,7 @@
                 border-radius: 0px; 
                 border: 0px solid #fff; 
             }
-            
+
             .modal-dialog {
                 position: relative;
                 width: auto;
@@ -224,7 +224,7 @@
                                                         <input type="file" accept="image/*" name="pictures" id="pictures">
                                                     </div>
                                                     <a href="#" class="del_picture " id="del_picture"><i class="fa fa-times-circle" style="font-size: 20px;" onclick="delete_picture()"></i></a>
-                                                    
+
                                                 <?php } else {
                                                     ?>  
                                                     <img height="150" width="100" id="image" src="">
@@ -236,7 +236,7 @@
                                                 }
                                                 ?>
                                                 <input type="hidden" class="form-control" id="is_picture_deleted" name="is_picture_deleted" value="0">
-                                                
+
                                                 <input type="hidden" class="form-control" id="old_pictures" name="old_pictures" value="<?php echo $product['pictures']; ?>">
                                                 <input type="hidden" class="form-control" id="product_id" name="product_id" value="<?php echo $product['product_id']; ?>">
 
@@ -307,7 +307,7 @@
                 </div>
             </div>
         </div>
-         <div class="modal fade" id="updatecategoryModal" tabindex="-1" role="dialog"  style="display: none;">
+        <div class="modal fade" id="updatecategoryModal" tabindex="-1" role="dialog"  style="display: none;">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <form class="form-horizontal" id="form_edit_product_category" action="<?php echo base_url('index.php/product/update_category'); ?>" method="post" >
@@ -374,11 +374,11 @@
                                     <tbody>
                                         <?php for ($i = 0; $i < count($product_category); $i++) {
                                             ?>
-                                            <tr id="row_<?php echo $product_category[$i]['table_id']; ?>">
-                                                <td id="categoryname_<?php echo $product_category[$i]['table_id']; ?>"><?php echo $product_category[$i]['category_name']; ?></td>
-                                                <td id="categorydesc_<?php echo $product_category[$i]['table_id']; ?>"><?php echo $product_category[$i]['desc']; ?></td>
-                                                <td><a  class="btn btn-info add_product_btn" onclick="show_edit_category_modal(<?php echo $product_category[$i]['table_id']; ?>)"><i class="fa fa-edit"></i>Edit</a></td>
-                                                <td><a  class="btn btn-danger add_product_btn" onclick="delete_product_category(<?php echo $product_category[$i]['table_id']; ?>)"><i class="fa fa-trash"></i>Delete</a></td>                                            </tr>
+                                            <tr id="row_<?php echo $product_category[$i]['product_category_id']; ?>">
+                                                <td id="categoryname_<?php echo $product_category[$i]['product_category_id']; ?>"><?php echo $product_category[$i]['category_name']; ?></td>
+                                                <td id="categorydesc_<?php echo $product_category[$i]['product_category_id']; ?>"><?php echo $product_category[$i]['desc']; ?></td>
+                                                <td><a  class="btn btn-info add_product_btn" onclick="show_edit_category_modal(<?php echo $product_category[$i]['product_category_id']; ?>)"><i class="fa fa-edit"></i>Edit</a></td>
+                                                <td><a  class="btn btn-danger add_product_btn" onclick="delete_product_category(<?php echo $product_category[$i]['product_category_id']; ?>)"><i class="fa fa-trash"></i>Delete</a></td>                                            </tr>
                                         <?php } ?>
 
                                     </tbody>
@@ -405,10 +405,10 @@
 
         <script>
 
-            document.getElementById("pictures").onchange = function() {
+            document.getElementById("pictures").onchange = function () {
                 var reader = new FileReader();
 
-                reader.onload = function(e) {
+                reader.onload = function (e) {
                     // get loaded data and render thumbnail.
                     document.getElementById("image").src = e.target.result;
                     $("#del_picture").show();
@@ -426,26 +426,28 @@
 
             window.history.forward(-1);
             $("#product_tab").addClass('active_tab');
-            $(document).ready(function() {
+            $(document).ready(function () {
                 // bind 'myForm' and provide a simple callback function 
                 $('#form_product_category').ajaxForm(options);
 
                 $('#form_edit_product_category').ajaxForm({success: processEditCategoryResponse});
             });
 
-           function processAddCategoryResponse(data) {
+            function processAddCategoryResponse(data) {
 
                 var data = JSON.parse(data);
+         
                 if (data.product_category.status)
                 {
-                    var tableid = data.product_category.category.table_id;
+
+                    var tableid = data.product_category.category.product_category_id;
                     var newOption = $('<option value="' + data.product_category.category.table_id + '">' + data.product_category.category.category_name + '</option>');
                     $('#product_category_id').append(newOption);
-                    var row = '<tr id="row_' + tableid + '"><td id="categoryname_' + tableid + '">'+data.product_category.category.category_name+'</td>' +
-                            '<td id="categorydesc_' + tableid + '">'+data.product_category.category.desc+'</td>' +
-                            '<td><a class="btn btn-info add_product_btn" onclick="show_edit_category_modal(' + tableid + ')"><i class="fa fa-edit"></i>Edit</a></td>'+
-                    '<td><a href="" class="btn btn-danger add_product_btn" onclick="delete_product_category(' + tableid + ')"><i class="fa fa-trash"></i>Delete</a></td><tr>';
-                    
+                    var row = '<tr id="row_' + tableid + '"><td id="categoryname_' + tableid + '">' + data.product_category.category.category_name + '</td>' +
+                            '<td id="categorydesc_' + tableid + '">' + data.product_category.category.desc + '</td>' +
+                            '<td><a class="btn btn-info add_product_btn" onclick="show_edit_category_modal(' + tableid + ')"><i class="fa fa-edit"></i>Edit</a></td>' +
+                            '<td><a href="" class="btn btn-danger add_product_btn" onclick="delete_product_category(' + tableid + ')"><i class="fa fa-trash"></i>Delete</a></td><tr>';
+
                     $('#product_category_table').append(row)
                     $('#form_product_category').trigger("reset");
                     $('#category_error_text').html('');
@@ -462,7 +464,7 @@
                 console.log(data)
                 if (data.product_category.status)
                 {
-                    var tableid = data.product_category.category.table_id;
+                    var tableid = data.product_category.category.product_category_id;
                     $("#categoryname_" + tableid).text(data.product_category.category.category_name)
                     $("#categorydesc_" + tableid).text(data.product_category.category.desc)
                     $('#product_category_id option[value="' + tableid + '"]').text(data.product_category.category.category_name)
@@ -490,13 +492,13 @@
                     closeOnConfirm: false,
                     closeOnCancel: false
                 },
-                function(isConfirm) {
-                    if (isConfirm) {
-                        location.href = '<?php echo base_url('index.php/product/delete/'); ?>/' + product_id
-                    } else {
-                        swal("Cancelled", "Your product is safe :)", "error");
-                    }
-                });
+                        function (isConfirm) {
+                            if (isConfirm) {
+                                location.href = '<?php echo base_url('index.php/product/delete/'); ?>/' + product_id
+                            } else {
+                                swal("Cancelled", "Your product is safe :)", "error");
+                            }
+                        });
             }
             function delete_picture()
             {
@@ -511,21 +513,21 @@
                     closeOnConfirm: true,
                     closeOnCancel: false
                 },
-                function(isConfirm) {
-                    if (isConfirm) {
-                        document.getElementById("image").src = "";
-                        $("#del_picture").hide();
-                        $("#is_picture_deleted").val('1');
-                        $("#pictures").val('');
-                        $("#imgChange span").text('Add Picture');
-                        
+                        function (isConfirm) {
+                            if (isConfirm) {
+                                document.getElementById("image").src = "";
+                                $("#del_picture").hide();
+                                $("#is_picture_deleted").val('1');
+                                $("#pictures").val('');
+                                $("#imgChange span").text('Add Picture');
 
-                    } else {
-                        swal("Cancelled", "Your product is safe :)", "error");
-                    }
-                });
+
+                            } else {
+                                swal("Cancelled", "Your product is safe :)", "error");
+                            }
+                        });
             }
-            
+
             function show_edit_category_modal(tableid) {
 
                 $("#edit_category_name").val($("#categoryname_" + tableid).text())
@@ -549,30 +551,30 @@
                     closeOnConfirm: false,
                     closeOnCancel: false
                 },
-                function(isConfirm) {
-                    if (isConfirm) {
-                        var param = {table_id: tableid}
-                        console.log(param)
+                        function (isConfirm) {
+                            if (isConfirm) {
+                                var param = {table_id: tableid}
+                                console.log(param)
 
-                        $.post("<?php echo base_url('index.php/product/delete_category') ?>", param)
-                                .done(function(data) {
-                                    data = jQuery.parseJSON(data);
-                                    if (data['product_category']['status'] == '1')
-                                    {
-                                        $('#product_category_id option[value="' + tableid + '"]').remove();
-                                        $('#product_category_table #row_' + tableid).remove();
-                                        swal("", data['product_category']['msg'], "success");
-                                    } else {
-                                        swal("", "Delete product category failed", "error");
-                                    }
-                                });
-                    } else {
-                        swal("Cancelled", "Your product category is safe :)", "error");
-                    }
-                });
+                                $.post("<?php echo base_url('index.php/product/delete_category') ?>", param)
+                                        .done(function (data) {
+                                            data = jQuery.parseJSON(data);
+                                            if (data['product_category']['status'] == '1')
+                                            {
+                                                $('#product_category_id option[value="' + tableid + '"]').remove();
+                                                $('#product_category_table #row_' + tableid).remove();
+                                                swal("", data['product_category']['msg'], "success");
+                                            } else {
+                                                swal("", "Delete product category failed", "error");
+                                            }
+                                        });
+                            } else {
+                                swal("Cancelled", "Your product category is safe :)", "error");
+                            }
+                        });
             }
 
-            $('#updatecategoryModal').on('hidden.bs.modal', function() {
+            $('#updatecategoryModal').on('hidden.bs.modal', function () {
                 $('#managecategoryModal').modal('show');
             })
 
