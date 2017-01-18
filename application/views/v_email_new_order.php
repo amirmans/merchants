@@ -125,7 +125,7 @@ function limit_text($text, $limit) {
                                                                 <li>+ <?php echo $option['name']; ?></li>
                                                             <?php }
                                                             ?>
-                                                                <?php if($order_detail[$i]['item_note']!=""){                                                                echo '<li>'.$order_detail[$i]['item_note'].'</li>';} ?>
+                                                                <?php if($order_detail[$i]['item_note']!=""){                                                                echo '<li>Note : '.$order_detail[$i]['item_note'].'</li>';} ?>
                                                         </ul>
                                                     <?php }
                                                     ?>

@@ -9,8 +9,12 @@ class M_site extends CI_Model {
     }
 
     function email_configration() {
-        $email = "tap-in@tapforall.com";
+        
+    }
+
+    function cron_sms() {
         $this->load->library('email');
+        $email = "tap-in@tapforall.com";
         $config['protocol'] = 'smtp';
         $config['smtp_host'] = 'mail.artdoost.com';
         $config['smtp_port'] = '26';
@@ -23,10 +27,7 @@ class M_site extends CI_Model {
         $config['mailtype'] = 'html'; // or html
         $config['validation'] = TRUE; // bool whether to validate email or not
         $this->email->initialize($config);
-        $this->email->from($email, 'Tap-in');
-    }
 
-    function cron_sms() {
 
         $message = "There is a new order!";
         require_once APPPATH . 'libraries/Twilio/autoload.php'; // Loads the Twilio library
@@ -47,13 +48,13 @@ class M_site extends CI_Model {
                     //    print_r($sms_numbers_array);
                     foreach ($sms_numbers_array as $sms_no) {
 
-                        $this->smsMerchant("There is a new order!", $sms_no, $business_id);
+                        $this->smsMerchant("You have pending orders to confirm. Please take a look at your profile by clicking on below link :", $sms_no, $business_id);
                     }
                 }
             } elseif ($row[$i]['used_for_cron'] == "uuid") {
                 if ($row[$i]['uuid'] != NULL && $row[$i]['uuid'] != "")
                     $message_body = array(
-                        'alert' => "There is a new order!",
+                        'alert' => "You have pending orders to confirm.",
                         'badge' => 0,
                         'sound' => 'newMessage.wav'
                     );
@@ -62,6 +63,7 @@ class M_site extends CI_Model {
                 $business_email_array = explode(",", $row[$i]['email']);
 
                 foreach ($business_email_array as $business_email) {
+
                     $this->new_order_email($row[$i]['order_id'], $business_email, $row[$i]["business_id"]);
                 }
             }
@@ -69,31 +71,43 @@ class M_site extends CI_Model {
     }
 
     function new_order_email($order_id, $business_email, $business_id) {
-        $order_payment_detail = $this->get_order_payment_detail($order_id);
-        $order_info = $this->get_ordelist_order($order_id, $business_id, ""); //TODO
-        $email['order_detail'] = $this->get_order_detail($order_id);
-        $email['order_id'] = $order_id;
-        $email['total'] = $order_payment_detail['total'];
-        $email['subtotal'] = $order_info[0]['subtotal'];
-        $email['tip_amount'] = $order_info[0]['tip_amount'];
-        $email['tax_amount'] = $order_info[0]['tax_amount'];
-        $email['points_dollar_amount'] = $order_info[0]['points_dollar_amount'];
-        $email['business_id'] = $business_id;
-        $email['delivery_charge_amount'] = $order_info[0]['delivery_charge_amount'];
-        $email['promotion_code'] = $order_info[0]['promotion_code'];
-        $email['promotion_discount_amount'] = $order_info[0]['promotion_discount_amount'];
-        $email['delivery_instruction'] = $order_info[0]['delivery_instruction'];
-        $email['delivery_address'] = $order_info[0]['delivery_address'];
-        $email['delivery_time'] = $order_info[0]['delivery_time'];
-        $email['consumer_delivery_id'] = $order_info[0]['consumer_delivery_id'];
-
-        $this->email_configration();
-        $body = $this->load->view('v_email_new_order', $email, TRUE);
+//        $order_payment_detail = $this->get_order_payment_detail($order_id);
+//        $order_info = $this->get_ordelist_order($order_id, $business_id, ""); //TODO
+//        $email['order_detail'] = $this->get_order_detail($order_id);
+//        $email['order_id'] = $order_id;
+//        $email['total'] = $order_payment_detail['total'];
+//        $email['subtotal'] = $order_info[0]['subtotal'];
+//        $email['tip_amount'] = $order_info[0]['tip_amount'];
+//        $email['tax_amount'] = $order_info[0]['tax_amount'];
+//        $email['points_dollar_amount'] = $order_info[0]['points_dollar_amount'];
+//        $email['business_id'] = $business_id;
+//        $email['delivery_charge_amount'] = $order_info[0]['delivery_charge_amount'];
+//        $email['promotion_code'] = $order_info[0]['promotion_code'];
+//        $email['promotion_discount_amount'] = $order_info[0]['promotion_discount_amount'];
+//        $email['delivery_instruction'] = $order_info[0]['delivery_instruction'];
+//        $email['delivery_address'] = $order_info[0]['delivery_address'];
+//        $email['delivery_time'] = $order_info[0]['delivery_time'];
+//        $email['consumer_delivery_id'] = $order_info[0]['consumer_delivery_id'];
+        // $body = $this->load->view('v_email_new_order', $email, TRUE);
+        $message = 'You have pending orders to confirm. Please take a look at your profile by clicking on below link :';
+        if ($business_id != 0) {
+            $this->db->select('username');
+            $this->db->from('business_customers');
+            $this->db->where('businessID', $business_id);
+            $this->db->limit(1);
+            $result = $this->db->get();
+            $row = $result->result_array();
+            if (count($row) > 0) {
+                $merchantLink = BaseURL . "" . $row[0]["username"];
+                $message = $message . " <br>Refer to: " . $merchantLink;
+            }
+        }
 
         $subject = "New order from Tap-In";
+        $this->email->from('tap-in@tapforall.com', 'Tap-in');
         $this->email->to($business_email);
         $this->email->subject($subject);
-        $this->email->message($body);
+        $this->email->message($message);
         $result = $this->email->send();
 //        echo $this->email->print_debugger();
         if ($result != true) {
