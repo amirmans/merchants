@@ -8,6 +8,24 @@ class M_site extends CI_Model {
         date_default_timezone_set('America/Los_Angeles');
     }
 
+    function email_configration() {
+        $email = "tap-in@tapforall.com";
+        $this->load->library('email');
+        $config['protocol'] = 'smtp';
+        $config['smtp_host'] = 'mail.artdoost.com';
+        $config['smtp_port'] = '26';
+        $config['smtp_timeout'] = '7';
+        $config['smtp_user'] = $email;
+        // $config['smtp_pass'] = 'b#Fq0w<ZAM#u<&';
+        $config['smtp_pass'] = 'TigM0m!!';
+        $config['charset'] = 'utf-8';
+        $config['newline'] = "\r\n";
+        $config['mailtype'] = 'html'; // or html
+        $config['validation'] = TRUE; // bool whether to validate email or not
+        $this->email->initialize($config);
+        $this->email->from($email, 'Tap-in');
+    }
+
     function cron_sms() {
 
         $message = "There is a new order!";
@@ -15,22 +33,71 @@ class M_site extends CI_Model {
         $TapInServerConstsParentPath = APPPATH . "../" . "../" . staging_directory() . '/include/consts_server.inc';
         require_once $TapInServerConstsParentPath; // Loads our consts
 //        use Twilio\Rest\Client;
-        $query = "SELECT `o`.`order_id`,`o`.business_id,`bc`.`sms_no`,(TIMESTAMPDIFF(second ,date ,now())) as secound FROM (SELECT * FROM `order` ORDER BY `order`.`order_id` DESC ) as o LEFT JOIN business_internal_alert as bc on bc.business_id=o.business_id where (TIMESTAMPDIFF(second ,date ,now())) > 300 and `o`.`status`='1' group by `o`.`business_id` order by `o`.`order_id` DESC";
+        $query = "SELECT `o`.`order_id`,`o`.business_id,`bc`.`sms_no`,(TIMESTAMPDIFF(second ,date ,now())) as secound,bc.uuid,bc.used_for_cron,bc.email FROM (SELECT * FROM `order` ORDER BY `order`.`order_id` DESC ) as o LEFT JOIN business_internal_alert as bc on bc.business_id=o.business_id where (TIMESTAMPDIFF(second ,date ,now())) > 300 and `o`.`status`='1' group by `o`.`business_id` ORDER BY `bc`.`used_for_cron` DESC";
         $result = $this->db->query($query);
         $row = $result->result_array();
 
         for ($i = 0; $i < count($row); $i++) {
-            $sms_numbers = $row[$i]["sms_no"];
-            $business_id = $row[$i]["business_id"];
-            if (!empty($sms_numbers)) {
-                $sms_numbers = preg_replace('/\s/', '', $sms_numbers);
-                $sms_numbers_array = explode(',', $sms_numbers);
-                //    print_r($sms_numbers_array);
-                foreach ($sms_numbers_array as $sms_no) {
+            if ($row[$i]['used_for_cron'] == "sms_no") {
+                $sms_numbers = $row[$i]["sms_no"];
+                $business_id = $row[$i]["business_id"];
+                if (!empty($sms_numbers)) {
+                    $sms_numbers = preg_replace('/\s/', '', $sms_numbers);
+                    $sms_numbers_array = explode(',', $sms_numbers);
+                    //    print_r($sms_numbers_array);
+                    foreach ($sms_numbers_array as $sms_no) {
 
-                    $this->smsMerchant("There is a new order!", $sms_no, $business_id);
+                        $this->smsMerchant("There is a new order!", $sms_no, $business_id);
+                    }
+                }
+            } elseif ($row[$i]['used_for_cron'] == "uuid") {
+                if ($row[$i]['uuid'] != NULL && $row[$i]['uuid'] != "")
+                    $message_body = array(
+                        'alert' => "There is a new order!",
+                        'badge' => 0,
+                        'sound' => 'newMessage.wav'
+                    );
+                push_notification_ios($row[$i]['uuid'], $message_body);
+            }elseif ($row[$i]['used_for_cron'] == "email") {
+                $business_email_array = explode(",", $row[$i]['email']);
+
+                foreach ($business_email_array as $business_email) {
+                    $this->new_order_email($row[$i]['order_id'], $business_email, $row[$i]["business_id"]);
                 }
             }
+        }
+    }
+
+    function new_order_email($order_id, $business_email, $business_id) {
+        $order_payment_detail = $this->get_order_payment_detail($order_id);
+        $order_info = $this->get_ordelist_order($order_id, $business_id, ""); //TODO
+        $email['order_detail'] = $this->get_order_detail($order_id);
+        $email['order_id'] = $order_id;
+        $email['total'] = $order_payment_detail['total'];
+        $email['subtotal'] = $order_info[0]['subtotal'];
+        $email['tip_amount'] = $order_info[0]['tip_amount'];
+        $email['tax_amount'] = $order_info[0]['tax_amount'];
+        $email['points_dollar_amount'] = $order_info[0]['points_dollar_amount'];
+        $email['business_id'] = $business_id;
+        $email['delivery_charge_amount'] = $order_info[0]['delivery_charge_amount'];
+        $email['promotion_code'] = $order_info[0]['promotion_code'];
+        $email['promotion_discount_amount'] = $order_info[0]['promotion_discount_amount'];
+        $email['delivery_instruction'] = $order_info[0]['delivery_instruction'];
+        $email['delivery_address'] = $order_info[0]['delivery_address'];
+        $email['delivery_time'] = $order_info[0]['delivery_time'];
+        $email['consumer_delivery_id'] = $order_info[0]['consumer_delivery_id'];
+
+        $this->email_configration();
+        $body = $this->load->view('v_email_new_order', $email, TRUE);
+
+        $subject = "New order from Tap-In";
+        $this->email->to($business_email);
+        $this->email->subject($subject);
+        $this->email->message($body);
+        $result = $this->email->send();
+//        echo $this->email->print_debugger();
+        if ($result != true) {
+            log_message('error', "Email to $business_email could not be sent!");
         }
     }
 
