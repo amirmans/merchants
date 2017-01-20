@@ -12,7 +12,7 @@ class M_site extends CI_Model {
         
     }
 
-    function cron_sms() {
+    function cronjob_for_send_sms_or_email_or_push_notificaiton() {
         $this->load->library('email');
         $email = "tap-in@tapforall.com";
         $config['protocol'] = 'smtp';

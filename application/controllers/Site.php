@@ -21,13 +21,13 @@ class Site extends CI_Controller {
         $this->load->view('v_home', $data);
     }
 
-    function cron_sms() {
-        $this->m_site->cron_sms();
+    function cronjob_for_send_sms_or_email_or_push_notificaiton() {
+        $this->m_site->cronjob_for_send_sms_or_email_or_push_notificaiton();
     }
 
     function send_sms() {
         $param = $_REQUEST;
-        $response=$this->m_site->send_sms($param);
+        $response = $this->m_site->send_sms($param);
         echo json_encode($response);
     }
 
