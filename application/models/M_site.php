@@ -54,6 +54,7 @@ class M_site extends CI_Model {
             } elseif ($row[$i]['used_for_cron'] == "uuid") {
                 if ($row[$i]['uuid'] != NULL && $row[$i]['uuid'] != "")
                     $message_body = array(
+                        'type' => "4",
                         'alert' => "You have pending orders to confirm.",
                         'badge' => 0,
                         'sound' => 'newMessage.wav'
