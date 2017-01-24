@@ -719,7 +719,7 @@ class M_site extends CI_Model {
             $device_token = $row[0]['device_token'];
             $messageToConsumer = "Your order #" . $order_id . " could not be fulfilled at this time.";
             $message_body = array(
-                'type' => "0",
+                'type' => "5",
                 'business_id' => is_login(),
                 'alert' => $messageToConsumer,
                 'badge' => 0,
