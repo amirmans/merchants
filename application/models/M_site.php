@@ -719,6 +719,7 @@ class M_site extends CI_Model {
             $messageToConsumer = "Your order #" . $order_id . " could not be fulfilled at this time.";
             $message_body = array(
                 'type' => "0",
+                'business_id' => is_login(),
                 'alert' => $messageToConsumer,
                 'badge' => 0,
                 'sound' => 'newMessage.wav'
