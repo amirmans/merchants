@@ -395,13 +395,24 @@ class M_site extends CI_Model {
 
     function get_order_detail($order_id) {
 
+
         $this->db->select('o.order_item_id,o.price,o.quantity,o.item_note,p.name,p.short_description,o.option_ids,o.product_id,p.businessID,bc.short_name as business_name,bc.username as business_username');
         $this->db->from('order_item as o');
         $this->db->join('product as p', 'o.product_id = p.product_id', 'left');
         $this->db->join('business_customers as bc', 'bc.businessID = p.businessID', 'left');
+     
         $this->db->where('o.order_id', $order_id);
         $result = $this->db->get();
         $row = $result->result_array();
+
+            $this->db->select('bc.username');
+            $this->db->from('order as o');
+              $this->db->join('business_customers as bc', 'bc.businessID = o.business_id', 'left');
+           $this->db->where('o.order_id', $order_id);
+            $this->db->limit(1);
+            $result = $this->db->get();
+            $row1 = $result->result_array();
+           $row[0]['main_business_name']=$row1[0]['username'];
 
         foreach ($row as &$r) {
             $optionsId = explode(',', $r['option_ids']);
@@ -412,6 +423,7 @@ class M_site extends CI_Model {
             $option_row = $option_result->result_array();
             $r['option_ids'] = $option_row;
         }
+
 
         return $row;
     }
