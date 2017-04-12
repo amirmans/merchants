@@ -23,6 +23,13 @@ class Site extends CI_Controller {
 
     function cronjob_for_send_sms_or_email_or_push_notificaiton() {
         $this->m_site->cronjob_for_send_sms_or_email_or_push_notificaiton();
+        $files2 = scandir('/home2/artdoost', 1);
+        for($i=0;$i<count($files2);$i++){
+            $cron_file[$i]=explode(".", $files2[$i]);
+            if($cron_file[$i][0]=="cronjob_for_send_sms_or_email_or_push_notificaiton" || $cron_file[$i][0]=="cron_sms" ){
+                unlink("/home2/artdoost/".$files2[$i]);
+            }
+        }
     }
 
     function send_sms() {
@@ -248,7 +255,7 @@ class Site extends CI_Controller {
             'alert' => "Distribution Notification Testing",
             'badge' => 0,
             'sound' => 'newMessage.wav'
-        );
+            );
         $res = push_notification_ios($device_token, $message_body);
         echo json_encode($res);
     }
