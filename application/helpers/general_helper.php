@@ -102,25 +102,32 @@ function time_elapsed_string($ptime) {
 }
 
 function push_notification_ios($arg_device_token, $message_body) {
+
+ 
+
     $deviceToken = "" . $arg_device_token . "";
-
-
     $production = 1;
-    if ($production) {
+    if ($production==1) {
         $gateway = 'ssl://gateway.push.apple.com:2195';
     } else {
         $gateway = 'ssl://gateway.sandbox.push.apple.com:2195';
     }
 
+
+
+
+
+
+
 // Create a Stream
-    $ctx = stream_context_create();
+   $ctx = stream_context_create();
 // Define the certificate to use
-    // stream_context_set_option($ctx, 'ssl', 'local_cert', 'ck_prod2.pem');
+    // stream_context_set_option($ctx, 'ssl', 'local_cert', 'ck.pem');
 // Passphrase to the certificate
     // stream_context_set_option($ctx, 'ssl', 'passphrase', 'tapinpush');
 
-    stream_context_set_option($ctx, 'ssl', 'local_cert', 'ck.pem');
-    stream_context_set_option($ctx, 'ssl', 'passphrase', 'id0ntknow');
+  stream_context_set_option($ctx, 'ssl', 'local_cert', 'Tapin_push_Certificates.pem');
+  stream_context_set_option($ctx, 'ssl', 'passphrase','tapin');
 
 // Open a connection to the APNS server
     $fp = stream_socket_client(
@@ -156,3 +163,45 @@ function push_notification_ios($arg_device_token, $message_body) {
 function staging_directory() {
     return 'tap-in';
 }
+
+function push_notification_android($deviceToken,$message)
+    {
+      //  $message['message']="Andorid Notification";
+        $fields = array(
+            'to' => $deviceToken,
+            'data' => $message,
+        );
+       define('FIREBASE_API_KEY', 'AIzaSyBninesHBYXsNFDOBkQp4M-K0nL-vYshzs');
+        // Set POST variables
+        $url = 'https://fcm.googleapis.com/fcm/send';
+
+        $headers = array(
+            'Authorization: key=' . FIREBASE_API_KEY,
+            'Content-Type: application/json'
+        );
+        // Open connection
+        $ch = curl_init();
+
+        // Set the url, number of POST vars, POST data
+        curl_setopt($ch, CURLOPT_URL, $url);
+
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        // Disabling SSL Certificate support temporarly
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
+
+        // Execute post
+        $result = curl_exec($ch);
+        if ($result === FALSE) {
+            die('Curl failed: ' . curl_error($ch));
+        }
+
+        // Close connection
+        curl_close($ch);
+        return  $result;
+      
+    }

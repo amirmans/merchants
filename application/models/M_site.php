@@ -38,6 +38,8 @@ class M_site extends CI_Model {
         $result = $this->db->query($query);
         $row = $result->result_array();
 
+ 
+
         for ($i = 0; $i < count($row); $i++) {
             if ($row[$i]['used_for_cron'] == "sms_no") {
                 $sms_numbers = $row[$i]["sms_no"];
@@ -52,14 +54,27 @@ class M_site extends CI_Model {
                     }
                 }
             } elseif ($row[$i]['used_for_cron'] == "uuid") {
-                if ($row[$i]['uuid'] != NULL && $row[$i]['uuid'] != "")
-                    $message_body = array(
+       if ($row[$i]['uuid'] != NULL && $row[$i]['uuid'] != "")
+                      if(strlen($row[$i]['uuid'])>64)
+                    {
+                   $message_body = array(
+                        
+                        'message' => "You have pending orders to confirm.",
+                       
+                    );
+
+
+         
+                     push_notification_android($row[$i]['uuid'], $message_body); 
+                    }else{
+                       $message_body = array(
                         'type' => "4",
                         'alert' => "You have pending orders to confirm.",
                         'badge' => 0,
                         'sound' => 'newMessage.wav'
                     );
-                push_notification_ios($row[$i]['uuid'], $message_body);
+                     push_notification_ios($row[$i]['uuid'], $message_body); 
+                    }
             }elseif ($row[$i]['used_for_cron'] == "email") {
                 $business_email_array = explode(",", $row[$i]['email']);
 
@@ -706,10 +721,11 @@ class M_site extends CI_Model {
         }
     }
 
-    function rejectorder($order_id) {
+    function rejectorder($order_id,$reject_reason) {
 
         $data = array();
         $data['status'] = '0';
+        $data['reject_reason'] = $reject_reason;
         $this->db->where('business_id', is_login());
         $this->db->where('order_id', $order_id);
         $this->db->update('order', $data);
@@ -765,7 +781,7 @@ class M_site extends CI_Model {
         $this->db->from('product as p');
         $this->db->join('product_category as  pc', 'p.product_category_id = pc.product_category_id', 'left');
         $this->db->where('p.businessID', $param['businessID']);
-        $this->db->order_by("p.product_id", "desc");
+        $this->db->order_by("p.listing_order", "asc");
         $result = $this->db->get();
         $row = $result->result_array();
         return $row;
@@ -776,7 +792,7 @@ class M_site extends CI_Model {
         $this->db->from('option as o');
         $this->db->join('product_option_category as poc', 'o.product_option_category_id = poc.product_option_category_id', 'left');
         $this->db->where('o.business_id', $param['businessID']);
-        $this->db->order_by("o.option_id", "desc");
+        $this->db->order_by("o.listing_order", "asc");
         $result = $this->db->get();
         $row = $result->result_array();
         return $row;
@@ -1140,6 +1156,7 @@ class M_site extends CI_Model {
         $this->db->select('*');
         $this->db->from('product_option_category');
         $this->db->where('business_id', $param['businessID']);
+        $this->db->order_by("listing_order", "asc");
         $result = $this->db->get();
         $row = $result->result_array();
         return $row;
@@ -1190,6 +1207,7 @@ class M_site extends CI_Model {
         $this->db->where('product_id', $param['product_id']);
         $this->db->update('product', $data);
     }
+    
 
     function set_option_availailblity_status($param) {
         if ($param['availability_status'] == "true") {
@@ -1201,6 +1219,25 @@ class M_site extends CI_Model {
         $this->db->where('option_id', $param['option_id']);
         $this->db->update('option', $data);
     }
+    
+    
+    function set_product_order($param){
+     $product_list=explode(",", $param['product_list']);  
+     
+     for($i=0;$i<count($product_list);$i++){
+        $data=array();
+        $data['listing_order']=$i+1;
+        $this->db->where("product_id",$product_list[$i]);
+        $this->db->update("product", $data);
+        //$data['product_id']=$product_list[$i];
+        //$data1[$i]=$data;
+    }
+    $return=success_res("Successfully update order ");
+    //$return['data']=$data1;
+    return $return;
+
+
+}
 
     function get_product_info($product_id) {
         $this->db->select('*');
@@ -1651,5 +1688,41 @@ class M_site extends CI_Model {
         $return = success_res("Business Picture deleted successfully");
         return $return;
     }
+
+function set_option_order($param){
+    $product_list=explode(",", $param['option_list']);  
+
+   for($i=0;$i<count($product_list);$i++){
+    $data=array();
+    $data['listing_order']=$i+1;
+    $this->db->where("option_id",$product_list[$i]);
+    $this->db->update("option", $data);
+        //$data['product_id']=$product_list[$i];
+        //$data1[$i]=$data;
+}
+$return=success_res("Successfully update order ");
+    //$return['data']=$data1;
+return $return;
+
+
+}
+
+
+function set_option_cat_order($param){
+       $product_list=explode(",", $param['option_cat_list']);  
+
+   for($i=0;$i<count($product_list);$i++){
+    $data=array();
+    $data['listing_order']=$i+1;
+    $this->db->where("product_option_category_id",$product_list[$i]);
+    $this->db->update("product_option_category", $data);
+        //$data['product_id']=$product_list[$i];
+        //$data1[$i]=$data;
+}
+$return=success_res("Successfully update order ");
+    //$return['data']=$data1;
+return $return;
+
+}
 
 }
