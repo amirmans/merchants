@@ -84,5 +84,17 @@ class Option extends CI_Controller {
         $data = $this->m_site->delete_option($option_id);
         redirect('index.php/option');
     }
+function set_option_order(){
+         $param=$_REQUEST;
+        $data = $this->m_site->set_option_order($param);
+        echo json_encode($data);
+    }
+
+function set_option_cat_order(){
+         $param=$_REQUEST;
+        $data = $this->m_site->set_option_cat_order($param);
+        echo json_encode($data);
+    }
+    
 
 }

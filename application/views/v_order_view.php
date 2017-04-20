@@ -249,11 +249,65 @@
                 <a id="button_reject" href="#" class=" btn btn-danger " style=" font-size: 20px;">
                     REJECT
                 </a>
+
+                <div class="modal fade in" id="reject_reason_modal" tabindex="-1" role="dialog" aria-hidden="false" ><div class="modal-backdrop fade in" style="height: 356px;"></div>
+            <div class="modal-dialog">
+                <div class="modal-content">
+                   
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                            <h4 class="modal-title">Reason</h4>
+                        </div>
+                        <div class="modal-body">
+
+                           
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                       
+                                        <div class="col-sm-12">
+                                            <textarea class="form-control" id="reject_reason" name="reject_reason" ></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="modal-footer">
+
+                            <label  class="pull-left color10"></label>
+                            <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-default" onclick="reject_order_process()" >REJECT</button>
+                        </div>
+                    
+                </div>
+            </div>
+        </div>
                 <script>
                     document.querySelector('#button_reject').onclick = function () {
+                        $("#reject_reason_modal").modal('show');
+
+                        // $("#button_reject").html('<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>REJECT');
+                        // var order_id = $("#order_id").val();
+                        // var param = {order_id: order_id};
+                        // $.post("<?php echo base_url('index.php/site/rejectorder') ?>", param)
+                        //         .done(function (data) {
+                        //             data = jQuery.parseJSON(data);
+
+                        //             if (data['status'] == '1')
+                        //             {
+                        //                 $("#order_view").html('');
+                        //                 $("#order_id_<?php echo $orderlist[0]['order_id']; ?>").remove();
+                        //                 swal("Rejected", "Your order has been successfully rejected", "success");
+                        //             }
+                        //         });
+                    };
+                    function reject_order_process(){
+                         $("#reject_reason_modal").modal('hide');
                         $("#button_reject").html('<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i>REJECT');
                         var order_id = $("#order_id").val();
-                        var param = {order_id: order_id};
+                        var reject_reason = $("#reject_reason").val();
+                        var param = {order_id: order_id,reject_reason:reject_reason};
                         $.post("<?php echo base_url('index.php/site/rejectorder') ?>", param)
                                 .done(function (data) {
                                     data = jQuery.parseJSON(data);
@@ -264,8 +318,8 @@
                                         $("#order_id_<?php echo $orderlist[0]['order_id']; ?>").remove();
                                         swal("Rejected", "Your order has been successfully rejected", "success");
                                     }
-                                });
-                    };
+                                }); 
+                    }
                 </script>
 
                 <a id="button_complete" href="#" class=" btn btn-primary " data-toggle="modal" data-target="#completeModal"    style=" font-size: 20px; display: none">

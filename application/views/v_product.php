@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -21,7 +20,7 @@
                 width:10%;
             }
         </style>
-
+<link href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.css" rel="stylesheet">  
     </head>
     <body>
         <?php $this->load->view('v_header'); ?>
@@ -59,10 +58,10 @@
 
                                             </tr>
                                         </thead>
-                                        <tbody>
+                                        <tbody id="product_tbody" >
                                             <?php for ($i = 0; $i < count($products); $i++) {
                                                 ?>
-                                                <tr>
+                                                <tr  id="tr_pr_<?php echo $products[$i]['product_id']; ?>"  >
 
                                                     <td><?php echo $products[$i]['name']; ?></td>
                                                     <td>$ <?php echo $products[$i]['price']; ?></td>
@@ -106,6 +105,8 @@
 
 
         <?php $this->load->view('v_script'); ?>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.js"></script> 
+
 
 
         <script>
@@ -125,6 +126,37 @@
                             }
                         });
             }
+
+      $('#product_tbody').sortable({
+            update:  function (event, ui) {
+          var product_order=[];
+          $('#product_table tbody tr').each(function (row) {
+
+             var myarr = this.id.split("_");
+             var rowID = myarr[myarr.length - 1];
+             if(rowID!=""){
+                 product_order.push(rowID);
+             }
+
+         });
+
+
+          var param={'product_list':product_order.join()};
+          $.post("<?php echo base_url('index.php/product/set_product_order') ?>", param)
+          .done(function(data) {
+            data = jQuery.parseJSON(data);
+
+            if (data['status'] == '1')
+            {
+                swal("", data['msg'], "success");
+            }
+        });
+
+
+      }
+  }
+  );
+ 
         </script>
 
 

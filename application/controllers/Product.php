@@ -187,6 +187,12 @@ class Product extends CI_Controller {
         $response = success_res("Successfully Set Availailblity Status");
         echo json_encode($response);
     }
+ function set_product_order()
+    {
+        $param=$_REQUEST;
+        $data = $this->m_site->set_product_order($param);
+        echo json_encode($data);
+    }
 
     function edit($product_id) {
         is_login() ? '' : redirect('index.php/login');
@@ -202,11 +208,7 @@ class Product extends CI_Controller {
         is_login() ? '' : redirect('index.php/login');
         $param = $_REQUEST;
 
-//        echo '<pre>';
-//        print_r($param);
-//        print_r($_FILES);
-//        die;
-
+      
         $param['businessID'] = is_login();
         $this->validation->is_parameter_blank('businessID', $param['businessID']);
         $this->validation->is_parameter_blank('name', $param['name']);

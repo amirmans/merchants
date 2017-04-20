@@ -14,6 +14,7 @@
                 color: white !important;
             } 
         </style>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.css" rel="stylesheet">  
     </head>
     <body>
         <?php $this->load->view('v_header'); ?>
@@ -50,10 +51,10 @@
 
                                             </tr>
                                         </thead>
-                                        <tbody>
+                                        <tbody  id="option_tbody" >
                                             <?php for ($i = 0; $i < count($options); $i++) {
                                                 ?>
-                                                <tr>
+                                                <tr id="option_tr_<?php echo $options[$i]['option_id']; ?>" >
                                                     <td># <b><?php echo $options[$i]['option_id']; ?></b></td>
                                                     <td><?php echo $options[$i]['name']; ?></td>
                                                     <td>$ <?php echo $options[$i]['price']; ?></td>
@@ -103,6 +104,8 @@
             $("#option_tab").addClass('active_tab');
         </script>
 
+               <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.js"></script> 
+
 
         <script>
    
@@ -120,6 +123,36 @@
                             }
                         });
             }
+
+        $('#option_tbody').sortable({
+            update:  function (event, ui) {
+              var option_order=[];
+              $('#option_tbody  tr').each(function (row) {
+
+               var myarr = this.id.split("_");
+               var rowID = myarr[myarr.length - 1];
+               if(rowID!=""){
+                   option_order.push(rowID);
+               }
+
+           });
+
+
+              var param={'option_list':option_order.join()};
+              $.post("<?php echo base_url('index.php/option/set_option_order') ?>", param)
+              .done(function(data) {
+                data = jQuery.parseJSON(data);
+
+                if (data['status'] == '1')
+                {
+                    swal("", data['msg'], "success");
+                }
+            });
+
+
+          }
+      }
+      );
         </script>
 
 

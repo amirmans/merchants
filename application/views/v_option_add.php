@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -53,6 +52,7 @@
                 }
             }
         </style>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.css" rel="stylesheet"> 
 
     </head>
     <body>
@@ -263,7 +263,7 @@
                                             <td>Delete</td>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody id="option_cat_tbody">
                                         <?php for ($i = 0; $i < count($product_option_category); $i++) {
                                             ?>
                                             <tr id="row_<?php echo $product_option_category[$i]['product_option_category_id']; ?>">
@@ -293,6 +293,8 @@
 
 
         <?php $this->load->view('v_script'); ?>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.js"></script> 
 
 
         <script>
@@ -423,6 +425,37 @@
             $('#updateoptioncategoryModal').on('hidden.bs.modal', function () {
                 $('#manageoptioncategoryModal').modal('show');
             })
+
+
+$('#option_cat_tbody').sortable({
+    update:  function (event, ui) {
+      var option_cat_order=[];
+      $('#option_cat_tbody tr').each(function (row) {
+
+       var myarr = this.id.split("_");
+       var rowID = myarr[myarr.length - 1];
+       if(rowID!=""){
+           option_cat_order.push(rowID);
+       }
+
+   });
+
+
+      var param={'option_cat_list':option_cat_order.join()};
+      $.post("<?php echo base_url('index.php/option/set_option_cat_order') ?>", param)
+      .done(function(data) {
+        data = jQuery.parseJSON(data);
+
+        if (data['status'] == '1')
+        {
+            swal("", data['msg'], "success");
+        }
+    });
+
+
+  }
+}
+);
 
         </script>
 

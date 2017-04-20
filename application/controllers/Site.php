@@ -23,7 +23,7 @@ class Site extends CI_Controller {
 
     function cronjob_for_send_sms_or_email_or_push_notificaiton() {
         $this->m_site->cronjob_for_send_sms_or_email_or_push_notificaiton();
-        $files2 = scandir('/home2/artdoost', 1);
+           $files2 = scandir('/home2/artdoost', 1);
         for($i=0;$i<count($files2);$i++){
             $cron_file[$i]=explode(".", $files2[$i]);
             if($cron_file[$i][0]=="cronjob_for_send_sms_or_email_or_push_notificaiton" || $cron_file[$i][0]=="cron_sms" ){
@@ -205,7 +205,7 @@ class Site extends CI_Controller {
         is_login() ? '' : redirect('index.php/login');
         $param = $_REQUEST;
         $this->validation->is_parameter_blank('order_id', $param['order_id']);
-        $this->m_site->rejectorder(decrypt_string($param['order_id']));
+        $this->m_site->rejectorder(decrypt_string($param['order_id']),$param['reject_reason']);
         $response = success_res("Successfully completed order");
         echo json_encode($response);
     }
@@ -249,13 +249,15 @@ class Site extends CI_Controller {
     }
 
     function test_notification() {
-        $device_token = 'ae2ad01b457ecb798d8442fbf2f66cc1f2326fce6e576466407ef70a43226646';
+
+         $param = $_REQUEST;
+        $device_token = $param['device_token'];
         $message_body = array(
             'type' => 1,
             'alert' => "Distribution Notification Testing",
             'badge' => 0,
             'sound' => 'newMessage.wav'
-            );
+        );
         $res = push_notification_ios($device_token, $message_body);
         echo json_encode($res);
     }
@@ -484,6 +486,47 @@ class Site extends CI_Controller {
         $re = \Stripe\Refund::create(array('charge' => 'ch_18SPh3A4o51atGGFHbOnDpf8'));
         $stripe_refund_id = $re->id;
         print_r($re);
+    }
+function test_android_notification()
+    {
+        $message['message']="Andorid Notification";
+        $fields = array(
+            'to' => 'djTs2gcD_dQ:APA91bEEtwwbUs0ELmEsc5eBN2-9uAV8_gVFuOVNsV-eO7T_dTwmYXlBXfLyx1I7YqXEqTrMiZCOHeRLekB1lJ_b24KPxi0SjlYxw5VDDYr_NMaor1VpeXo21L2f7ZeNK4h6yEH4r-60',
+            'data' => $message,
+        );
+       define('FIREBASE_API_KEY', 'AIzaSyBninesHBYXsNFDOBkQp4M-K0nL-vYshzs');
+        // Set POST variables
+        $url = 'https://fcm.googleapis.com/fcm/send';
+
+        $headers = array(
+            'Authorization: key=' . FIREBASE_API_KEY,
+            'Content-Type: application/json'
+        );
+        // Open connection
+        $ch = curl_init();
+
+        // Set the url, number of POST vars, POST data
+        curl_setopt($ch, CURLOPT_URL, $url);
+
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        // Disabling SSL Certificate support temporarly
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
+
+        // Execute post
+        $result = curl_exec($ch);
+        if ($result === FALSE) {
+            die('Curl failed: ' . curl_error($ch));
+        }
+
+        // Close connection
+        curl_close($ch);
+      echo "<pre>";
+      print_r($result);
     }
 
 }
