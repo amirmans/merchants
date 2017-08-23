@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -102,17 +101,17 @@
                                         <div class="form-group">
                                             <label for="input002" class="col-sm-2 control-label form-label">Product Category</label>
                                             <div class="col-sm-10">
-                                                <select class="selectpicker" id="product_category_id" style="margin: 10px 24px;" onchange="change_order_status()" name="product_category_id" >
+                                                <select class="selectpicker" id="product_category_id" style="margin: 10px 24px;" name="product_category_id" >
                                                     <?php
                                                     for ($i = 0; $i < count($product_category); $i++) {
 
                                                         if ($product_category[$i]['table_id'] == $product['product_category_id']) {
                                                             ?>
-                                                            <option value="<?php echo $product_category[$i]['table_id']; ?>"  selected><?php echo $product_category[$i]['category_name']; ?></option>
+                                                            <option value="<?php echo $product_category[$i]['product_category_id']; ?>"  selected="selected" ><?php echo $product_category[$i]['category_name']; ?></option>
                                                             <?php
                                                         } else {
                                                             ?>
-                                                            <option value="<?php echo $product_category[$i]['table_id']; ?>"  ><?php echo $product_category[$i]['category_name']; ?></option>
+                                                            <option value="<?php echo $product_category[$i]['product_category_id']; ?>"  ><?php echo $product_category[$i]['category_name']; ?></option>
                                                             <?php
                                                         }
                                                     }
