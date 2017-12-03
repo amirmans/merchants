@@ -12,11 +12,11 @@ class Site extends CI_Controller {
         $this->load->library('validation');
 ///// LOAD MODEL CLASS
         $this->load->model('m_site');
-////// RESONSE HEADER CONTEN TYPRE SET FROM DEFAULT(TEXT/HTML) TO APPLICATION/JSON
+////// RESPONSE HEADER CONTENT TYPE SET FROM DEFAULT(TEXT/HTML) TO APPLICATION/JSON
     }
 
     function index() {
-///// DEFULT SITE CONTROLLER MEHOD CALL
+///// DEFAULT SITE CONTROLLER METHOD CALL
         $data['business_list'] = $this->m_site->get_business_list();
         $this->load->view('v_home', $data);
     }
@@ -220,19 +220,7 @@ class Site extends CI_Controller {
         }
     }
 
-    function test_paymen() {
-        require_once('lib/stripe-php-master/init.php');
-        \Stripe\Stripe::setApiKey('sk_test_JQCcDe4RIqIq1IcmVfvLPyay ');
-        $myCard = array('number' => '4242424242424242', 'exp_month' => 8, 'exp_year' => 2018);
-
-        $charge = \Stripe\Charge::create(array('card' => $myCard, 'amount' => 10000, 'currency' => 'usd'));
-        print_r($charge);
-        die;
-        echo '<pre>';
-        print_r($charge);
-    }
-
-    function get_table_list() {
+    function get_table_list($order_id) {
         echo '<pre>';
         $tables = $this->m_site->get_table_list($order_id);
         print_r($tables);
@@ -480,13 +468,6 @@ class Site extends CI_Controller {
         echo json_encode($response);
     }
 
-    function test_refund() {
-        require_once('lib/stripe-php-master/init.php');
-        \Stripe\Stripe::setApiKey($secret_key);
-        $re = \Stripe\Refund::create(array('charge' => 'ch_18SPh3A4o51atGGFHbOnDpf8'));
-        $stripe_refund_id = $re->id;
-        print_r($re);
-    }
 function test_android_notification()
     {
         $message['message']="Andorid Notification";

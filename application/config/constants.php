@@ -83,3 +83,16 @@ defined('EXIT_USER_INPUT')     OR define('EXIT_USER_INPUT', 7); // invalid user 
 defined('EXIT_DATABASE')       OR define('EXIT_DATABASE', 8); // database error
 defined('EXIT__AUTO_MIN')      OR define('EXIT__AUTO_MIN', 9); // lowest automatically-assigned error code
 defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest automatically-assigned error code
+
+
+/* Should be consistent with the one's in app server */
+defined('ORDER_STATUS_COMPLETE')      OR define('ORDER_STATUS_COMPLETE', 3);
+defined('ORDER_STATUS_REJECTED')      OR define('ORDER_STATUS_REJECTED', 0);
+defined('ORDER_STATUS_APPROVED')      OR define('ORDER_STATUS_APPROVED', 2);
+defined('ORDER_STATUS_NEW')           OR define('ORDER_STATUS_NEW', 1);
+
+
+/* payment processor related constants in USD*/
+defined('PROCESSING_FEE_PERCENTAGE')           OR define('PROCESSING_FEE_PERCENTAGE', 0.029);
+defined('PROCESSING_FEE_FIXED')           OR define('PROCESSING_FEE_FIXED', 0.30);
+

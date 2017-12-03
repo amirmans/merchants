@@ -7,9 +7,20 @@ class M_site extends CI_Model {
         //date_default_timezone_set("GMT");
         date_default_timezone_set('America/Los_Angeles');
     }
+//
+//    function getProcessingFee($amount) {
+//        $processing_fee_fixed = 0.0;
+//        if ($amount > 0) {
+//            $processing_fee_fixed =  PROCESSING_FEE_FIXED;
+//        }
+//
+//        return (round($amount* PROCESSING_FEE_PERCENTAGE + $processing_fee_fixed, 2));
+//
+//    }
+
 
     function email_configration() {
-        
+
     }
 
     function cronjob_for_send_sms_or_email_or_push_notificaiton() {
@@ -38,7 +49,7 @@ class M_site extends CI_Model {
         $result = $this->db->query($query);
         $row = $result->result_array();
 
- 
+
 
         for ($i = 0; $i < count($row); $i++) {
             if ($row[$i]['used_for_cron'] == "sms_no") {
@@ -54,26 +65,26 @@ class M_site extends CI_Model {
                     }
                 }
             } elseif ($row[$i]['used_for_cron'] == "uuid") {
-       if ($row[$i]['uuid'] != NULL && $row[$i]['uuid'] != "")
-                      if(strlen($row[$i]['uuid'])>64)
+                if ($row[$i]['uuid'] != NULL && $row[$i]['uuid'] != "")
+                    if(strlen($row[$i]['uuid'])>64)
                     {
-                   $message_body = array(
-                        
-                        'message' => "You have pending orders to confirm.",
-                       
-                    );
+                        $message_body = array(
+
+                            'message' => "You have pending orders to confirm.",
+
+                        );
 
 
-         
-                     push_notification_android($row[$i]['uuid'], $message_body); 
+
+                        push_notification_android($row[$i]['uuid'], $message_body);
                     }else{
-                       $message_body = array(
-                        'type' => "4",
-                        'alert' => "You have pending orders to confirm.",
-                        'badge' => 0,
-                        'sound' => 'newMessage.wav'
-                    );
-                     push_notification_ios($row[$i]['uuid'], $message_body); 
+                        $message_body = array(
+                            'type' => "4",
+                            'alert' => "You have pending orders to confirm.",
+                            'badge' => 0,
+                            'sound' => 'newMessage.wav'
+                        );
+                        push_notification_ios($row[$i]['uuid'], $message_body);
                     }
             }elseif ($row[$i]['used_for_cron'] == "email") {
                 $business_email_array = explode(",", $row[$i]['email']);
@@ -367,6 +378,8 @@ class M_site extends CI_Model {
         //$this->db->limit(10);
         $result = $this->db->get();
         $row = $result->result_array();
+        $zzz = $this->db->last_query();
+
         return $row;
     }
 
@@ -411,23 +424,25 @@ class M_site extends CI_Model {
     function get_order_detail($order_id) {
 
 
-        $this->db->select('o.order_item_id,o.price,o.quantity,o.item_note,p.name,p.short_description,o.option_ids,o.product_id,p.businessID,bc.short_name as business_name,bc.username as business_username');
+        $this->db->select('o.order_item_id,o.price,o.quantity,o.item_note,p.name,p.short_description,o.option_ids
+            ,o.product_id,p.businessID,bc.short_name as business_name,bc.name as product_business_name');
         $this->db->from('order_item as o');
         $this->db->join('product as p', 'o.product_id = p.product_id', 'left');
         $this->db->join('business_customers as bc', 'bc.businessID = p.businessID', 'left');
-     
+
         $this->db->where('o.order_id', $order_id);
         $result = $this->db->get();
         $row = $result->result_array();
-
-            $this->db->select('bc.username');
-            $this->db->from('order as o');
-              $this->db->join('business_customers as bc', 'bc.businessID = o.business_id', 'left');
-           $this->db->where('o.order_id', $order_id);
-            $this->db->limit(1);
-            $result = $this->db->get();
-            $row1 = $result->result_array();
-           $row[0]['main_business_name']=$row1[0]['username'];
+        $zzz = $this->db->last_query();
+        $this->db->select('bc.name');
+        $this->db->from('order as o');
+        $this->db->join('business_customers as bc', 'bc.businessID = o.business_id', 'left');
+        $this->db->where('o.order_id', $order_id);
+        $this->db->limit(1);
+        $result = $this->db->get();
+        $zzz = $this->db->last_query();
+        $row1 = $result->result_array();
+        $row[0]['main_business_name']=$row1[0]['username'];
 
         foreach ($row as &$r) {
             $optionsId = explode(',', $r['option_ids']);
@@ -436,6 +451,7 @@ class M_site extends CI_Model {
             $this->db->where_in('option_id', $optionsId);
             $option_result = $this->db->get();
             $option_row = $option_result->result_array();
+            $zzz = $this->db->last_query();
             $r['option_ids'] = $option_row;
         }
 
@@ -598,10 +614,10 @@ class M_site extends CI_Model {
         $client = new Twilio\Rest\Client($sid, $token);
         try {
             $client->messages->create(
-                    "$businessSMS", array(
-                'from' => '+15032785619',
-                'body' => "$message"
-                    )
+                "$businessSMS", array(
+                    'from' => '+15032785619',
+                    'body' => "$message"
+                )
             );
         } catch (Services_Twilio_RestException $e) {
             log_message('Error', "Could send sms with this error: $e->getMessage()");
@@ -1170,15 +1186,22 @@ class M_site extends CI_Model {
         $this->db->where('o.status !=', 3);
         $this->db->where('o.status !=', 4);
         $this->db->where('o.order_id >', $param['latest_order_id']);
-        if ($param['sub_businesses'] == "") {
-            $this->db->where('o.business_id', $param['businessID']);
-        } else {
-            $sub_businesses = explode(",", $param['sub_businesses']);
-            $this->db->where_in('o.business_id', $sub_businesses);
-        }
+
+        // changed on 12/01
+//        if ($param['sub_businesses'] == "") {
+//            $this->db->where('o.business_id', $param['businessID']);
+//        } else {
+//            $sub_businesses = explode(",", $param['sub_businesses']);
+//            $this->db->where_in('o.business_id', $sub_businesses);
+//        }
+        $this->db->where('o.business_id', $param['businessID']);
+        // end of change
+
         $this->db->order_by("o.order_id", "desc");
         //$this->db->limit(10);
         $result = $this->db->get();
+        $zzz = $this->db->last_query();
+
         $row = $result->result_array();
         return $row;
     }
@@ -1207,7 +1230,7 @@ class M_site extends CI_Model {
         $this->db->where('product_id', $param['product_id']);
         $this->db->update('product', $data);
     }
-    
+
 
     function set_option_availailblity_status($param) {
         if ($param['availability_status'] == "true") {
@@ -1219,25 +1242,25 @@ class M_site extends CI_Model {
         $this->db->where('option_id', $param['option_id']);
         $this->db->update('option', $data);
     }
-    
-    
+
+
     function set_product_order($param){
-     $product_list=explode(",", $param['product_list']);  
-     
-     for($i=0;$i<count($product_list);$i++){
-        $data=array();
-        $data['listing_order']=$i+1;
-        $this->db->where("product_id",$product_list[$i]);
-        $this->db->update("product", $data);
-        //$data['product_id']=$product_list[$i];
-        //$data1[$i]=$data;
+        $product_list=explode(",", $param['product_list']);
+
+        for($i=0;$i<count($product_list);$i++){
+            $data=array();
+            $data['listing_order']=$i+1;
+            $this->db->where("product_id",$product_list[$i]);
+            $this->db->update("product", $data);
+            //$data['product_id']=$product_list[$i];
+            //$data1[$i]=$data;
+        }
+        $return=success_res("Successfully update order ");
+        //$return['data']=$data1;
+        return $return;
+
+
     }
-    $return=success_res("Successfully update order ");
-    //$return['data']=$data1;
-    return $return;
-
-
-}
 
     function get_product_info($product_id) {
         $this->db->select('*');
@@ -1373,11 +1396,16 @@ class M_site extends CI_Model {
     }
 
     function total_orders_count($param) {
+        $approved = ORDER_STATUS_APPROVED;
+        $complete = ORDER_STATUS_COMPLETE;
+
+
         $this->db->select('count(order_id) as total_orders,ifnull(sum(subtotal),"0.00") as total_subtotal,ifnull(sum(tip_amount),"0.00") as total_tip, ifnull(sum(points_dollar_amount),"0.00") as total_points', FALSE);
         $this->db->from('order');
         $this->db->where('business_id', $param['businessID']);
         $this->db->where('date > DATE_SUB(NOW(), INTERVAL 1 DAY)');
-        $this->db->where('(status=2 or status=3)', NULL);
+
+        $this->db->where("(status=$approved or status=$complete)", NULL);
         $result = $this->db->get();
         $row = $result->row_array();
         $return['today']['orders'] = $row['total_orders'];
@@ -1390,9 +1418,10 @@ class M_site extends CI_Model {
         $this->db->from('order');
         $this->db->where('business_id', $param['businessID']);
         $this->db->where('date > DATE_SUB(NOW(), INTERVAL 1 WEEK)');
-        $this->db->where('(status=2 or status=3)', NULL);
+        $this->db->where("(status=$approved or status=$complete)", NULL);
         $weekresult = $this->db->get();
         $weekrow = $weekresult->row_array();
+        $zzz = $this->db->last_query();
         $return['week']['orders'] = $weekrow['total_orders'];
         $return['week']['subtotals'] = $weekrow['total_subtotal'];
         $return['week']['tips'] = $weekrow['total_tip'];
@@ -1402,7 +1431,7 @@ class M_site extends CI_Model {
         $this->db->from('order');
         $this->db->where('business_id', $param['businessID']);
         $this->db->where('date > DATE_SUB(NOW(), INTERVAL 1 MONTH)');
-        $this->db->where('(status=2 or status=3)', NULL);
+        $this->db->where("(status=$approved or status=$complete)", NULL);
         $monthresult = $this->db->get();
         $monthrow = $monthresult->row_array();
         $monthcount = $monthresult->num_rows();
@@ -1414,7 +1443,7 @@ class M_site extends CI_Model {
         $this->db->select('count(order_id) as total_orders,ifnull(sum(subtotal),"0.00") as total_subtotal,ifnull(sum(tip_amount),"0.00") as total_tip, ifnull(sum(points_dollar_amount),"0.00") as total_points', FALSE);
         $this->db->from('order');
         $this->db->where('business_id', $param['businessID']);
-        $this->db->where('(status=2 or status=3)', NULL);
+        $this->db->where("(status=$approved or status=$complete)", NULL);
         $totalresult = $this->db->get();
         $totalrow = $totalresult->row_array();
         $totalcount = $totalresult->num_rows();
@@ -1465,38 +1494,40 @@ class M_site extends CI_Model {
         $this->db->select('ifnull(sum(total),"0.00") as total_processingfee', FALSE);
         $this->db->from('order');
         $this->db->where('business_id', $param['businessID']);
-        $this->db->where('status', 3);
+        $this->db->where("(status=$approved or status=$complete)", NULL);
         $this->db->where('date > DATE_SUB(NOW(), INTERVAL 1 DAY)');
         $processingFeeresult = $this->db->get();
         $processingFeerow = $processingFeeresult->row_array();
-        $return['today']['processing_fee'] = ($processingFeerow['total_processingfee'] / 100) * 3;
-
+        $zzz = $this->db->last_query();
+        log_message('info',"query to get the processing fee in report: $zzz");
+//        getProcessingFee($processingFeerow['total_processingfee']);
+        $return['today']['processing_fee'] = getProcessingFee($processingFeerow['total_processingfee']);
 
         $this->db->select('ifnull(sum(total),"0.00") as total_processingfee', FALSE);
         $this->db->from('order');
         $this->db->where('business_id', $param['businessID']);
-        $this->db->where('status', 3);
+        $this->db->where("(status=$approved or status=$complete)", NULL);
         $this->db->where('date > DATE_SUB(NOW(), INTERVAL 1 WEEK)');
         $processingFeeresult = $this->db->get();
         $processingFeerow = $processingFeeresult->row_array();
-        $return['week']['processing_fee'] = ($processingFeerow['total_processingfee'] / 100) * 3;
+        $return['week']['processing_fee'] = getProcessingFee($processingFeerow['total_processingfee']);
 
         $this->db->select('ifnull(sum(total),"0.00") as total_processingfee', FALSE);
         $this->db->from('order');
         $this->db->where('business_id', $param['businessID']);
-        $this->db->where('status', 3);
+        $this->db->where("(status=$approved or status=$complete)", NULL);
         $this->db->where('date > DATE_SUB(NOW(), INTERVAL 1 MONTH)');
         $processingFeeresult = $this->db->get();
         $processingFeerow = $processingFeeresult->row_array();
-        $return['month']['processing_fee'] = ($processingFeerow['total_processingfee'] / 100) * 3;
+        $return['month']['processing_fee'] = getProcessingFee($processingFeerow['total_processingfee']);
 
         $this->db->select('ifnull(sum(total),"0.00") as total_processingfee', FALSE);
         $this->db->from('order');
         $this->db->where('business_id', $param['businessID']);
-        $this->db->where('status', 3);
+        $this->db->where("(status=$approved or status=$complete)", NULL);
         $processingFeeresult = $this->db->get();
         $processingFeerow = $processingFeeresult->row_array();
-        $return['total']['processing_fee'] = ($processingFeerow['total_processingfee'] / 100) * 3;
+        $return['total']['processing_fee'] = getProcessingFee($processingFeerow['total_processingfee']);
 
         $this->db->select('ifnull(sum(ro.amount),"0.00") as total_refund', FALSE);
         $this->db->from('refund_order ro');
@@ -1539,6 +1570,9 @@ class M_site extends CI_Model {
     }
 
     function search_orders_count($param) {
+        $approved = ORDER_STATUS_APPROVED;
+        $complete = ORDER_STATUS_COMPLETE;
+
         $date = explode(" - ", $param['hiddendate']);
         $start_date = $date[0];
         $end_date = $date[1];
@@ -1547,9 +1581,10 @@ class M_site extends CI_Model {
         $this->db->where('business_id', $param['businessID']);
         $this->db->where('date >=', $start_date);
         $this->db->where('date <=', $end_date);
-        $this->db->where('(status=2 or status=3)', NULL);
+        $this->db->where("(status=$approved or status=$complete)", NULL);
         $result = $this->db->get();
         $row = $result->row_array();
+        $zzz = $this->db->last_query();
 
         $this->db->select('count(order_id) as rejected_orders', FALSE);
         $this->db->from('order');
@@ -1564,11 +1599,13 @@ class M_site extends CI_Model {
         $this->db->select('ifnull(sum(total),"0.00") as total_processingfee', FALSE);
         $this->db->from('order');
         $this->db->where('business_id', $param['businessID']);
-        $this->db->where('status', 3);
+        $this->db->where("(status= $approved or status=$complete)", NULL);
         $this->db->where('date >=', $start_date);
         $this->db->where('date <=', $end_date);
         $processingFeeresult = $this->db->get();
         $processingFeerow = $processingFeeresult->row_array();
+        $zzz = $this->db->last_query();
+
 
         $this->db->select('ifnull(sum(ro.amount),"0.00") as total_refund', FALSE);
         $this->db->from('refund_order ro');
@@ -1578,14 +1615,23 @@ class M_site extends CI_Model {
         $this->db->where('ro.created <=', $end_date);
         $refundresult = $this->db->get();
         $refundrow = $refundresult->row_array();
+        $zzz = $this->db->last_query();
+
 
         $row['rejected_orders'] = $rejectedrow['rejected_orders'];
-        $row['total_processingfee'] = ($processingFeerow['total_processingfee'] / 100) * 3;
+        $row['total_processingfee'] = getProcessingFee($processingFeerow['total_processingfee']);
         $row['total_refund'] = $refundrow['total_refund'];
+
+        $zzz = $this->db->last_query();
+
+
         return $row;
     }
 
     function update_order_charge_status($charge_id, $order_id, $stripe_refund_id, $refundamt, $refund_type, $consumer_id) {
+//        $approved = ORDER_STATUS_APPROVED;
+//        $complete = ORDER_STATUS_COMPLETE;
+
         $data['order_id'] = $order_id;
         $data['stripe_refund_id'] = $stripe_refund_id;
         $data['amount'] = $refundamt;
@@ -1689,40 +1735,40 @@ class M_site extends CI_Model {
         return $return;
     }
 
-function set_option_order($param){
-    $product_list=explode(",", $param['option_list']);  
+    function set_option_order($param){
+        $product_list=explode(",", $param['option_list']);
 
-   for($i=0;$i<count($product_list);$i++){
-    $data=array();
-    $data['listing_order']=$i+1;
-    $this->db->where("option_id",$product_list[$i]);
-    $this->db->update("option", $data);
-        //$data['product_id']=$product_list[$i];
-        //$data1[$i]=$data;
-}
-$return=success_res("Successfully update order ");
-    //$return['data']=$data1;
-return $return;
-
-
-}
+        for($i=0;$i<count($product_list);$i++){
+            $data=array();
+            $data['listing_order']=$i+1;
+            $this->db->where("option_id",$product_list[$i]);
+            $this->db->update("option", $data);
+            //$data['product_id']=$product_list[$i];
+            //$data1[$i]=$data;
+        }
+        $return=success_res("Successfully update order ");
+        //$return['data']=$data1;
+        return $return;
 
 
-function set_option_cat_order($param){
-       $product_list=explode(",", $param['option_cat_list']);  
+    }
 
-   for($i=0;$i<count($product_list);$i++){
-    $data=array();
-    $data['listing_order']=$i+1;
-    $this->db->where("product_option_category_id",$product_list[$i]);
-    $this->db->update("product_option_category", $data);
-        //$data['product_id']=$product_list[$i];
-        //$data1[$i]=$data;
-}
-$return=success_res("Successfully update order ");
-    //$return['data']=$data1;
-return $return;
 
-}
+    function set_option_cat_order($param){
+        $product_list=explode(",", $param['option_cat_list']);
+
+        for($i=0;$i<count($product_list);$i++){
+            $data=array();
+            $data['listing_order']=$i+1;
+            $this->db->where("product_option_category_id",$product_list[$i]);
+            $this->db->update("product_option_category", $data);
+            //$data['product_id']=$product_list[$i];
+            //$data1[$i]=$data;
+        }
+        $return=success_res("Successfully update order ");
+        //$return['data']=$data1;
+        return $return;
+
+    }
 
 }

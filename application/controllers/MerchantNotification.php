@@ -54,10 +54,10 @@ class MerchantNotification extends CI_Controller {
 
     function notify_business_for_new_order() {
 //
-        $param = $_REQUEST;
+//        $param = $_REQUEST;
 
-        $order_id = $param['order_id'];
-        $business_id = $param['business_id'];
+        $order_id = $_REQUEST['order_id'];
+        $business_id = $_REQUEST['business_id'];
         $business_email = "";
         $sms_numbers = "";
 

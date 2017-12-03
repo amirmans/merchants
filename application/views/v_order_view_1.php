@@ -63,7 +63,8 @@
                         </td>
                         <td class="th_price" >$ <?php echo $order_detail[$i]['price']; ?></td>
                         <td class="th_quantity"><?php echo $order_detail[$i]['quantity']; ?></td>
-                        <td class="th_total text-right">$ <?php echo ($per_item_total[$i] = $order_detail[$i]['price'] * $order_detail[$i]['quantity']); ?></td>
+                        <td class="th_total text-right">$ <?php echo ($per_item_total[$i] =
+                                $order_detail[$i]['price'] * $order_detail[$i]['quantity']); ?></td>
                     </tr>
 
 

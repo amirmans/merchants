@@ -2,3 +2,4 @@
 .idea
 application/logs/
 /error_log
+/nbproject/project.properties

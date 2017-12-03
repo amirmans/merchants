@@ -15,6 +15,7 @@ class Reports extends CI_Controller {
         ////// RESONSE HEADER CONTEN TYPRE SET FROM DEFAULT(TEXT/HTML) TO APPLICATION/JSON
     }
 
+
     function index() {
         is_login() ? '' : redirect('index.php/login');
         $param['businessID'] = is_login();

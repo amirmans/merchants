@@ -112,7 +112,7 @@
                         <td class="th_product"><?php
                             echo $order_detail[$i]['name'];
                             if (sub_businesses() != "") {
-                                echo '<p>' . $order_detail[$i]['business_name'] . "</p>";
+                                echo '<p>' . $order_detail[$i]['product_business_name'] . "</p>";
                             }
                             foreach ($order_detail[$i]['option_ids'] as $option) {
                                 ?>
