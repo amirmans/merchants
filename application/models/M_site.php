@@ -27,7 +27,7 @@ class M_site extends CI_Model {
         $this->load->library('email');
         $email = "tap-in@tapforall.com";
         $config['protocol'] = 'smtp';
-        $config['smtp_host'] = 'mail.artdoost.com';
+        $config['smtp_host'] = 'mail.tapforall.com';
         $config['smtp_port'] = '26';
         $config['smtp_timeout'] = '7';
         $config['smtp_user'] = $email;
@@ -368,12 +368,14 @@ class M_site extends CI_Model {
             $this->db->where('o.status !=', 3);
             $this->db->where('o.status !=', 4);
         }
-        if ($param['sub_businesses'] == "") {
-            $this->db->where('o.business_id', $param['businessID']);
-        } else {
-            $sub_businesses = explode(",", $param['sub_businesses']);
-            $this->db->where_in('o.business_id', $sub_businesses);
-        }
+//        if ($param['sub_businesses'] == "") {
+//            $this->db->where('o.business_id', $param['businessID']);
+//        } else {
+//            $sub_businesses = explode(",", $param['sub_businesses']);
+//            $this->db->where_in('o.business_id', $sub_businesses);
+//        }
+        $this->db->where('o.business_id', $param['businessID']);
+
         $this->db->order_by("o.order_id", "desc");
         //$this->db->limit(10);
         $result = $this->db->get();
@@ -406,15 +408,17 @@ class M_site extends CI_Model {
         $this->db->join('order_charge as oc', 'oc.order_id = o.order_id', 'left');
         $this->db->join('consumer_delivery as cd', 'cd.consumer_delivery_id = o.consumer_delivery_id', 'left');
         $this->db->where('o.order_id', $order_id);
-        if ($p_sub_businesses == "") {
-            $this->db->where('o.business_id', $businessId);
-        } else {
-            $sub_businesses = explode(",", $p_sub_businesses);
-            $this->db->where_in('o.business_id', $sub_businesses);
-        }
+//        if ($p_sub_businesses == "") {
+//            $this->db->where('o.business_id', $businessId);
+//        } else {
+//            $sub_businesses = explode(",", $p_sub_businesses);
+//            $this->db->where_in('o.business_id', $sub_businesses);
+//        }
+        $this->db->where('o.business_id', $businessId);
 
         $this->db->limit(1);
         $result = $this->db->get();
+        $zzz = $this->db->last_query();
         $row = $result->result_array();
 
 
@@ -698,7 +702,7 @@ class M_site extends CI_Model {
                 $result2 = $this->db->get();
                 $row2 = $result2->result_array();
                 if (count($row2) > 0) {
-                    $alert = "Order #" . $order_id . " is ready.   For delivery, please email amir@tap-in.co with delivery info.";
+                    $alert = "Order #" . $order_id . " is ready.   For delivery, please email tap-in@tapforall.com with delivery info.";
                 } else {
                     $alert = "Your order #" . $order_id . " is completed ";
                 }
@@ -862,7 +866,7 @@ class M_site extends CI_Model {
         $this->db->select('*');
         $this->db->from('product_category');
         $this->db->where('category_name', $param['edit_category_name']);
-        $this->db->where('product_category_id !=', $param['table_id']);
+        $this->db->where('product_category_id !=', $param['product_category_id']);
         $this->db->where('business_id', $param['businessID']);
         $category_result = $this->db->get();
         $category_row = $category_result->row_array();
@@ -870,12 +874,12 @@ class M_site extends CI_Model {
             $data['category_name'] = $param['edit_category_name'];
             $data['desc'] = $param['edit_desc'];
             $data['business_id'] = $param['businessID'];
-            $this->db->where('product_category_id', $param['table_id']);
+            $this->db->where('product_category_id', $param['product_category_id']);
             $this->db->update('product_category', $data);
 
             $this->db->select('*');
             $this->db->from('product_category');
-            $this->db->where('product_category_id', $param['table_id']);
+            $this->db->where('product_category_id', $param['product_category_id']);
             $result = $this->db->get();
             $row = $result->row_array();
             $return['status'] = 1;
@@ -890,7 +894,7 @@ class M_site extends CI_Model {
     function delete_product_category($param) {
 
         $this->db->where('business_id', $param['businessID']);
-        $this->db->where('product_category_id', $param['table_id']);
+        $this->db->where('product_category_id');
         $this->db->delete('product_category');
 
         $return['status'] = 1;
@@ -1208,12 +1212,13 @@ class M_site extends CI_Model {
 
     function count_order_for_remaining_approve($param) {
 
-        if ($param['sub_businesses'] == "") {
-            $this->db->where('business_id', $param['businessID']);
-        } else {
-            $sub_businesses = explode(",", $param['sub_businesses']);
-            $this->db->where_in('business_id', $sub_businesses);
-        }
+//        if ($param['sub_businesses'] == "") {
+//            $this->db->where('business_id', $param['businessID']);
+//        } else {
+//            $sub_businesses = explode(",", $param['sub_businesses']);
+//            $this->db->where_in('business_id', $sub_businesses);
+//        }
+        $this->db->where('business_id', $param['businessID']);
 
         $this->db->where('status', 1);
         $this->db->from('order');

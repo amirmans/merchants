@@ -161,13 +161,23 @@
                     <td class="th_quantity"></td>
                     <td class="th_total text-right">$ <?php echo $orderlist[0]['points_dollar_amount']; ?></td>
                 </tr>
-<?php if ($orderlist[0]['consumer_delivery_id'] != 0) {
-    ?>
+                <?php if ($orderlist[0]['consumer_delivery_id'] != 0) {
+                    ?>
                     <tr>
                         <td class="th_product">Delivery Charges</td>
                         <td class="th_price"></td>
                         <td class="th_quantity"></td>
                         <td class="th_total text-right">$ <?php echo $orderlist[0]['delivery_charge_amount']; ?></td>
+                    </tr>
+                <?php } ?>
+
+                <?php if ($orderlist[0]['pd_charge_amount'] != 0) {
+                    ?>
+                    <tr>
+                        <td class="th_product">Service Charges</td>
+                        <td class="th_price"></td>
+                        <td class="th_quantity"></td>
+                        <td class="th_total text-right">$ <?php echo $orderlist[0]['pd_charge_amount']; ?></td>
                     </tr>
                 <?php } ?>
 

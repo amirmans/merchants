@@ -23,7 +23,7 @@ class MerchantNotification extends CI_Controller {
         $email = "tap-in@tapforall.com";
         $this->load->library('email');
         $config['protocol'] = 'smtp';
-        $config['smtp_host'] = 'mail.artdoost.com';
+        $config['smtp_host'] = 'mail.tapforall.com';
         $config['smtp_port'] = '26';
         $config['smtp_timeout'] = '7';
         $config['smtp_user'] = $email;
