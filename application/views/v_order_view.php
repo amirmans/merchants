@@ -70,7 +70,7 @@
                 ?>
             </div>
             <div class="col-md-6  padding-0 text-right text-right1" >
-                <?php if ($orderlist[0]['consumer_delivery_id'] != 0) {
+                <?php if ($orderlist[0]['delivery_charge_amount'] > 0) {
                     ?>
 
                     <span class="delivery_time">Delivery Time : <b><?php echo date('h :i a', strtotime($orderlist[0]['delivery_time'])); ?> </b></span>
@@ -161,7 +161,7 @@
                     <td class="th_quantity"></td>
                     <td class="th_total text-right">$ <?php echo $orderlist[0]['points_dollar_amount']; ?></td>
                 </tr>
-                <?php if ($orderlist[0]['consumer_delivery_id'] != 0) {
+                <?php if ($orderlist[0]['delivery_charge_amount'] > 0) {
                     ?>
                     <tr>
                         <td class="th_product">Delivery Charges</td>
@@ -263,18 +263,18 @@
                 <div class="modal fade in" id="reject_reason_modal" tabindex="-1" role="dialog" aria-hidden="false" ><div class="modal-backdrop fade in" style="height: 356px;"></div>
             <div class="modal-dialog">
                 <div class="modal-content">
-                   
+
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
                             <h4 class="modal-title">Reason</h4>
                         </div>
                         <div class="modal-body">
 
-                           
+
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                       
+
                                         <div class="col-sm-12">
                                             <textarea class="form-control" id="reject_reason" name="reject_reason" ></textarea>
                                         </div>
@@ -289,7 +289,7 @@
                             <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
                             <button type="button" class="btn btn-default" onclick="reject_order_process()" >REJECT</button>
                         </div>
-                    
+
                 </div>
             </div>
         </div>
@@ -328,7 +328,7 @@
                                         $("#order_id_<?php echo $orderlist[0]['order_id']; ?>").remove();
                                         swal("Rejected", "Your order has been successfully rejected", "success");
                                     }
-                                }); 
+                                });
                     }
                 </script>
 

@@ -162,9 +162,12 @@ class M_site extends CI_Model {
         $this->db->limit(1);
         $this->db->where('username', $param['username']);
         $this->db->where('password', md5($param['password']));
+        $this->db->group_start();
         $this->db->where('active = 1 or beta = 1');
+        $this->db->group_end();
         $result = $this->db->get();
         $row = $result->result_array();
+        $zzz = $this->db->last_query();
 
         if (count($row) > 0) {
             $return = success_res("");
@@ -186,7 +189,9 @@ class M_site extends CI_Model {
         $this->db->where('stripe_username', $param['username']);
         $this->db->where('stripe_password', md5($param['password']));
         $this->db->where('businessID', $param['businessID']);
+        $this->db->group_start();
         $this->db->where('active = 1 or beta = 1');
+        $this->db->group_end();
         $result = $this->db->get();
         $row = $result->result_array();
 
@@ -251,7 +256,9 @@ class M_site extends CI_Model {
     function get_business_list() {
         $this->db->select('businessID,name');
         $this->db->from('business_customers');
+        $this->db->group_start();
         $this->db->where('active = 1 or beta = 1');
+        $this->db->group_end();
         $this->db->order_by("businessID", "asc");
         $result = $this->db->get();
         $row = $result->result_array();
@@ -402,7 +409,11 @@ class M_site extends CI_Model {
     }
 
     function get_ordelist_order($order_id, $businessId, $p_sub_businesses) {
-        $this->db->select('o.order_id,o.payment_id,o.total,o.date,cp.nickname,cp.sms_no,cp.uid,o.status,o.note,o.subtotal,o.tip_amount,o.tax_amount,o.points_dollar_amount,TIMESTAMPDIFF(SECOND,o.date,now()) as seconds,oc.is_refunded,o.delivery_charge_amount,o.promotion_code,o.promotion_discount_amount,cd.delivery_instruction,cd.delivery_address,cd.delivery_time,o.consumer_delivery_id');
+        $this->db->select('o.order_id,o.payment_id,o.total,o.date,cp.nickname,cp.sms_no,cp.uid,o.status
+        ,o.note,o.subtotal,o.tip_amount,o.tax_amount,o.points_dollar_amount
+        ,TIMESTAMPDIFF(SECOND,o.date,now()) as seconds,oc.is_refunded
+        ,o.delivery_charge_amount,o.promotion_code,o.promotion_discount_amount,cd.delivery_instruction
+        ,cd.delivery_address,cd.delivery_time,o.consumer_delivery_id');
         $this->db->from('order as o');
         $this->db->join('consumer_profile as cp', 'o.consumer_id = cp.uid', 'left');
         $this->db->join('order_charge as oc', 'oc.order_id = o.order_id', 'left');
@@ -827,7 +838,22 @@ class M_site extends CI_Model {
         return $row;
     }
 
+    function kluge_number1_For_Table_id_tableId(&$param) {
+        if (!array_key_exists('product_category_id', $param)) {
+            $param['product_category_id'] = $param['table_id'];
+        }
+    }
+
+    function kluge_number2_For_Table_id_tableId($categoryId) {
+        $this->db->set('table_id', $categoryId, FALSE);
+        $this->db->where('product_category_id', $categoryId);
+        $this->db->update('product_category');
+
+        $zzz = $this->db->last_query();
+    }
+
     function add_product_category($param) {
+//        $this->kluge_number1_For_Table_id_tableId($param);
 
         $this->db->select('*');
         $this->db->from('product_category');
@@ -841,6 +867,7 @@ class M_site extends CI_Model {
             $data['business_id'] = $param['businessID'];
             $this->db->insert('product_category', $data);
             $categoryId = $this->db->insert_id();
+            $this->kluge_number2_For_Table_id_tableId($categoryId);
 
 //            $updatedata = array();
 //            $updatedata['product_category_id'] = $categoryId;
@@ -862,6 +889,7 @@ class M_site extends CI_Model {
     }
 
     function update_product_category($param) {
+        $this->kluge_number1_For_Table_id_tableId($param);
 
         $this->db->select('*');
         $this->db->from('product_category');
@@ -877,10 +905,15 @@ class M_site extends CI_Model {
             $this->db->where('product_category_id', $param['product_category_id']);
             $this->db->update('product_category', $data);
 
+            $zzz = $this->db->last_query();
+
             $this->db->select('*');
             $this->db->from('product_category');
             $this->db->where('product_category_id', $param['product_category_id']);
             $result = $this->db->get();
+
+            $zzz = $this->db->last_query();
+
             $row = $result->row_array();
             $return['status'] = 1;
             $return['category'] = $row;
@@ -892,10 +925,13 @@ class M_site extends CI_Model {
     }
 
     function delete_product_category($param) {
+        $this->kluge_number1_For_Table_id_tableId($param);
 
         $this->db->where('business_id', $param['businessID']);
-        $this->db->where('product_category_id');
+        $this->db->where('product_category_id', $param['table_id']);
         $this->db->delete('product_category');
+
+        $zzz = $this->db->last_query();
 
         $return['status'] = 1;
         $return['msg'] = "Category Deleted Successfully";
