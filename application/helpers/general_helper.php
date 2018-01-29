@@ -208,10 +208,10 @@ function push_notification_android($deviceToken,$message)
 
 
     /* payment process (stripe) related function */
-function getProcessingFee($amount) {
+function getProcessingFee($amount, $number_of_processed_order) {
     $processing_fee_fixed = 0.0;
     if ($amount > 0) {
-        $processing_fee_fixed =  PROCESSING_FEE_FIXED;
+        $processing_fee_fixed =  PROCESSING_FEE_FIXED * $number_of_processed_order;
     }
 
     return (round($amount* PROCESSING_FEE_PERCENTAGE + $processing_fee_fixed, 2));

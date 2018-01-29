@@ -450,6 +450,7 @@ class M_site extends CI_Model {
         $row = $result->result_array();
         $zzz = $this->db->last_query();
         $this->db->select('bc.name');
+        $this->db->select('bc.username');
         $this->db->from('order as o');
         $this->db->join('business_customers as bc', 'bc.businessID = o.business_id', 'left');
         $this->db->where('o.order_id', $order_id);
@@ -1352,7 +1353,7 @@ class M_site extends CI_Model {
             $temp = explode(".", $_FILES[$file_key]["name"]);
             $extension = end($temp);
 
-            $temp_name = date('YmdHis');
+            $temp_name = date('YmdH');
             $file_name = $temp_name . "." . $extension;
             $file_path = $folder_path . "/" . $file_name;
             if (move_uploaded_file($_FILES[$file_key]['tmp_name'], $file_path)) {
@@ -1532,7 +1533,7 @@ class M_site extends CI_Model {
         $return['total']['rejected'] = $rejectedrow['rejected_orders'];
 
 
-        $this->db->select('ifnull(sum(total),"0.00") as total_processingfee', FALSE);
+        $this->db->select('count(*) as cnt_processed_orders, ifnull(sum(total),"0.00") as total_processingfee', FALSE);
         $this->db->from('order');
         $this->db->where('business_id', $param['businessID']);
         $this->db->where("(status=$approved or status=$complete)", NULL);
@@ -1540,35 +1541,39 @@ class M_site extends CI_Model {
         $processingFeeresult = $this->db->get();
         $processingFeerow = $processingFeeresult->row_array();
         $zzz = $this->db->last_query();
-        log_message('info',"query to get the processing fee in report: $zzz");
+        log_message('info',"query to get the processing fee for the last day in report: $zzz");
 //        getProcessingFee($processingFeerow['total_processingfee']);
-        $return['today']['processing_fee'] = getProcessingFee($processingFeerow['total_processingfee']);
+        $return['today']['processing_fee'] = getProcessingFee($processingFeerow['total_processingfee']
+            ,$processingFeerow['cnt_processed_orders']);
 
-        $this->db->select('ifnull(sum(total),"0.00") as total_processingfee', FALSE);
+        $this->db->select('count(*) as cnt_processed_orders, ifnull(sum(total),"0.00") as total_processingfee', FALSE);
         $this->db->from('order');
         $this->db->where('business_id', $param['businessID']);
         $this->db->where("(status=$approved or status=$complete)", NULL);
         $this->db->where('date > DATE_SUB(NOW(), INTERVAL 1 WEEK)');
         $processingFeeresult = $this->db->get();
         $processingFeerow = $processingFeeresult->row_array();
-        $return['week']['processing_fee'] = getProcessingFee($processingFeerow['total_processingfee']);
+        $return['week']['processing_fee'] = getProcessingFee($processingFeerow['total_processingfee']
+            ,$processingFeerow['cnt_processed_orders']);
 
-        $this->db->select('ifnull(sum(total),"0.00") as total_processingfee', FALSE);
+        $this->db->select('count(*) as cnt_processed_orders, ifnull(sum(total),"0.00") as total_processingfee', FALSE);
         $this->db->from('order');
         $this->db->where('business_id', $param['businessID']);
         $this->db->where("(status=$approved or status=$complete)", NULL);
         $this->db->where('date > DATE_SUB(NOW(), INTERVAL 1 MONTH)');
         $processingFeeresult = $this->db->get();
         $processingFeerow = $processingFeeresult->row_array();
-        $return['month']['processing_fee'] = getProcessingFee($processingFeerow['total_processingfee']);
+        $return['month']['processing_fee'] = getProcessingFee($processingFeerow['total_processingfee']
+            ,$processingFeerow['cnt_processed_orders']);
 
-        $this->db->select('ifnull(sum(total),"0.00") as total_processingfee', FALSE);
+        $this->db->select('count(*) as cnt_processed_orders,, ifnull(sum(total),"0.00") as total_processingfee', FALSE);
         $this->db->from('order');
         $this->db->where('business_id', $param['businessID']);
         $this->db->where("(status=$approved or status=$complete)", NULL);
         $processingFeeresult = $this->db->get();
         $processingFeerow = $processingFeeresult->row_array();
-        $return['total']['processing_fee'] = getProcessingFee($processingFeerow['total_processingfee']);
+        $return['total']['processing_fee'] = getProcessingFee($processingFeerow['total_processingfee']
+            ,$processingFeerow['cnt_processed_orders']);
 
         $this->db->select('ifnull(sum(ro.amount),"0.00") as total_refund', FALSE);
         $this->db->from('refund_order ro');
