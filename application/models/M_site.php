@@ -409,7 +409,8 @@ class M_site extends CI_Model {
     }
 
     function get_ordelist_order($order_id, $businessId, $p_sub_businesses) {
-        $this->db->select('o.order_id,o.payment_id,o.total,o.date,cp.nickname,cp.sms_no,cp.uid,o.status
+        $this->db->select('o.order_id,o.payment_id,o.total,o.date,cp.nickname, o.pd_mode, o.pd_time,
+        cp.sms_no,cp.uid,o.status
         ,o.note,o.subtotal,o.tip_amount,o.tax_amount,o.points_dollar_amount
         ,TIMESTAMPDIFF(SECOND,o.date,now()) as seconds,oc.is_refunded
         ,o.delivery_charge_amount,o.promotion_code,o.promotion_discount_amount,cd.delivery_instruction

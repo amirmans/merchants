@@ -80,6 +80,12 @@
                     <span class="delivery_note">Delivery Instruction : <b><?php echo $orderlist[0]['delivery_instruction']; ?></b> </span>
 
                 <?php } ?>
+                <?php if ($orderlist[0]['pd_mode'] == 1) {
+                    ?>
+
+                    <span class="delivery_time">Carry-out Time : <b><?php echo date('h :i a', strtotime($orderlist[0]['pd_time'])); ?> </b></span>
+
+                <?php } ?>
 
             </div>
         </div>
