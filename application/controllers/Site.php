@@ -112,7 +112,11 @@ class Site extends CI_Controller {
 
                             \Stripe\Stripe::setApiKey($secret_key);
                             $myCard = array('number' => $order_payment_detail['cc_info']['cc_no'], 'exp_month' => $order_payment_detail['cc_info']['month'], 'exp_year' => $order_payment_detail['cc_info']['year']);
-                            $charge = \Stripe\Charge::create(array('card' => $myCard, 'amount' => $amount, 'currency' => 'usd'));
+                            $charge = \Stripe\Charge::create(array('card' => $myCard
+                                , 'amount' => $amount
+                                , 'currency' => 'usd'
+                                , 'metadata' => array('order_id' => $order_id, 'business_id' => $business_id)
+                                ));
                             $response = success_res("your payment has been successfully processed");
                             $charge_id = $charge->id;
                         } else {
@@ -390,6 +394,8 @@ class Site extends CI_Controller {
                     } else {
                         $refund['charge'] = $order_charge_detail['stripe_charge_id'];
                         $refund['amount'] = $refundamt * 100;
+                        $refund['metadata']['order_id'] = $order_id;
+                        $refund['metadata']['business_id'] = $business_id;
 
                         if ($refund['amount'] != '0' && $refund['charge'] != '0') {
 
@@ -426,6 +432,8 @@ class Site extends CI_Controller {
                 $response = success_res("Order Refunded Successfully");
                 $secret_key = $this->get_stripe_secret_key($business_id);
                 $refund['charge'] = $order_charge_detail['stripe_charge_id'];
+                $refund['metadata']['order_id'] = $order_id;
+                $refund['metadata']['business_id'] = $business_id;
 
                 if ($secret_key == '') {
                     $response = error_res("Please provide a stripe secret key first");
