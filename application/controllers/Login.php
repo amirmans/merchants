@@ -39,6 +39,20 @@ class Login extends CI_Controller {
         }
     }
 
+    function admin_do_login() {
+
+        $param = $_POST;
+
+        $this->validation->is_parameter_blank('username', $param['username']);
+        $this->validation->is_parameter_blank('password', $param['password']);
+        $reponse = $this->m_site->admin_do_login($param);
+        if ($reponse['status'] == 1) {
+            redirect('index.php/site/admin');
+        } else {
+            redirect($param['business_url']);
+        }
+    }
+
     function logout() {
         !is_login() ? redirect("/") : '';
         $this->session->set_flashdata('success1', 'Successfully logged out.');

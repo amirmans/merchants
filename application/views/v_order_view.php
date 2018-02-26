@@ -235,7 +235,7 @@
                         var order_id = $("#order_id").val();
                         var amout = $("#order_amount").val();
                         var param = {order_id: order_id};
-                        $.post("<?php echo base_url('index.php/site/payment') ?>", param)
+                        $.post("<?php echo base_url('index.php/site/approve') ?>", param)
                                 .done(function (data) {
                                     data = jQuery.parseJSON(data);
                                     if (data['status'] == '1')

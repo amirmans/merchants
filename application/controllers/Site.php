@@ -3,6 +3,7 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
+
 class Site extends CI_Controller {
 
     public function __construct() {
@@ -36,6 +37,13 @@ class Site extends CI_Controller {
         $param = $_REQUEST;
         $response = $this->m_site->send_sms($param);
         echo json_encode($response);
+    }
+
+    function admin() {
+//Check business Customer is login
+//        is_login() ? '' : redirect('index.php/login');
+        $data = array();
+        $this->load->view('v_admin', $data);
     }
 
     function orderlist($order_status = "neworder") {
@@ -86,8 +94,11 @@ class Site extends CI_Controller {
         echo json_encode($return);
     }
 
-    function payment() {
+    function approve() {
+        $this->payment();
+    }
 
+    function payment() {
 //Check business Customer is login
         is_login() ? '' : redirect('index.php/login');
         $param = $_REQUEST;
@@ -183,6 +194,8 @@ class Site extends CI_Controller {
             $response = error_res("Consumer credit card detail not found");
         }
         echo json_encode($response);
+
+        return $response;
     }
 
     function notifyMerchant() {
