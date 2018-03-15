@@ -297,9 +297,9 @@ class M_site extends CI_Model {
         $row = $result->result_array();
         if (count($row) > 0) {
             $stripe_secret_key = $row[0]['stripe_secret_key'];
-            return $stripe_secret_key;
+            return $row[0];
         } else {
-            return $stripe_secret_key;
+            return $row;
         }
     }
 
@@ -544,7 +544,7 @@ class M_site extends CI_Model {
     }
 
     function get_order_payment_detail($order_id) {
-        $this->db->select('o.total,o.consumer_id,o.cc_last_4_digits');
+        $this->db->select('o.total,o.consumer_id,o.cc_last_4_digits, o.order_type');
         $this->db->from('order as o');
         //$this->db->join('product as p', 'o.product_id = p.product_id', 'left');
         $this->db->where('o.order_id', $order_id);
@@ -554,6 +554,7 @@ class M_site extends CI_Model {
         $row = $result->result_array();
         $return['total'] = $row[0]['total'];
         $return['consumer_id'] = $row[0]['consumer_id'];
+        $return['order_type'] = $row[0]['order_type'];
 
         $this->db->select('ci.cc_no,expiration_date,cp.email1');
         $this->db->from('consumer_cc_info as ci');
@@ -587,6 +588,14 @@ class M_site extends CI_Model {
         $row = $result->row_array();
         return $row;
     }
+
+    function update_order_payment_result($order_id, $payment_error_message) {
+
+        $this->db->where('order_id', $order_id);
+        $this->db->update('order', array('payment_processor_message' => $payment_error_message));
+        $zzz = $this->db->last_query();
+    }
+
 
     function update_order_status($order_id, $charge_id, $amount, $consumer_id) {
 

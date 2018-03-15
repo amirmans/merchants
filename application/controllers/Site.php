@@ -95,7 +95,7 @@ class Site extends CI_Controller {
     }
 
     function approve() {
-        $this->payment();
+        echo ($this->payment());
     }
 
     function payment() {
@@ -111,7 +111,8 @@ class Site extends CI_Controller {
         if ($order_payment_detail['cc_info']) {
             if ($order_payment_detail['total'] > 0 || $order_payment_detail['total'] == 0) {
                 $amount = $order_payment_detail['total'] * 100;
-                $secret_key = $this->get_stripe_secret_key($business_id);
+                $paymentInfoRow = $this->get_stripe_secret_key($business_id);
+                $secret_key = $paymentInfoRow['stripe_secret_key'];
                 if ($secret_key == "") {
                     $response = error_res("Please provide a stripe secret key first");
                 } else {
@@ -193,9 +194,17 @@ class Site extends CI_Controller {
         } else {
             $response = error_res("Consumer credit card detail not found");
         }
-        echo json_encode($response);
-
-        return $response;
+//        echo json_encode($response);
+        if (!empty($response['msg'])) {
+            // something went on, if this is an corp account, just record it and pass success. We will charge the
+            // employee later
+            if ($order_payment_detail['order_type'] == 1) {
+                $this->m_site->update_order_payment_result($order_id, $response['msg']);
+                $response['msg'] ="Success!";
+                $response['status'] =1;
+            }
+        }
+        return json_encode($response);
     }
 
     function notifyMerchant() {
@@ -229,9 +238,9 @@ class Site extends CI_Controller {
 
     function get_stripe_secret_key($business_id) {
 
-        $stripe_token = $this->m_site->get_business_stripe_secret_key($business_id);
-        if ($stripe_token != '') {
-            return $stripe_token;
+        $paymentInfo = $this->m_site->get_business_stripe_secret_key($business_id);
+        if ($paymentInfo != '') {
+            return $paymentInfo;
         } else {
             return "";
         }
@@ -401,7 +410,8 @@ class Site extends CI_Controller {
                 } else {
                     $refundamt = $param['amount'];
                     $response = success_res("Order Refunded Successfully");
-                    $secret_key = $this->get_stripe_secret_key($business_id);
+                    $paymentInfoRow = $this->get_stripe_secret_key($business_id);
+                    $secret_key = $paymentInfoRow['stripe_secret_key'];
                     if ($secret_key == '') {
                         $response = error_res("Please provide a stripe secret key first");
                     } else {
@@ -443,7 +453,9 @@ class Site extends CI_Controller {
                 }
             } else if ($param['refund_type'] == 1) {
                 $response = success_res("Order Refunded Successfully");
-                $secret_key = $this->get_stripe_secret_key($business_id);
+                $paymentInfoRow = $this->get_stripe_secret_key($business_id);
+                $secret_key = $paymentInfoRow['stripe_secret_key'];
+
                 $refund['charge'] = $order_charge_detail['stripe_charge_id'];
                 $refund['metadata']['order_id'] = $order_id;
                 $refund['metadata']['business_id'] = $business_id;

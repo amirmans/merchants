@@ -8,7 +8,8 @@
     </div>
     <ul class="topmenu"  style="display: block">
 
-        <li ><a id="reports_tab" href="<?php echo base_url('index.php/CorpDriverReport'); ?>">Driver REPORTS</a></li>
+        <li ><a id="reports_tab1" href="<?php echo base_url('index.php/CorpDriverReport'); ?>">Driver Report</a></li>
+        <li ><a id="reports_tab2" href="<?php echo base_url('index.php/AdminOrderReport'); ?>">Order Reports</a></li>
 
 
     </ul>

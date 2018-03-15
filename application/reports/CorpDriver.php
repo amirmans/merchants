@@ -1,29 +1,12 @@
 <?php
 
-require APPPATH."/libraries/koolreport/autoload.php";
+require_once(__DIR__ . '/BaseReport.php');
 
-class CorpDriver extends \koolreport\KoolReport
+class CorpDriver extends BaseReport
 {
     use \koolreport\clients\Bootstrap;
     use \koolreport\clients\jQuery;
 
-    function settings()
-    {
-        return array(
-            "assets"=>array(
-                "path"=>"../../assets",
-                "url"=>base_url()."assets",
-            ),
-            "dataSources"=>array(
-                "Corp"=>array(
-                    "connectionString"=>"mysql:host=localhost;dbname=artdoost_local_tapin",
-                    "username"=>"artdoost_dbadmin",
-                    "password"=>"id0ntknow",
-                    "charset"=>"utf8"
-                )
-            )
-        );
-    }
     function setup()
     {
         $this->src('Corp')
