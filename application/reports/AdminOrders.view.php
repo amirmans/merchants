@@ -39,7 +39,7 @@ Table::create(array(
     "dataStore"=>$this->dataStore("corp_orders"),
 //    "showFooter"=>true,
     "paging"=>array(
-        "pageSize"=>15,
+        "pageSize"=>40,
         "pageIndex"=>0,
         "align"=>"center"
     ),
