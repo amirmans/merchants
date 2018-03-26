@@ -56,7 +56,9 @@ class Site extends CI_Controller {
         $data['order_status'] = $order_status;
         $data['orderlist'] = $this->m_site->get_business_order_list($param);
         $order_detail['order_detail'] = $this->m_site->get_order_detail($data['orderlist'][0]['order_id']);
-        $order_detail['orderlist'] = $this->m_site->get_ordelist_order($data['orderlist'][0]['order_id'], $param['businessID'], $param['sub_businesses']);
+        $order_detail['orderlist'] = $this->m_site->get_ordelist_order($data['orderlist'][0]['order_id']
+            , $data['orderlist'][0]['order_type']
+            , $param['businessID'], $param['sub_businesses']);
         $order_detail['consumer'] = $this->m_site->check_birthday_first_order($data['orderlist'][0]['order_id']);
         $data['order_view'] = $this->load->view('v_order_view', $order_detail, TRUE);
         $this->load->view('v_orderlist', $data);
@@ -85,10 +87,11 @@ class Site extends CI_Controller {
         is_login() ? '' : redirect('index.php/login');
         $param = $_REQUEST;
         $order_id = $param['order_id'];
+        $order_type = $param['order_type'];
         $param['businessID'] = is_login();
         $param['sub_businesses'] = sub_businesses();
         $data['order_detail'] = $this->m_site->get_order_detail($order_id);
-        $data['orderlist'] = $this->m_site->get_ordelist_order($order_id, $param['businessID'], $param['sub_businesses']);
+        $data['orderlist'] = $this->m_site->get_ordelist_order($order_id, $order_type, $param['businessID'], $param['sub_businesses']);
         $data['consumer'] = $this->m_site->check_birthday_first_order($order_id);
         $return['order_view'] = $this->load->view('v_order_view', $data, TRUE);
         echo json_encode($return);

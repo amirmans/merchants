@@ -47,6 +47,8 @@
                 <span class="time">Ordered <?php echo time_elapsed_string($orderlist[0]['seconds']); ?></span>
 
                 <br>
+                <span>Number of items in order: <b><?php echo $orderlist[0]['no_items']; ?></b></span>
+                <br>
                 <span class="note">Note: <?php echo $orderlist[0]['note']; ?></span>
 
 

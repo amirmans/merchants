@@ -1,6 +1,6 @@
 <?php for ($i = 0; $i < count($orderlist); $i++) {
     ?>
-    <li onclick="display_order_detail('<?php echo $orderlist[$i]['order_id']; ?>')">
+    <li onclick="display_order_detail('<?php echo $orderlist[$i]['order_id']; ?>', '<?php echo $orderlist[$i]['order_type']; ?>')">
         <a href="javascript:void(0)"  id="order_id_<?php echo $orderlist[$i]['order_id']; ?>"  class="item clearfix <?php
         if ($i == 0) {
             //echo 'active_detail_order';

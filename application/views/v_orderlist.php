@@ -187,7 +187,7 @@
 
                                 <?php for ($i = 0; $i < count($orderlist); $i++) {
                                     ?>
-                                    <li  onclick="display_order_detail('<?php echo $orderlist[$i]['order_id']; ?>')" class="<?php
+                                    <li  onclick="display_order_detail('<?php echo $orderlist[$i]['order_id']; ?>', '<?php echo $orderlist[$i]['order_type']; ?>')" class="<?php
                                     if ($orderlist[$i]['status'] == "1") {
                                         echo 'pending_order_color';
                                     }
@@ -302,9 +302,9 @@
 
         <script>
             window.history.forward(-1);
-            function display_order_detail(order_id)
+            function display_order_detail(order_id, order_type)
             {
-                var param = {order_id: order_id};
+                var param = {order_id:order_id, order_type:order_type};
                 $.post("<?php echo base_url('index.php/site/order_view') ?>", param)
                         .done(function (data) {
                             data = jQuery.parseJSON(data);

@@ -25,7 +25,7 @@ use \koolreport\inputs\TextBox;
     <h3><script> document.write(new Date().toLocaleDateString()); </script> </h3>
 </div>
 
-<h1>Salesforce</h1>
+<h1>vTech Communication</h1>
 <form method="post">
     <label>Order Status:</label>
     <?php TextBox::create(array(

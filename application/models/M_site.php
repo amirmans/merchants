@@ -385,7 +385,8 @@ class M_site extends CI_Model {
     }
 
     function get_business_order_list($param) {
-        $this->db->select('o.order_id,o.payment_id,o.total,o.date,o.no_items,o.status,cp.nickname,TIMESTAMPDIFF(SECOND,o.date,now()) as seconds,oc.is_refunded');
+        $this->db->select('o.order_id,o.payment_id,o.total,o.date,o.no_items,o.status,cp.nickname
+        ,TIMESTAMPDIFF(SECOND,o.date,now()) as seconds,oc.is_refunded, o.order_type');
         $this->db->from('order as o');
         $this->db->join('consumer_profile as cp', 'o.consumer_id = cp.uid', 'left');
         $this->db->join('order_charge as oc', 'oc.order_id = o.order_id', 'left');
@@ -429,27 +430,50 @@ class M_site extends CI_Model {
         return $row;
     }
 
-    function get_ordelist_order($order_id, $businessId, $p_sub_businesses) {
-        $this->db->select('o.order_id,o.payment_id,o.total,o.date,cp.nickname, o.pd_mode, o.pd_time,
+    function get_ordelist_order($order_id, $order_type, $businessId, $p_sub_businesses) {
+        if ($order_type == 0) {
+            $this->db->select('o.order_id,o.payment_id,o.total,o.date,cp.nickname, o.pd_mode, o.pd_time,
         cp.sms_no,cp.uid,o.status
         ,o.note,o.subtotal,o.tip_amount,o.tax_amount,o.points_dollar_amount
         ,TIMESTAMPDIFF(SECOND,o.date,now()) as seconds,oc.is_refunded
         ,o.delivery_charge_amount,o.promotion_code,o.promotion_discount_amount,cd.delivery_instruction
-        ,cd.delivery_address,cd.delivery_time,o.consumer_delivery_id');
-        $this->db->from('order as o');
-        $this->db->join('consumer_profile as cp', 'o.consumer_id = cp.uid', 'left');
-        $this->db->join('order_charge as oc', 'oc.order_id = o.order_id', 'left');
-        $this->db->join('consumer_delivery as cd', 'cd.consumer_delivery_id = o.consumer_delivery_id', 'left');
-        $this->db->where('o.order_id', $order_id);
+        ,cd.delivery_address,cd.delivery_time,o.consumer_delivery_id, o.no_items');
+            $this->db->from('order as o');
+            $this->db->join('consumer_profile as cp', 'o.consumer_id = cp.uid', 'left');
+            $this->db->join('order_charge as oc', 'oc.order_id = o.order_id', 'left');
+            $this->db->join('consumer_delivery as cd', 'cd.consumer_delivery_id = o.consumer_delivery_id', 'left');
+            $this->db->where('o.order_id', $order_id);
 //        if ($p_sub_businesses == "") {
 //            $this->db->where('o.business_id', $businessId);
 //        } else {
 //            $sub_businesses = explode(",", $p_sub_businesses);
 //            $this->db->where_in('o.business_id', $sub_businesses);
 //        }
-        $this->db->where('o.business_id', $businessId);
+            $this->db->where('o.business_id', $businessId);
 
-        $this->db->limit(1);
+            $this->db->limit(1);
+        } else {
+            $this->db->select('o.order_id,o.payment_id,o.total,o.date,cp.nickname, o.pd_mode, o.pd_time,
+        cp.sms_no,cp.uid,o.status
+        ,o.note,o.subtotal,o.tip_amount,o.tax_amount,o.points_dollar_amount
+        ,TIMESTAMPDIFF(SECOND,o.date,now()) as seconds,oc.is_refunded
+        ,o.delivery_charge_amount,o.promotion_code,o.promotion_discount_amount
+        ,cd.location_abbr as delivery_address ,cd.delivery_time,o.consumer_delivery_id, o.no_items');
+            $this->db->from('order as o');
+            $this->db->join('consumer_profile as cp', 'o.consumer_id = cp.uid', 'left');
+            $this->db->join('order_charge as oc', 'oc.order_id = o.order_id', 'left');
+            $this->db->join('corp as cd', 'corp_id = o.consumer_delivery_id', 'left');
+            $this->db->where('o.order_id', $order_id);
+//        if ($p_sub_businesses == "") {
+//            $this->db->where('o.business_id', $businessId);
+//        } else {
+//            $sub_businesses = explode(",", $p_sub_businesses);
+//            $this->db->where_in('o.business_id', $sub_businesses);
+//        }
+            $this->db->where('o.business_id', $businessId);
+
+            $this->db->limit(1);
+        }
         $result = $this->db->get();
         $zzz = $this->db->last_query();
         $row = $result->result_array();
@@ -1254,7 +1278,8 @@ class M_site extends CI_Model {
     }
 
     function get_new_orders($param) {
-        $this->db->select('o.order_id,o.payment_id,o.total,o.date,o.no_items,o.status,TIMESTAMPDIFF(SECOND,o.date,now()) as seconds,cp.nickname');
+        $this->db->select('o.order_id,o.payment_id,o.total,o.date,o.no_items,o.status, o.order_type
+        ,TIMESTAMPDIFF(SECOND,o.date,now()) as seconds,cp.nickname');
         $this->db->from('order as o');
         $this->db->join('consumer_profile as cp', 'o.consumer_id = cp.uid', 'left');
         $this->db->where('o.status !=', 0);

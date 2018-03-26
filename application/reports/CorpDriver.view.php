@@ -23,7 +23,7 @@ use \koolreport\widgets\koolphp\Table;
             <h3>Orders for <script> document.write(new Date().toLocaleDateString()); </script> </h3>
         </div>
 
-        <h1>Salesforce</h1>
+        <h1>vTech Communication</h1>
 
 
         <?php
@@ -52,6 +52,12 @@ use \koolreport\widgets\koolphp\Table;
                         "cssStyle"=>"width:80px",
                     "footer"=>"sum",
                     "footerText"=>"Total: @value"
+                ),
+                "Delivery Time"=>array(
+                    "cssStyle"=>"width:70px"
+                ),
+                "Location"=>array(
+                    "cssStyle"=>"width:150px"
                 ),
                 "Order Note"=>array(
 //                    "cssStyle"=>"font-size: 11px",
