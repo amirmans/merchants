@@ -1,3 +1,25 @@
+
+<!--<div class="loading"><img src="--><?php //echo base_url('assets/img/loading.gif'); ?><!--" alt="loading-img"></div>-->
+<div id="top" class="clearfix">
+
+    <!-- Start App Logo -->
+    <!--    <div class="applogo">-->
+    <!--        --><?php //$reportPath = base_url('index.php/CorpDriverReport'); ?>
+    <!--        <a href="--><?php //echo base_url(); ?><!--" class="logo">Tap-in</a>-->
+    <!--    </div>-->
+    <ul class="topmenu"  style="display: block">
+
+        <li ><a id="reports_tab1" href="<?php echo base_url('index.php/CorpDriverReport'); ?>">Driver Report</a></li>
+        <li ><a id="reports_tab2" href="<?php echo base_url('index.php/AdminOrderReport'); ?>">Order Reports</a></li>
+
+
+    </ul>
+
+    <!-- End Top Right -->
+
+</div>
+
+
 <?php
 use \koolreport\widgets\koolphp\Table;
 use \koolreport\inputs\TextBox;
@@ -37,7 +59,7 @@ use \koolreport\inputs\TextBox;
 <?php
 Table::create(array(
     "dataStore"=>$this->dataStore("corp_orders"),
-//    "showFooter"=>true,
+    "showFooter"=>true,
     "paging"=>array(
         "pageSize"=>40,
         "pageIndex"=>0,
