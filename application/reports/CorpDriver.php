@@ -37,9 +37,9 @@ class CorpDriver extends BaseReport
                     left join corp corp on corp.corp_id = o.consumer_delivery_id
                     left join consumer_profile cp on cp.uid = o.consumer_id
                     left join business_customers b on o.business_id = b.businessID
-                where  (o.status = 1 or o.status = 2 or o.`status` = 3 or o.status = 5) 
-                and o.business_id in (corp.merchant_ids)
-                and (o.date > :startDate AND o.date <= :endDate)
+                where  (o.status = 2 or o.`status` = 3 or o.status = 5)
+                and  FIND_IN_SET (o.business_id, corp.merchant_ids)
+                and  ( (CAST(o.date AS DATE)) <= :endDate and (CAST(o.date AS DATE)) >= :startDate )
                 order by merchant, delivery_time;")
             ->params(array(
                 ":startDate"=>$this->params["dateRange"][0],
@@ -47,4 +47,5 @@ class CorpDriver extends BaseReport
             ))
         ->pipe($this->dataStore("corp_orders"));
     }
+
 }

@@ -142,7 +142,8 @@ class Site extends CI_Controller {
 
                         $this->m_site->update_order_status($order_id, $charge_id, $response['amount'], $order_payment_detail['consumer_id']);
 
-                        $order_info = $this->m_site->get_ordelist_order($order_id, $business_id, $param['sub_businesses']);
+                        $order_info = $this->m_site->get_ordelist_order($order_id, $order_payment_detail['order_type']
+                            ,$business_id, $param['sub_businesses']);
                         $email['order_detail'] = $this->m_site->get_order_detail($order_id);
                         $redeemed_points = $this->m_site->get_redeemed_points($order_id);
                         if (count($redeemed_points) > 0) {
@@ -198,13 +199,14 @@ class Site extends CI_Controller {
             $response = error_res("Consumer credit card detail not found");
         }
 //        echo json_encode($response);
-        if (!empty($response['msg'])) {
-            // something went on, if this is an corp account, just record it and pass success. We will charge the
+        if ($response['status'] != 1) {
+            // something went wrong, if this is an corp account, just record it and pass success. We will charge the
             // employee later
             if ($order_payment_detail['order_type'] == 1) {
                 $this->m_site->update_order_payment_result($order_id, $response['msg']);
                 $response['msg'] ="Success!";
                 $response['status'] =1;
+                $response['amount'] = $order_payment_detail['total'];
             }
         }
         return json_encode($response);
