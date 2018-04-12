@@ -307,13 +307,11 @@ class Site extends CI_Controller {
     }
 
     function email_configration() {
-
-
         $email = "tap-in@tapforall.com";
         $this->load->library('email');
         $config['protocol'] = 'smtp';
         $config['smtp_host'] = 'mail.tapforall.com';
-        $config['smtp_port'] = '26';
+        $config['smtp_port'] = '587';
         $config['smtp_timeout'] = '7';
         $config['smtp_user'] = $email;
         $config['smtp_pass'] = 'TigM0m!!';
@@ -332,8 +330,17 @@ class Site extends CI_Controller {
         $this->email->to($email);
         $this->email->subject($subject);
         $this->email->message($body);
-        $this->email->send();
-//        echo $this->email->print_debugger();
+
+        if($this->email->send()) {
+            $this->session->set_flashdata("email_sent", "Email sent successfully.");
+            log_message('info', "Email to $email was sent successfully!");
+        }
+        else {
+            $this->session->set_flashdata("email_sent", "Error in sending Email.");
+            log_message('error', "Email to $email could not be sent!");
+            echo $this->email->print_debugger();
+        }
+
     }
 
     function send_mail_demo() {

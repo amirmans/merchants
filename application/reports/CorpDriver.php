@@ -14,8 +14,8 @@ class CorpDriver extends BaseReport
     {
         return array(
             "dateRange"=>array(
-                "2018-04-01",
-                "2018-04-31",
+                date("Y-m-d"),
+                date("Y-m-d")
             ),
         );
     }
@@ -26,7 +26,6 @@ class CorpDriver extends BaseReport
             "dateRange"=>"dateRange"
         );
     }
-
 
     function setup()
     {

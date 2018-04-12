@@ -1,23 +1,25 @@
 
-<!--<div class="loading"><img src="--><?php //echo base_url('assets/img/loading.gif'); ?><!--" alt="loading-img"></div>-->
-<div id="top" class="clearfix">
+<link href="<?php echo base_url('assets/css/root.css'); ?>" rel="stylesheet">
+<link href="<?php echo base_url('assets/css/plugin/bootstrap-toggle/bootstrap-toggle.min.css'); ?>" rel="stylesheet">
+<link href="<?php echo base_url('assets/css/plugin/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css'); ?>" rel="stylesheet">
+<link href="<?php echo base_url('assets/css/plugin/sweet-alert/sweet-alert.css'); ?>" rel="stylesheet">
+<link href="<?php echo base_url('assets/css/plugin/date-range-picker/daterangepicker.css'); ?>" rel="stylesheet">
+<link href="<?php echo base_url('assets/css/plugin/bootstrap-timepicker/bootstrap-datetimepicker.css'); ?>" rel="stylesheet">
 
-    <!-- Start App Logo -->
-<!--    <div class="applogo">-->
-<!--        --><?php //$reportPath = base_url('index.php/CorpDriverReport'); ?>
-<!--        <a href="--><?php //echo base_url(); ?><!--" class="logo">Tap-in</a>-->
-<!--    </div>-->
-    <ul class="topmenu"  style="display: block">
+<!-- <div class="loading"><img src="<?php echo base_url('assets/img/loading.gif'); ?>" alt="loading-img"></div> -->
+        <div id="top" class="clearfix">
 
-        <li ><a id="reports_tab1" href="<?php echo base_url('index.php/CorpDriverReport'); ?>">Driver Report</a></li>
-        <li ><a id="reports_tab2" href="<?php echo base_url('index.php/AdminOrderReport'); ?>">Order Reports</a></li>
+            <!-- Start App Logo -->
+            <div class="applogo">
+                <a href="<?php echo base_url(); ?>" class="logo">Tap-in</a>
+            </div>
+            <!-- End Top Right -->
+            <ul class="topmenu"  style="display: block">
+                    &nbsp;&nbsp; <li ><a id="orderlist_tab" href="<?php echo base_url('index.php/AdminOrderReport'); ?>">Admin Report</a></li>
+                    <li ><a id="product_tab" href="<?php echo base_url('index.php/CorpDriverReport'); ?>">Driver Report</a></li>
+                  </ul>
+        </div>
 
-
-    </ul>
-
-    <!-- End Top Right -->
-
-</div>
 
 
 <?php
@@ -32,7 +34,7 @@ use \koolreport\inputs\DateRangePicker;
         <style>
             .cssHeader
             {
-                background-color:#FFA500;
+                background-color:rgb(244, 118, 40);
                 font-size: 15px;
             }
             .cssItem

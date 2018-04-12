@@ -277,7 +277,7 @@ function limit_text($text, $limit) {
                                     </td>
                                     <td >
 
-                                        <p style="text-align: right;margin-right: 10px"><?php
+                                        <p style="text-align: right;margin-right: 14px"><?php
                                             echo $delivery_address;
                                             ?></p>
                                     </td>
@@ -289,7 +289,7 @@ function limit_text($text, $limit) {
                                     </td>
                                     <td >
 
-                                        <p style="text-align: right;margin-right: 10px"><?php
+                                        <p style="text-align: right;margin-right: 14px"><?php
                                             echo $delivery_time;
                                             ?></p>
                                     </td>
@@ -321,7 +321,7 @@ function limit_text($text, $limit) {
                                 <td bgcolor="#EBEBEB">
                                     <p style="padding-left: 15px"><span style="color:#ABABAB">ORDER #</span><?php echo $order_id; ?></p>
                                     <p style="padding-left: 15px;color: #4DBEC7">ORDER IN PROCESS</p>
-                                    <p style="padding-left: 15px"><span style="color:#ABABAB">AVERAGE WAITING TIME 20 MINS</span></p>
+<!--                                    <p style="padding-left: 15px"><span style="color:#ABABAB">AVERAGE WAITING TIME 20 MINS</span></p>-->
                                 </td>
                                 <td><span style="color: #ABABAB;font-weight: bold;font-size: 30px">$<?php echo $total; ?></span></td>
                             </tr>

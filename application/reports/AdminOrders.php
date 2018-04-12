@@ -21,19 +21,22 @@ class AdminOrders extends BaseReport
 	o.subtotal AS 'Sub Total',
 	o.reject_reason AS 'Reject Reason',
 	o.payment_processor_message AS 'Payment Error',
-	c.sms_no AS 'Phone' 
+	c.sms_no AS 'Phone'
 FROM
 	`order` o
 	LEFT JOIN business_customers b ON b.businessID = o.business_id
-	LEFT JOIN consumer_profile c ON c.uid = o.consumer_id 
+	LEFT JOIN consumer_profile c ON c.uid = o.consumer_id
 WHERE
-	o.STATUS = :status 
+	o.STATUS = :status
 	AND  FIND_IN_SET(o.business_id,(SELECT merchant_ids FROM `corp` WHERE corp_name = 'Vtech Communications'))
+    and  ( (CAST(o.date AS DATE)) <= :endDate and (CAST(o.date AS DATE)) >= :startDate )
 	ORDER BY
 	o.date DESC;
 	")
             ->params(array(
-                ":status"=>$this->params["status"]
+                ":status"=>$this->params["status"],
+                ":startDate"=>$this->params["dateRange"][0],
+                ":endDate"=>$this->params["dateRange"][1]
         ))
         ->pipe($this->dataStore("corp_orders"));
     }
@@ -42,13 +45,18 @@ WHERE
     {
         return array(
             "status"=>1,
+            "dateRange"=>array(
+                date("Y-m-d"),
+                date("Y-m-d")
+            )
         );
     }
 
     protected function bindParamsToInputs()
     {
         return array(
-            "status"=>"statusInput",
+            "dateRange"=>"dateRange",
+            "status"=>"statusInput"
         );
     }
 }

@@ -1,29 +1,31 @@
 
-<!--<div class="loading"><img src="--><?php //echo base_url('assets/img/loading.gif'); ?><!--" alt="loading-img"></div>-->
-<div id="top" class="clearfix">
+<link href="<?php echo base_url('assets/css/root.css'); ?>" rel="stylesheet">
+<link href="<?php echo base_url('assets/css/plugin/bootstrap-toggle/bootstrap-toggle.min.css'); ?>" rel="stylesheet">
+<link href="<?php echo base_url('assets/css/plugin/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css'); ?>" rel="stylesheet">
+<link href="<?php echo base_url('assets/css/plugin/sweet-alert/sweet-alert.css'); ?>" rel="stylesheet">
+<link href="<?php echo base_url('assets/css/plugin/date-range-picker/daterangepicker.css'); ?>" rel="stylesheet">
+<link href="<?php echo base_url('assets/css/plugin/bootstrap-timepicker/bootstrap-datetimepicker.css'); ?>" rel="stylesheet">
 
-    <!-- Start App Logo -->
-    <!--    <div class="applogo">-->
-    <!--        --><?php //$reportPath = base_url('index.php/CorpDriverReport'); ?>
-    <!--        <a href="--><?php //echo base_url(); ?><!--" class="logo">Tap-in</a>-->
-    <!--    </div>-->
-    <ul class="topmenu"  style="display: block">
+<!-- <div class="loading"><img src="<?php echo base_url('assets/img/loading.gif'); ?>" alt="loading-img"></div> -->
+        <div id="top" class="clearfix">
 
-        <li ><a id="reports_tab1" href="<?php echo base_url('index.php/CorpDriverReport'); ?>">Driver Report</a></li>
-        <li ><a id="reports_tab2" href="<?php echo base_url('index.php/AdminOrderReport'); ?>">Order Reports</a></li>
-
-
-    </ul>
-
-    <!-- End Top Right -->
-
-</div>
+            <!-- Start App Logo -->
+            <div class="applogo">
+                <a href="<?php echo base_url(); ?>" class="logo">Tap-in</a>
+            </div>
+            <!-- End Top Right -->
+            <ul class="topmenu"  style="display: block">
+                    &nbsp;&nbsp; <li ><a id="orderlist_tab" href="<?php echo base_url('index.php/AdminOrderReport'); ?>">Admin Report</a></li>
+                    <li ><a id="product_tab" href="<?php echo base_url('index.php/CorpDriverReport'); ?>">Driver Report</a></li>
+                  </ul>
+        </div>
 
 
 <?php
 use \koolreport\widgets\koolphp\Table;
 use \koolreport\inputs\TextBox;
-//use \koolreport\Select2;
+use \koolreport\inputs\DateRangePicker;
+use \koolreport\Select2;
 ?>
 <html>
 <head>
@@ -31,7 +33,7 @@ use \koolreport\inputs\TextBox;
     <style>
         .cssHeader
         {
-            background-color:#FFA500;
+            background-color:rgb(244, 118, 40);
             font-size: 15px;
         }
         .cssItem
@@ -43,18 +45,57 @@ use \koolreport\inputs\TextBox;
 </head>
 <body>
 <div align="center">
-    <h1>Orders With Given Status </h1>
-    <h3><script> document.write(new Date().toLocaleDateString()); </script> </h3>
+    <h1>vTech Communication</h1>
+    <h3>Orders With Given Status </h3>
 </div>
-
-<h1>vTech Communication</h1>
 <form method="post">
-    <label>Order Status:</label>
-    <?php TextBox::create(array(
-        "name"=>"statusInput"
-    ));?>
-    <button>Submit</button>
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <h4>Choose a date</h4>
+            <div class="form-group">
+                <?php
+                DateRangePicker::create(array(
+                    "name"=>"dateRange"
+                ))
+                ?>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <div class="form-group">
+                <h4>Choose order status</h4>
+                    <?php TextBox::create(array(
+                        "name"=>"statusInput"
+                    ));?>
+
+
+<!--                --><?php
+//                MultiSelect::create(array(
+//                    "name"=>"customers",
+//                    "dataStore"=>$this->dataStore("corp_orders"),
+//                    "dataBind"=>array(
+//                        "text"=>"customerName",
+//                        "value"=>"customerNumber",
+//                    ),
+//                    "attributes"=>array(
+//                        "class"=>"form-control",
+//                        "size"=>10,
+//                    )
+//                ));
+//                ?>
+
+
+            </div>
+            <div class="form-group text-center">
+                <button class="btn btn-success">
+                    <i class="glyphicon glyphicon-refresh"></i> Load</button>
+            </div>
+        </div>
+    </div>
 </form>
+
 
 <?php
 Table::create(array(
