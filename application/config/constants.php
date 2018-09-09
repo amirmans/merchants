@@ -93,6 +93,11 @@ defined('ORDER_STATUS_NEW')           OR define('ORDER_STATUS_NEW', 1);
 
 
 /* payment processor related constants in USD*/
-defined('PROCESSING_FEE_PERCENTAGE')           OR define('PROCESSING_FEE_PERCENTAGE', 0.029);
+defined('PROCESSING_FEE_PERCENTAGE')      OR define('PROCESSING_FEE_PERCENTAGE', 0.029);
 defined('PROCESSING_FEE_FIXED')           OR define('PROCESSING_FEE_FIXED', 0.30);
+
+/* Referral constants */
+defined('PointTypeForReferral')           OR define('PointTypeForReferral', 5);
+defined('DollarAmountForReferral')        OR define('DollarAmountForReferral', 5);
+
 

@@ -458,7 +458,7 @@ class M_site extends CI_Model {
         ,o.note,o.subtotal,o.tip_amount,o.tax_amount,o.points_dollar_amount
         ,TIMESTAMPDIFF(SECOND,o.date,now()) as seconds,oc.is_refunded
         ,o.delivery_charge_amount,o.promotion_code,o.promotion_discount_amount
-        ,cd.location_abbr as delivery_address ,cd.delivery_time,o.consumer_delivery_id, o.no_items');
+        ,cd.location_abbr as delivery_address ,cd.delivery_time,cd.driver_pickup_time, o.consumer_delivery_id, o.no_items');
             $this->db->from('order as o');
             $this->db->join('consumer_profile as cp', 'o.consumer_id = cp.uid', 'left');
             $this->db->join('order_charge as oc', 'oc.order_id = o.order_id', 'left');
@@ -1859,5 +1859,41 @@ class M_site extends CI_Model {
         return $return;
 
     }
+
+    function getPointsForOneDollar($business_id) {
+        $query = "select * from points_map where business_id = $business_id;";
+
+        $resultArr = $this->db->query($query);
+        $result = $resultArr->row_array();
+        return (round($result['points'] / $result['equivalent']));
+    }
+
+
+    function get_referrer_info($email1, $email2) {
+        $sqlStatement = "select cp.email1, cp.uid from consumer_profile cp
+            left join referral r on r.referrer_id = cp.uid
+            where r.referred_email = ? or r.referred_email = ?;";
+
+        $result = $this->db->query($sqlStatement, array($email1, $email2));
+        $row = $result->row_array();
+
+        return ($row);
+    }
+
+    function insertReferralPointsFor($consumer_id, $business_id, $pointReason, $dollarAmountForRewards) {
+
+        $returnVal = 1;
+
+        $pointsForOneDollar = $this->getPointsForOneDollar($business_id);
+        $points = $pointsForOneDollar * $dollarAmountForRewards;
+        $prepared_stmt = "INSERT INTO points (`consumer_id`, `business_id`, `points_reason_id`, `points`
+          , `order_id` , `available`, `time_earned`, `time_redeemed`, `time_expired`) 
+          VALUES (?, ?, ?, ?, 0, 1, now(), NULL, NULL)";
+
+        $this->db->query($prepared_stmt, array($consumer_id, $business_id, $pointReason, $points));
+
+        return $returnVal;
+    }
+
 
 }

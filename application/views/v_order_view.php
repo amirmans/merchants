@@ -72,10 +72,10 @@
                 ?>
             </div>
             <div class="col-md-6  padding-0 text-right text-right1" >
-                <?php if ($orderlist[0]['delivery_charge_amount'] > 0) {
-                    ?>
+<!--                --><?php //if ($orderlist[0]['delivery_charge_amount'] > 0) {?>
+                <?php if (isItaDeliveryOrder($orderlist[0])) {?>
 
-                    <span class="delivery_time">Delivery Time : <b><?php echo date('h :i a', strtotime($orderlist[0]['delivery_time'])); ?> </b></span>
+                    <span class="delivery_time">Have order ready at : <b><?php echo date('h :i a', strtotime($orderlist[0]['driver_pickup_time'])); ?> </b></span>
                     <br>
                     <span class="delivery_address">Delivery Address : <b><?php echo $orderlist[0]['delivery_address']; ?></b> </span>
                     <br>
@@ -601,6 +601,3 @@
 Send Message
 </a>
 <?php } ?>
-
-
-

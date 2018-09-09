@@ -8,7 +8,7 @@ class MerchantNotification extends CI_Controller {
     public function __construct() {
         parent::__construct();
 ////////////DEFAULT LOAD BELOW FUNCTIONLITY WHEN CALL V1 CONTROLLER
-/////// LOAD LIBRARY VALIDATION CLASS
+/////// LOAD LIBRARY VALIDATION CLASSa
         $this->load->library('validation');
 ///// LOAD MODEL CLASS
         $this->load->model('m_site');
@@ -24,7 +24,7 @@ class MerchantNotification extends CI_Controller {
         $this->load->library('email');
         $config['protocol'] = 'smtp';
         $config['smtp_host'] = 'mail.tapforall.com';
-        $config['smtp_port'] = '26';
+        $config['smtp_port'] = '587';
         $config['smtp_timeout'] = '7';
         $config['smtp_user'] = $email;
         // $config['smtp_pass'] = 'b#Fq0w<ZAM#u<&';
@@ -33,6 +33,8 @@ class MerchantNotification extends CI_Controller {
         $config['newline'] = "\r\n";
         $config['mailtype'] = 'html'; // or html
         $config['validation'] = TRUE; // bool whether to validate email or not
+        $config['smtp_crypto'] = '';
+
         $this->email->initialize($config);
         $this->email->from($email, 'Tap-in');
     }

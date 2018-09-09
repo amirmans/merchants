@@ -28,7 +28,7 @@ FROM
 	LEFT JOIN consumer_profile c ON c.uid = o.consumer_id
 WHERE
 	o.STATUS = :status
-	AND  FIND_IN_SET(o.business_id,(SELECT merchant_ids FROM `corp` WHERE corp_name = 'Vtech Communications'))
+	AND  FIND_IN_SET(o.business_id,(SELECT merchant_ids FROM `corp` WHERE corp_name = 'Nvoicepay'))
     and  ( (CAST(o.date AS DATE)) <= :endDate and (CAST(o.date AS DATE)) >= :startDate )
 	ORDER BY
 	o.date DESC;

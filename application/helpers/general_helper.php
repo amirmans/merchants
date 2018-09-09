@@ -218,4 +218,18 @@ function getProcessingFee($amount, $number_of_processed_order) {
 
 }
 
+function isItaDeliveryOrder($orderInfo) {
+    $returnVal = false;
+
+    if ( (empty($orderInfo)) || empty(($orderInfo['consumer_delivery_id'])) ) {
+        $returnVal = false;
+    } else {
+        if ($orderInfo['consumer_delivery_id'] > 0) {
+            $returnVal = true;
+        }
+    }
+
+
+    return ($returnVal);
+}
 
