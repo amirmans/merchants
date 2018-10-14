@@ -1412,7 +1412,7 @@ class M_site extends CI_Model {
             $temp = explode(".", $_FILES[$file_key]["name"]);
             $extension = end($temp);
 
-            $temp_name = date('YmdH');
+            $temp_name = date('ymdHis');
             $file_name = $temp_name . "." . $extension;
             $file_path = $folder_path . "/" . $file_name;
             if (move_uploaded_file($_FILES[$file_key]['tmp_name'], $file_path)) {

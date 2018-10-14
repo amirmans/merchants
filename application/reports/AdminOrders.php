@@ -9,6 +9,7 @@ class AdminOrders extends BaseReport
     use \koolreport\clients\Bootstrap;
     use \koolreport\clients\jQuery;
 
+    /* corp with the name of tapforall has all the business ids that use for all the corps*/
     function setup()
     {
         $this->src('Corp')
@@ -28,7 +29,7 @@ FROM
 	LEFT JOIN consumer_profile c ON c.uid = o.consumer_id
 WHERE
 	o.STATUS = :status
-	AND  FIND_IN_SET(o.business_id,(SELECT merchant_ids FROM `corp` WHERE corp_name = 'Nvoicepay'))
+	AND  FIND_IN_SET(o.business_id,(SELECT merchant_ids FROM `corp` WHERE corp_name = 'TapForAll'))
     and  ( (CAST(o.date AS DATE)) <= :endDate and (CAST(o.date AS DATE)) >= :startDate )
 	ORDER BY
 	o.date DESC;
