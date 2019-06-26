@@ -41,7 +41,7 @@ class M_site extends CI_Model {
 
 
         $message = "There is a new order!";
-        require_once APPPATH . 'libraries/Twilio/autoload.php'; // Loads the Twilio library
+        // require_once APPPATH . 'libraries/Twilio/autoload.php'; // Loads the Twilio library
         $TapInServerConstsParentPath = APPPATH . "../" . "../" . staging_directory() . '/include/consts_server.inc';
         require_once $TapInServerConstsParentPath; // Loads our consts
 //        use Twilio\Rest\Client;
@@ -130,12 +130,13 @@ class M_site extends CI_Model {
             }
         }
 
-        $subject = "New order from Tap-In";
-        $this->email->from('tap-in@tapforall.com', 'Tap-in');
-        $this->email->to($business_email);
-        $this->email->subject($subject);
-        $this->email->message($message);
-        $result = $this->email->send();
+        // $subject = "New order from Tap-In";
+        // $this->email->from('tap-in@tapforall.com', 'Tap-in');
+        // $this->email->to($business_email);
+        // $this->email->subject($subject);
+        // $this->email->message($message);
+        // $result = $this->email->send();
+        $result = sendGridEmail("New order from Tap-In", $message, "Tap In", "tap-in@tapforall.com", $business_email);
 //        echo $this->email->print_debugger();
         if ($result != true) {
             log_message('error', "Email to $business_email could not be sent!");
@@ -437,7 +438,7 @@ class M_site extends CI_Model {
         ,o.note,o.subtotal,o.tip_amount,o.tax_amount,o.points_dollar_amount
         ,TIMESTAMPDIFF(SECOND,o.date,now()) as seconds,oc.is_refunded
         ,o.delivery_charge_amount,o.promotion_code,o.promotion_discount_amount,cd.delivery_instruction
-        ,cd.delivery_address,cd.delivery_time,o.consumer_delivery_id, o.no_items');
+        ,cd.delivery_address,cd.delivery_time,o.consumer_delivery_id, o.no_items, o.pd_charge_amount');
             $this->db->from('order as o');
             $this->db->join('consumer_profile as cp', 'o.consumer_id = cp.uid', 'left');
             $this->db->join('order_charge as oc', 'oc.order_id = o.order_id', 'left');
@@ -506,8 +507,12 @@ class M_site extends CI_Model {
         $row1 = $result->result_array();
         $row[0]['main_business_name']=$row1[0]['username'];
 
-        foreach ($row as &$r) {
-            $optionsId = explode(',', $r['option_ids']);
+        foreach ($row as $r) {
+            if ($r['option_ids'])
+                $optionsId = explode(',', $r['option_ids']);
+            else {
+                $optionsId ="";
+            }
             $this->db->select('name');
             $this->db->from('option');
             $this->db->where_in('option_id', $optionsId);
@@ -545,7 +550,7 @@ class M_site extends CI_Model {
         $this->db->where('uid', $consumerId);
         $this->db->where('MONTH(dob) = MONTH(NOW()) AND DAY(dob) = DAY(NOW())', NULL);
         $birthday_result = $this->db->get();
-        $birthday_row = $birthday_result->row_array();
+        $birthday_row = $birthday_result->result_array();
 
         if (count($birthday_row) > 0) {
             $row['is_birthday'] = "1";
@@ -567,7 +572,8 @@ class M_site extends CI_Model {
         return $row;
     }
 
-    function get_order_payment_detail($order_id) {
+    function get_order_payment_detail($order_id)
+    {
         $this->db->select('o.total,o.consumer_id,o.cc_last_4_digits, o.order_type');
         $this->db->from('order as o');
         //$this->db->join('product as p', 'o.product_id = p.product_id', 'left');
@@ -576,11 +582,17 @@ class M_site extends CI_Model {
         $this->db->limit(1);
         $result = $this->db->get();
         $row = $result->result_array();
-        $return['total'] = $row[0]['total'];
-        $return['consumer_id'] = $row[0]['consumer_id'];
-        $return['order_type'] = $row[0]['order_type'];
 
-        $this->db->select('ci.cc_no,expiration_date,cp.email1');
+        $zzz = $this->db->last_query();
+
+        if (isset($row[0])) {
+            $return['total'] = $row[0]['total'];
+            $return['consumer_id'] = $row[0]['consumer_id'];
+            $return['order_type'] = $row[0]['order_type'];
+        }
+
+        $this->db->select('ci.cc_no,expiration_date, ci.cvv, ci.stripe_card_id
+            , ci.stripe_fingerprint, cp.stripe_consumer_id, cp.email1');
         $this->db->from('consumer_cc_info as ci');
         $this->db->join('consumer_profile cp', 'cp.uid = ci.consumer_id', 'left');
         $this->db->where('ci.consumer_id', $row[0]['consumer_id']);
@@ -588,7 +600,7 @@ class M_site extends CI_Model {
         $this->db->limit(1);
         $result = $this->db->get();
 
-        $zzz = $this->db->last_query();
+        $zzz2 = $this->db->last_query();
 
         $row = $result->result_array();
         if (count($row) > 0) {
@@ -620,9 +632,45 @@ class M_site extends CI_Model {
         $zzz = $this->db->last_query();
     }
 
+    // Insert stripe information, so next time we can use them
+    function update_card_info_for_stripe($consumerID, $cc_no, $card_id,$fingerprint) {
+        log_message('Info', "In update_card_info_for_stripe");
+        $updateStripInfoSql = "
+            update consumer_cc_info set stripe_card_id = '$card_id', stripe_fingerprint= '$fingerprint'
+            where consumer_id = $consumerID and cc_no = '$cc_no';";
+        $query1 = $this->db->query($updateStripInfoSql);
+
+        $updateStripeConsumer_id = "
+            update consumer_profile set stripe_consumer_id = '$consumerID' where uid= '$consumerID';";
+        $query2 = $this->db->query($updateStripeConsumer_id);
+
+        return ($query1 && $query2);
+    }
+/**
+ * Undocumented function
+ * Mask credit card number and cvv
+ * @param [type] $consumerID
+ * @param [type] $cc_no
+ * @return true of false depending if the update was successfully run
+ */
+    function maskCardInfoFor($consumerID, $cc_no) {
+        log_message('Info', "In maskCardInfoFor");
+        $ccMaskSql = " 
+        update consumer_cc_info set cc_no = 
+        concat (replace(
+            substr('$cc_no',1, LENGTH('$cc_no')-4)
+            , substr('$cc_no',1, LENGTH('$cc_no')-4) ,repeat('*',
+            length(substr('$cc_no',1, LENGTH('$cc_no')-4))
+        )), 
+        substring('$cc_no', -4))
+        where consumer_id = $consumerID
+        ;";
+        $query = $this->db->query($ccMaskSql);
+
+        return ($query);
+    }
 
     function update_order_status($order_id, $charge_id, $amount, $consumer_id) {
-
 
         $data['order_id'] = $order_id;
         $data['stripe_charge_id'] = $charge_id;
@@ -1491,7 +1539,7 @@ class M_site extends CI_Model {
         $this->db->where('time_redeemed IS NOT NULL', null, FALSE);
         $this->db->limit(1);
         $result = $this->db->get();
-        $row = $result->row_array();
+        $row = $result->result_array();
 
         return $row;
     }
@@ -1708,7 +1756,7 @@ class M_site extends CI_Model {
 
 
         $row['rejected_orders'] = $rejectedrow['rejected_orders'];
-        $row['total_processingfee'] = getProcessingFee($processingFeerow['total_processingfee']);
+        $row['total_processingfee'] = getProcessingFee($processingFeerow['total_processingfee'], 1);
         $row['total_refund'] = $refundrow['total_refund'];
 
         $zzz = $this->db->last_query();

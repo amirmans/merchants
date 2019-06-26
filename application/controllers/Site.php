@@ -1,4 +1,5 @@
 <?php
+use Stripe\Error\Card;
 
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
@@ -119,19 +120,45 @@ class Site extends CI_Controller {
                 if ($secret_key == "") {
                     $response = error_res("Please provide a stripe secret key first");
                 } else {
+                    // require_once('lib/stripe/stripe-php/init.php');
+                    \Stripe\Stripe::setApiKey($secret_key);
+                    $stripeCustomer=$order_payment_detail['cc_info']['stripe_consumer_id'];
+                    if (empty($stripeCustomer)) {
+                        $stripeCustomer = \Stripe\Customer::create([
+                        // 'source' => 'tok_visa',
+                        'id' => $order_payment_detail['consumer_id']
+                        ]);
+                    } else {
+                        $stripeCustomer= \Stripe\Customer::retrieve($order_payment_detail['consumer_id']);
+                    }
 
                     try {
                         if ($amount > 50) {
+                            if (empty($order_payment_detail['cc_info']['stripe_card_id'])) {
+                                $cardInfo = array(
+                                    'number' => $order_payment_detail['cc_info']['cc_no'],
+                                    'exp_month' => $order_payment_detail['cc_info']['month'],
+                                    'exp_year' => $order_payment_detail['cc_info']['year'],
+                                    'cvc' => $order_payment_detail['cc_info']['cvv']);
+                                $token = \Stripe\Token::create(['card'=>$cardInfo]);
 
-                            require_once('lib/stripe-php-master/init.php');
+                                $card = $stripeCustomer->sources->create(['source' => $token]);
+                                $card_id =$card[id];
+                                $fingerprint = $token[card][fingerprint];
+                                $stripeCustomerID = $stripeCustomer[id];
+                            } else {
+                                $stripeCustomerID =
+                                    $order_payment_detail['cc_info']['stripe_consumer_id'];
+                                $card_id = $order_payment_detail['cc_info']['stripe_card_id'];
+                            }
 
-                            \Stripe\Stripe::setApiKey($secret_key);
-                            $myCard = array('number' => $order_payment_detail['cc_info']['cc_no'], 'exp_month' => $order_payment_detail['cc_info']['month'], 'exp_year' => $order_payment_detail['cc_info']['year']);
-                            $charge = \Stripe\Charge::create(array('card' => $myCard
-                                , 'amount' => $amount
-                                , 'currency' => 'usd'
-                                , 'metadata' => array('order_id' => $order_id, 'business_id' => $business_id)
-                                ));
+                            $charge = \Stripe\Charge::create(array(
+                                'amount' => $amount, 'currency' => 'usd',
+                                'customer' => $stripeCustomerID,
+                                'source' => $card_id,
+                                'metadata' => array('order_id' => $order_id, 'business_id' => $business_id)
+                            ));
+
                             $response = success_res("your payment has been successfully processed");
                             $charge_id = $charge->id;
                         } else {
@@ -140,7 +167,20 @@ class Site extends CI_Controller {
                         }
                         $response['amount'] = $amount / 100;
 
-                        $this->m_site->update_order_status($order_id, $charge_id, $response['amount'], $order_payment_detail['consumer_id']);
+                        $this->m_site->update_order_status($order_id, $charge_id, $response['amount'],
+                            $order_payment_detail['consumer_id']);
+
+                            //save card token in the databas
+                        if (empty($order_payment_detail['cc_info']['stripe_fingerprint'])) {
+                            $success_code =
+                                $this->m_site->update_card_info_for_stripe(
+                                $order_payment_detail['consumer_id'],
+                                $order_payment_detail['cc_info']['cc_no'],
+                                $card_id,$fingerprint);
+                            $Success_code = $this ->m_site->maskCardInfoFor(
+                                $order_payment_detail['consumer_id'], $order_payment_detail['cc_info']['cc_no']
+                            );
+                        }
 
                         $order_info = $this->m_site->get_ordelist_order($order_id, $order_payment_detail['order_type']
                             ,$business_id, $param['sub_businesses']);
@@ -164,8 +204,13 @@ class Site extends CI_Controller {
                         $email['points_dollar_amount'] = $order_info[0]['points_dollar_amount'];
                         $email['delivery_charge_amount'] = $order_info[0]['delivery_charge_amount'];
                         $email['promotion_code'] = $order_info[0]['promotion_code'];
+
                         $email['promotion_discount_amount'] = $order_info[0]['promotion_discount_amount'];
-                        $email['delivery_instruction'] = $order_info[0]['delivery_instruction'];
+
+                        if ($order_payment_detail['order_type'] == 0) {
+                            $email['delivery_instruction'] = $order_info[0]['delivery_instruction'];
+                        }
+
                         $email['delivery_address'] = $order_info[0]['delivery_address'];
                         $email['delivery_time'] = $order_info[0]['delivery_time'];
                         $email['consumer_delivery_id'] = $order_info[0]['consumer_delivery_id'];
@@ -310,7 +355,7 @@ class Site extends CI_Controller {
         $email = "tap-in@tapforall.com";
         $this->load->library('email');
         $config['protocol'] = 'smtp';
-        $config['smtp_host'] = 'mail.tapforall.com';
+        $config['smtp_host'] = 'box6154.bluehost.com';
         $config['smtp_port'] = '587';
         $config['smtp_timeout'] = '7';
         $config['smtp_user'] = $email;

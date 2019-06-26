@@ -103,7 +103,7 @@ function time_elapsed_string($ptime) {
 
 function push_notification_ios($arg_device_token, $message_body) {
 
- 
+
 
     $deviceToken = "" . $arg_device_token . "";
     $production = 1;
@@ -203,7 +203,7 @@ function push_notification_android($deviceToken,$message)
         // Close connection
         curl_close($ch);
         return  $result;
-      
+
     }
 
 
@@ -232,4 +232,28 @@ function isItaDeliveryOrder($orderInfo) {
 
     return ($returnVal);
 }
+
+  function sendGridEmail($subject, $body, $from_name, $from_email, $to_email) {
+        // require_once APPPATH . 'libraries/vendor/autoload.php'; // Loads the SendGrid library
+        // $api_key = "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";
+//        $api_key2 = $this->config->item('SendGridAPIKey');
+      $api_key = getenv('SendGridApiKey'); // is set in .htaccess in tapin_servers directory
+
+        $email = new \SendGrid\Mail\Mail();
+        $email->setFrom($from_email, $from_name);
+        $email->setSubject($subject);
+        $email->addTo($to_email);
+        $email->addContent("text/html", $body);
+        $sendgrid = new \SendGrid($api_key);
+        try {
+            $response = $sendgrid->send($email);
+            print $response->statusCode() . "\n";
+            print_r($response->headers());
+            print $response->body() . "\n";
+            echo "Email was sent successfully";
+        } catch (Exception $e) {
+            echo 'Caught exception: '. $e->getMessage() ."\n";
+        }
+
+    }
 

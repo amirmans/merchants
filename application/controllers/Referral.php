@@ -74,7 +74,8 @@ class Referral extends CI_Controller {
 
             // now notify him
             $messageBody = "Your friend with the email of $referrer_email just joined us. Thank you!";
-            $this->sendEmailTo($referrer_email, "Reward Points for Referral", $messageBody);
+            // $this->sendEmailTo($referrer_email, "Reward Points for Referral", $messageBody);
+            sendGridEmail("Reward Points for Referral", $messageBody, "", "tap-in@tapforall.com",$referrer_email);
         }
 
     }

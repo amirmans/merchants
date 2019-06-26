@@ -100,4 +100,5 @@ defined('PROCESSING_FEE_FIXED')           OR define('PROCESSING_FEE_FIXED', 0.30
 defined('PointTypeForReferral')           OR define('PointTypeForReferral', 5);
 defined('DollarAmountForReferral')        OR define('DollarAmountForReferral', 5);
 
-
+//Test stuff
+defined('TestBusinessAlertSmsNo')         OR define('TestBusinessAlertSmsNo', '+14155057936');

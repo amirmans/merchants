@@ -19,6 +19,26 @@ class MerchantNotification extends CI_Controller {
 ///// DEFULT SITE CONTROLLER MEHOD CALL
     }
 
+//    function email_configration() {
+//        $email = "tap-in@tapforall.com";
+//        $this->load->library('email');
+//        $config['protocol'] = 'smtp';
+//        $config['smtp_host'] = 'mail.tapforall.com';
+//        $config['smtp_port'] = '587';
+//        $config['smtp_timeout'] = '7';
+//        $config['smtp_user'] = $email;
+//        // $config['smtp_pass'] = 'b#Fq0w<ZAM#u<&';
+//        $config['smtp_pass'] = 'TigM0m!!';
+//        $config['charset'] = 'utf-8';
+//        $config['newline'] = "\r\n";
+//        $config['mailtype'] = 'html'; // or html
+//        $config['validation'] = TRUE; // bool whether to validate email or not
+//        $config['smtp_crypto'] = '';
+//
+//        $this->email->initialize($config);
+//        $this->email->from($email, 'Tap-in');
+//    }
+
     function email_configration() {
         $email = "tap-in@tapforall.com";
         $this->load->library('email');
@@ -73,7 +93,8 @@ class MerchantNotification extends CI_Controller {
 //        $business = $business["business_detail"];
         if ($business_email != "") {
             $order_payment_detail = $this->m_site->get_order_payment_detail($order_id);
-            $order_info = $this->m_site->get_ordelist_order($order_id, $business_id,"");//TODO
+            $order_info = $this->m_site->get_ordelist_order($order_id,
+                $order_payment_detail['order_type'], $business_id, "");
             $email['order_detail'] = $this->m_site->get_order_detail($order_id);
             $email['order_id'] = $order_id;
             $email['total'] = $order_payment_detail['total'];
@@ -90,21 +111,44 @@ class MerchantNotification extends CI_Controller {
             $email['delivery_time'] = $order_info[0]['delivery_time'];
             $email['consumer_delivery_id'] = $order_info[0]['consumer_delivery_id'];
 
-            $this->send_mail_for_new_order($email, $business_email);
+            //zzz
+//            $business_email = "test-hjmwu@mail-tester.com";
+            $body = $this->load->view('v_email_new_order', $email, TRUE);
+            sendGridEmail("New order from Tap In", $body, "Tap In", "tap-in@tapforall.com", $business_email);
         }
 
         // if sms fails, twilio exits the app, That is why we want call this at the end after sending the email
         if (!empty($sms_numbers)) {
             $sms_numbers = preg_replace('/\s/', '', $sms_numbers);
             $sms_numbers_array = explode(',', $sms_numbers);
-            foreach ($sms_numbers_array as $sms_no) {
-                $this->m_site->smsMerchant("There is a new order!", $sms_no, $business_id);
+            if (ENVIRONMENT == 'production') {
+                foreach ($sms_numbers_array as $sms_no) {
+                    $this->m_site->smsMerchant("There is a new order!", $sms_no, $business_id);
+                }
             }
         }
 
     }
 
 
+    function test_send_mail_to_consumer() {
+        $this->email_configration();
+
+        $to = "aamirmansoury@gmail.com";
+        $subject = "Subject of your email";
+        $email_body = "The text for the mail...";
+
+//        $body = $this->load->view('v_email_new_order', $data, TRUE);
+        $this->email->to($to);
+        $this->email->subject($subject);
+        $this->email->message($email_body);
+        $result = $this->email->send();
+//        echo $this->email->print_debugger();
+        if ($result != true) {
+            log_message('error', "Email to $to could not be sent!");
+        }
+
+    }
 
 }
 
