@@ -118,17 +118,22 @@ class MerchantNotification extends CI_Controller {
         }
 
         // if sms fails, twilio exits the app, That is why we want call this at the end after sending the email
-        if (!empty($sms_numbers)) {
-            $sms_numbers = preg_replace('/\s/', '', $sms_numbers);
-            $sms_numbers_array = explode(',', $sms_numbers);
-            if (ENVIRONMENT == 'production') {
+        $goodToSendSMS = true;
+        if (ENVIRONMENT == 'development') {
+            $goodToSendSMS = false;
+        }
+        if ($goodToSendSMS) {
+            if (!empty($sms_numbers)) {
+                $sms_numbers = preg_replace('/\s/', '', $sms_numbers);
+                $sms_numbers_array = explode(',', $sms_numbers);
+
                 foreach ($sms_numbers_array as $sms_no) {
                     $this->m_site->smsMerchant("There is a new order!", $sms_no, $business_id);
                 }
             }
-        }
+        } // if
 
-    }
+    } // function
 
 
     function test_send_mail_to_consumer() {

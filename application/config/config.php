@@ -23,7 +23,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-$config['base_url'] = 'http://tapin-servers.dv/merchants/';
+$mode = getenv("EnvMode");
+$config['base_url'] = 'https://tapforall.com/merchants/tap-in-adminpanel/';
+if ($mode == "development") {
+    $config['base_url'] = 'http://tapin-servers.dv/merchants/';
+} else if ($mode =="staging") {
+    $config['base_url'] = 'http://tapforall.com/staging/merchants/';
+}
+
 
 /*
 |--------------------------------------------------------------------------
@@ -136,7 +143,8 @@ $config['subclass_prefix'] = 'MY_';
 | Note: This will NOT disable or override the CodeIgniter-specific
 |	autoloading (application/config/autoload.php)
 */
-$config['composer_autoload'] = FALSE;
+$config['composer_autoload'] = TRUE;
+//$config[‘composer_autoload’] = base_url().‘vendor/autoload.php’;
 
 /*
 |--------------------------------------------------------------------------
@@ -214,7 +222,7 @@ $config['directory_trigger'] = 'd';
 |
 */
 
-$config['log_threshold'] = 2;
+$config['log_threshold'] = 1;
 $mode = getenv("EnvMode");
 if ($mode == "debug") {
     $config['log_threshold'] = 4;

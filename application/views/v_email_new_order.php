@@ -9,8 +9,10 @@ function limit_text($text, $limit) {
     }
     return $text;
 }
- $TapInServerConstsParentPath = APPPATH . "../" . "../" . staging_directory() . '/include/consts_server.inc';
-        require_once $TapInServerConstsParentPath; // Loads our consts
+$parent_url =  dirname(base_url()) ."/";
+// $TapInServerConstsParentPath = APPPATH . "../" . "../" . staging_directory() . '/include/consts_server.inc';
+//        require_once $TapInServerConstsParentPath; // Loads our consts
+
 ?>
 <html xmlns="">
     <head>
@@ -340,7 +342,7 @@ function limit_text($text, $limit) {
                                 <tr style="line-height: 0;">
                                     <td  colspan="2">
 
-                                        <p style="font-weight: bold;font-size: 21px;margin-left: 10px;text-align: center"><a href="<?php echo BaseURL."".$order_detail[0]['main_business_name']; ?>" target="_blank" >View</a></p>
+                                        <p style="font-weight: bold;font-size: 21px;margin-left: 10px;text-align: center"><a href="<?php echo $parent_url."".$order_detail[0]['main_business_name']; ?>" target="_blank" >View</a></p>
                                     </td>
                                    
                                 </tr>

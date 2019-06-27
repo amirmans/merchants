@@ -313,6 +313,6 @@ switch (ENVIRONMENT)
  * And away we go...
  */
 // added by Amir for additonal libraries intstalled by composer
-include_once './vendor/autoload.php';
+//include_once BASEPATH.'vendor/autoload.php';
 
 require_once BASEPATH.'core/CodeIgniter.php';

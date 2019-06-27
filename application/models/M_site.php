@@ -513,8 +513,8 @@ class M_site extends CI_Model {
             else {
                 $optionsId ="";
             }
-            $this->db->select('name');
-            $this->db->from('option');
+            $this->db->select('`name`');
+            $this->db->from('`option`');
             $this->db->where_in('option_id', $optionsId);
             $option_result = $this->db->get();
             $option_row = $option_result->result_array();
@@ -712,11 +712,12 @@ class M_site extends CI_Model {
     }
 
     function smsMerchant($message, $businessSMS, $businessID) {
-        require_once APPPATH . 'libraries/Twilio/autoload.php'; // Loads the Twilio library
-        $TapInServerConstsParentPath = APPPATH . "../" . "../" . staging_directory() . '/include/consts_server.inc';
-        require_once $TapInServerConstsParentPath; // Loads our consts
+//        require_once APPPATH . 'libraries/Twilio/autoload.php'; // Loads the Twilio library
+//        $TapInServerConstsParentPath = APPPATH . "../" . "../" . staging_directory() . '/include/consts_server.inc';
+//        require_once $TapInServerConstsParentPath; // Loads our consts
 //        use Twilio\Rest\Client;
 
+        $parent_url = dirname(base_url());
         if ($businessID != 0) {
             $this->db->select('username');
             $this->db->from('business_customers');
@@ -725,7 +726,7 @@ class M_site extends CI_Model {
             $result = $this->db->get();
             $row = $result->result_array();
             if (count($row) > 0) {
-                $merchantLink = BaseURL . "" . $row[0]["username"];
+                $merchantLink = $parent_url . "/" . $row[0]["username"];
                 $message = $message . " Refer to: " . $merchantLink;
             }
         }
@@ -1923,9 +1924,9 @@ class M_site extends CI_Model {
             where r.referred_email = ? or r.referred_email = ?;";
 
         $result = $this->db->query($sqlStatement, array($email1, $email2));
-        $row = $result->row_array();
+        $row = $result->result_array();
 
-        return ($row);
+        return ($row[0]);
     }
 
     function insertReferralPointsFor($consumer_id, $business_id, $pointReason, $dollarAmountForRewards) {
