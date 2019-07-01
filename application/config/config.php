@@ -224,7 +224,7 @@ $config['directory_trigger'] = 'd';
 
 $config['log_threshold'] = 1;
 $mode = getenv("EnvMode");
-if ($mode == "debug") {
+if ($mode == "development") {
     $config['log_threshold'] = 4;
 }
 
