@@ -106,10 +106,24 @@ class MerchantNotification extends CI_Controller {
             $email['delivery_charge_amount'] = $order_info[0]['delivery_charge_amount'];
             $email['promotion_code'] = $order_info[0]['promotion_code'];
             $email['promotion_discount_amount'] = $order_info[0]['promotion_discount_amount'];
+
+            if (empty($order_info[0]['delivery_instruction'])) {
+                $order_info[0]['delivery_instruction'] = "";
+            }
             $email['delivery_instruction'] = $order_info[0]['delivery_instruction'];
+
+            if (empty($order_info[0]['delivery_address'])) {
+                $order_info[0]['delivery_address'] = "";
+            }
             $email['delivery_address'] = $order_info[0]['delivery_address'];
+
+            if (empty($order_info[0]['delivery_time'])) {
+                $order_info[0]['delivery_time'] ="";
+            }
             $email['delivery_time'] = $order_info[0]['delivery_time'];
+
             $email['consumer_delivery_id'] = $order_info[0]['consumer_delivery_id'];
+            $email['business_name'] = ""; //in here we don't need to pass business name
 
             //zzz
 //            $business_email = "test-hjmwu@mail-tester.com";
