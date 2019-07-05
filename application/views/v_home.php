@@ -45,7 +45,7 @@
                                 <li>
                                     <a href="<?php echo base_url('index.php/login?businessID=' . encrypt_string($business_list[$i]['businessID'])); ?>" class="item clearfix">
                                         <span class="from"><?php echo $business_list[$i]['name']; ?></span>
-                                        <span class="date"><?php echo $business_list[$i]['email']; ?></span>
+<!--                                        <span class="date">--><?php //echo $business_list[$i]['email']; ?><!--</span>-->
                                     </a>
                                 </li>
                             <?php } ?>
