@@ -19,9 +19,12 @@ class Login extends CI_Controller {
         $this->session->unset_userdata('businessID');
         is_login() ? redirect('index.php/site/orderlist') : '';
         $param = $_REQUEST;
+        if (!empty($param['businessID'])) {
 
-        $data['business'] = $this->m_site->get_business(decrypt_string($param['businessID']));
-//   
+            $data['business'] = $this->m_site->get_business(decrypt_string($param['businessID']));
+        } else {
+            $data = null;
+        }
         $this->load->view('v_login', $data);
     }
 

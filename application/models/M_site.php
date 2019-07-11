@@ -656,13 +656,13 @@ class M_site extends CI_Model {
  */
     function maskCardInfoFor($consumerID, $cc_no) {
         log_message('Info', "In maskCardInfoFor");
-        $ccMaskSql = " 
-        update consumer_cc_info set cc_no = 
+        $ccMaskSql = "
+        update consumer_cc_info set cc_no =
         concat (replace(
             substr('$cc_no',1, LENGTH('$cc_no')-4)
             , substr('$cc_no',1, LENGTH('$cc_no')-4) ,repeat('*',
             length(substr('$cc_no',1, LENGTH('$cc_no')-4))
-        )), 
+        )),
         substring('$cc_no', -4))
         where consumer_id = $consumerID
         ;";
@@ -732,14 +732,15 @@ class M_site extends CI_Model {
             }
         }
 
-        $sid = "AC425f4f32e8cc26b7cd3cca7122d59edb";
-        $token = "28c81ad67d2530aca9a947f785c54ef6";
+        $sid   = "AC425f4f32e8cc26b7cd3cca7122d59edb";
+        $token = "c9942a9c46de76e6316709d82572e9e9";
 
         $client = new Twilio\Rest\Client($sid, $token);
         try {
             $client->messages->create(
                 "$businessSMS", array(
-                    'from' => '+15032785619',
+                  //old phone: 15032785619
+                    'from' => '+15032109988',
                     'body' => "$message"
                 )
             );
@@ -1642,7 +1643,7 @@ class M_site extends CI_Model {
         $rejectedrow = $rejectedresult->row_array();
         $return['total']['rejected'] = $rejectedrow['rejected_orders'];
 
-        $transactionfee_base_query = "select ifnull(sum(transaction_fee),0) as total_processingfee from (SELECT floor(((0.30+0.029*total))*100)/100 as transaction_fee 
+        $transactionfee_base_query = "select ifnull(sum(transaction_fee),0) as total_processingfee from (SELECT floor(((0.30+0.029*total))*100)/100 as transaction_fee
                                   FROM `order`
                                   WHERE `business_id` = '$business_id'
                                   AND (`status` = $complete or `status` = $approved) ";
@@ -1937,7 +1938,7 @@ class M_site extends CI_Model {
         $pointsForOneDollar = $this->getPointsForOneDollar($business_id);
         $points = $pointsForOneDollar * $dollarAmountForRewards;
         $prepared_stmt = "INSERT INTO points (`consumer_id`, `business_id`, `points_reason_id`, `points`
-          , `order_id` , `available`, `time_earned`, `time_redeemed`, `time_expired`) 
+          , `order_id` , `available`, `time_earned`, `time_redeemed`, `time_expired`)
           VALUES (?, ?, ?, ?, 0, 1, now(), NULL, NULL)";
 
         $this->db->query($prepared_stmt, array($consumer_id, $business_id, $pointReason, $points));

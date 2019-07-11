@@ -23,14 +23,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-$mode = getenv("EnvMode");
-$config['base_url'] = 'https://tapforall.com/merchants/tap-in-adminpanel/';
-if ($mode == "development") {
-    $config['base_url'] = 'http://tapin-servers.dv/merchants/';
-} else if ($mode =="testing") {
-    $config['base_url'] = 'http://tapforall.com/staging/merchants/';
-}
+//$mode = getenv("EnvMode");
+//$config['base_url'] = 'https://tapforall.com/merchants/tap-in-adminpanel/';
+//if ($mode == "development") {
+//    $config['base_url'] = 'http://tapin-servers.dv/merchants/';
+//} else if ($mode =="testing") {
+//    // $config['base_url'] = 'http://tapforall.com/staging/merchants/';
+//    $config['base_url'] = $_SERVER['APP_HOSTNAME'];
+//}
 
+$config['base_url'] = $_SERVER['APP_HOSTNAME'];
 
 /*
 |--------------------------------------------------------------------------
