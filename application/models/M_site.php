@@ -734,21 +734,13 @@ class M_site extends CI_Model {
 
 		$sid = getenv("Twilio_SID");
 		$token = getenv("Twilio_Token");
-<<<<<<< HEAD
-=======
 		$twilio_no = getenv("Twilio_PhoneNo");
->>>>>>> initializing data for v_order_view and v_order_list to eliminate warnings for no data
 
 		$client = new Twilio\Rest\Client($sid, $token);
 		try {
 			$client->messages->create(
 				"$businessSMS", array(
-				  //old phone: 15032785619
-<<<<<<< HEAD
-					'from' => '+15032109988',
-=======
 					'from' => $twilio_no,
->>>>>>> initializing data for v_order_view and v_order_list to eliminate warnings for no data
 					'body' => "$message"
 				)
 			);
