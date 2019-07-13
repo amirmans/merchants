@@ -56,13 +56,74 @@ class Site extends CI_Controller {
         $this->validation->is_parameter_blank('businessID', $param['businessID']);
         $data['order_status'] = $order_status;
         $data['orderlist'] = $this->m_site->get_business_order_list($param);
-        $order_detail['order_detail'] = $this->m_site->get_order_detail($data['orderlist'][0]['order_id']);
-        $order_detail['orderlist'] = $this->m_site->get_ordelist_order($data['orderlist'][0]['order_id']
-            , $data['orderlist'][0]['order_type']
-            , $param['businessID'], $param['sub_businesses']);
-        $order_detail['consumer'] = $this->m_site->check_birthday_first_order($data['orderlist'][0]['order_id']);
+        if (count($data['orderlist']) > 0) {
+            $order_detail['order_detail'] = $this->m_site->get_order_detail($data['orderlist'][0]['order_id']);
+            $order_detail['orderlist'] = $this->m_site->get_ordelist_order($data['orderlist'][0]['order_id']
+                , $data['orderlist'][0]['order_type']
+                , $param['businessID'], $param['sub_businesses']);
+            $order_detail['consumer'] = $this->m_site->check_birthday_first_order($data['orderlist'][0]['order_id']);
+        } else {
+            // there no orders so init the array
+            $data['orderlist'][0]['order_id'] = "";
+            $data['orderlist'][0]['payment_id'] ="";
+            $data['orderlist'][0]['total'] = 0.0;
+            $data['orderlist'][0]['date'] ="";
+            $data['orderlist'][0]['no_items']=0;
+            $data['orderlist'][0]['status'] = 0;
+            $data['orderlist'][0]['nickname'] ="";
+            $data['orderlist'][0]['seconds'] =0;
+            $data['orderlist'][0]['is_refunded'] = 0;
+            $data['orderlist'][0]['order_type'] =0;
+            $data['orderlist'][0]['uid'] ="";
+
+            $order_detail[0]['order_item_id'] = "";
+            $order_detail[0]['price'] = 0.0;
+            $order_detail[0]['quantity'] = 0;
+            $order_detail[0]['item_note'] = "";
+            $order_detail[0]['name'] = "";
+            $order_detail[0]['short_description'] = "";
+            $order_detail[0]['option_is'] = array();
+            $order_detail[0]['businessID'] = "";
+            $order_detail[0]['business_name'] = "";
+            $order_detail[0]['main_business_name'] = "";
+            $order_detail[0]['product_business_name'] = "";
+
+            // $order_detail['order_detail'] = array();
+            $order_detail['orderlist'][0]['uid']  =   "";
+            $order_detail['orderlist'][0]['seconds'] = 0;
+            $order_detail['orderlist'][0]['uid']  =   "";
+            $order_detail['orderlist'][0]['status'] = 0;
+            $order_detail['orderlist'][0]['no_items'] = 0;
+            $order_detail['orderlist'][0]['nickname'] = "";
+            $order_detail['orderlist'][0]['order_id'] = "";
+            $order_detail['orderlist'][0]['note'] = "";
+            $order_detail['orderlist'][0]['pd_mode'] = 0;
+            $order_detail['orderlist'][0]['delivery_charge_amount'] =0.0;
+            $order_detail['orderlist'][0]['pd_charge_amount'] = 0;
+            $order_detail['orderlist'][0]['promotion_code'] ="";
+            $order_detail['orderlist'][0]['promotion_discount_amount'] = 0;
+
+
+            $order_detail['orderlist'][0][''] ="";
+
+
+
+
+            $order_detail['consumer']['is_first_order'] = 0;
+            $order_detail['consumer']['is_birthday'] = 0;
+            $order_detail['order_detail'][0]['businessID']="";
+            $order_detail['order_detail'][0]['option_ids'] =array();
+            $order_detail['order_detail'][0]['name'] ="";
+            $order_detail['order_detail'][0]['item_note'] ="";
+            $order_detail['order_detail'][0]['price'] =0;
+            $order_detail['order_detail'][0]['quantity'] =0;
+            // $order_detail['consumer'] = array();
+//            $data['orderlist'] = null;
+        }
+
         $data['order_view'] = $this->load->view('v_order_view', $order_detail, TRUE);
         $this->load->view('v_orderlist', $data);
+
     }
 
     function search_orderlist($keyword = "") {
